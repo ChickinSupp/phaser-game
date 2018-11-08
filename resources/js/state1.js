@@ -4,8 +4,19 @@ let pSpeed = 15;
 
 let player,
     platform,
+    playerJump = 15,
     hasJumped = false,
+    arrowKey,
     canCheckJump = true;
+
+window.addEventListener("keydown", function (event) {
+    if (event.code == 'ArrowUp') {
+
+
+        console.log(event.code);
+    }
+
+});
 
 const keys = {
     'up': Phaser.KeyCode.UP,
@@ -13,7 +24,9 @@ const keys = {
     'left': Phaser.KeyCode.LEFT,
     'right': Phaser.KeyCode.RIGHT,
     'a': Phaser.KeyCode.A,
-    's': Phaser.KeyCode.S
+    's': Phaser.KeyCode.S,
+    'w': Phaser.KeyCode.W,
+    'd': Phaser.KeyCode.D
 };
 
 demo.state1 = function () { };
@@ -22,6 +35,7 @@ demo.state1.prototype = {
         //preloads spritesheets to be used in create
         game.load.spritesheet('tester', 'resources/art/test-scott-run-attack-combo.png', 213, 204, 63);
         game.load.spritesheet('ground', 'resources/art/platform.png', 123, 204);
+
 
     },
     create: function () {
@@ -57,8 +71,20 @@ demo.state1.prototype = {
         player.animations.add('neutralPunch5', [41, 42, 43, 44], 12, false);
         player.animations.add('neutralKick', [45, 46, 47, 48, 49, 50, 51], 12, false);
 
+
+
+
+
         //plays added animaiton
         player.animations.play('idle');
+
+        //opens up info on current anim
+        console.log(player.animations.currentAnim);
+        //gets name for current anim
+        console.log(player.animations.currentAnim.name);
+        //returns if current anim is finished
+        console.log(player.animations.currentAnim.isFinished);
+
 
         // Creating platform
         platform = game.add.sprite(400, 450, 'ground');
@@ -70,106 +96,146 @@ demo.state1.prototype = {
         player.body.gravity.y = 1900;
         platform.body.immovable = true;
 
+
+
+
     },
     update: function () {
+
         //player and platform will collide
+
         game.physics.arcade.collide(player, platform);
 
-        //when the left arrow key is held down
-        if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            player.animations.play('run');
-            //first arg in setTo flips sprite orientation to LEFT
-            player.scale.setTo(-1, 1);
+        //runs function on key press
 
-            player.x -= 8;
+        game.input.keyboard.onPressCallback = function (e) {
+            console.log("key pressed", e);
 
-            if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-                //player.animations.stop('run');
-                player.animations.play('jump');
-                player.y -= 14;
+            //Will play animation until its finished
+            switch (e) {
 
+                case 's':
+                    player.animations.play('neutralKick');
+                    break;
+                case 'a':
+                    player.animations.play('neutralPunch1');
+                    break;
+
+                default:
+                    break;
             }
+
         }
 
-        //when the right arrow key is held down
-        else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-            //first arg in setTo flips sprite orientation to RIGHT
-            player.scale.setTo(1, 1);
-            player.animations.play('run', 13, true);
-            player.x += 8;
+        //if current animation is finished, the idle nimation will play
+        if (player.animations.currentAnim.isFinished) {
+            player.animations.play('idle');
+        }
 
-            //If RIGHT arrow is currently being pressed and UP just got pressed...
-            //Needs work,'jump' animation is not playing...
+        /*
+        if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
 
-            /*
-            if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-                if (!hasJumped) {
-                    console.log(hasJumped);
-                    player.animations.play('jump');
-                    player.y -= 14;
+            player.y -= 14;
 
-                    hasJumped = true;
+        }
+        */
+
+
+        /*
+                //when the left arrow key is held down
+                if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+                    player.animations.play('run');
+                    //first arg in setTo flips sprite orientation to LEFT
+                    player.scale.setTo(-1, 1);
+        
+                    player.x -= 8;
+        
+                    if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+                        //player.animations.stop('run');
+                        player.animations.play('jump');
+                        player.y -= 14;
+        
+                    }
                 }
-
-                
-            }*/
-
-            //when the up arrow key is held down
-        } else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-
-            if (!hasJumped) {
-                player.animations.play('jump');
-                player.y -= 14;
-
-                if (canCheckJump) {
-                    canCheckJump = false;
-                    setTimeout(function () {
-                        hasJumped = true;
-                    }, 350);
-                    setTimeout(function () {
-                        checkJump();
-                    }, 500);
-
+        
+                //when the right arrow key is held down
+                else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+                    //first arg in setTo flips sprite orientation to RIGHT
+                    player.scale.setTo(1, 1);
+                    player.animations.play('run', 13, true);
+                    player.x += 8;
+        
+                    //If RIGHT arrow is currently being pressed and UP just got pressed...
+                    //Needs work,'jump' animation is not playing...
+        
+        
+                    if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+        
+                        player.animations.play('jump');
+                        player.y -= 14;
+        
+        
+        
+        
+                    }
+        
+                    //when the up arrow key is held down
+                } else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+        
+                    if (!hasJumped) {
+                        player.animations.play('jump');
+                        player.y -= 14;
+        
+                        if (canCheckJump) {
+                            canCheckJump = false;
+                            setTimeout(function () {
+                                hasJumped = true;
+                            }, 350);
+                            setTimeout(function () {
+                                checkJump();
+                            }, 500);
+        
+                        } else {
+                            return false;
+                        }
+        
+        
+                    } else {
+                        return false;
+                    }
+                    //player.animations.play('jump');
+                    //player.y -= 14;
+        
+                } else if (game.input.keyboard.isDown(keys.a)) {
+                    player.animations.play('neutralPunch1');
+        
+        
                 } else {
-                    return false;
+                    //Playes 'idle' animation if no LEFT or RIGHT keys are pressed
+                    //player.animations.stop('run');
+                    player.animations.play('idle', 13, true);
+        
                 }
-
-
-            } else {
-                return false;
-            }
-            //player.animations.play('jump');
-            //player.y -= 14;
-
-        } else if (game.input.keyboard.isDown(keys.a)) {
-            player.animations.play('neutralPunch1');
-
-
-        } else {
-            //Playes 'idle' animation if no LEFT or RIGHT keys are pressed
-            //player.animations.stop('run');
-            player.animations.play('idle', 13, true);
-
-        }
-
-        render();
-
-        function checkJump() {
-            if (hasJumped) {
-                hasJumped = false;
-            } else {
-                return;
-            }
-
-        }
-        function render() {
-
-            // Display
-            //game.debug.spriteBounds(player);
-            game.debug.body(player);
-            //game.debug.body(sprite2);
-
-        }
+        
+                render();
+        
+                function checkJump() {
+                    if (hasJumped) {
+                        hasJumped = false;
+                    } else {
+                        return;
+                    }
+        
+                }
+                function render() {
+        
+                    // Display
+                    //game.debug.spriteBounds(player);
+                    game.debug.body(player);
+                    game.debug.body(platform);
+        
+                }
+                */
 
     }
 };
