@@ -35,7 +35,7 @@ demo.state1 = function () { };
 demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
-        game.load.spritesheet('tester', 'resources/art/test-scott-run-attack-combo.png', 213, 204, 63);
+        game.load.spritesheet('tester', 'resources/art/test-scott.png', 213, 204, 69);
         game.load.spritesheet('ground', 'resources/art/platform.png', 123, 204);
 
 
@@ -65,13 +65,15 @@ demo.state1.prototype = {
         //neutralpunch2 would follow nuetralpunch1 after it finishes running, like a combo
         //would require input, let's say that hitting 'a' for example, would trigger neutralPunch1, if pressed again at the right...
         //..moment, would trigger neutralPunch2, and so forth 
-        player.animations.add('neutralPunch1', [28, 29, 30, 31], 12, false);
-        player.animations.add('neutralPunch2', [32, 33, 34, 35], 12, false);
-        player.animations.add('neutralPunch3', [36, 37, 38], 12, false);
+        player.animations.add('neutralPunch1', [28, 29, 30, 31], 11, false);
+        player.animations.add('neutralPunch2', [32, 33, 34, 35], 11, false);
+        player.animations.add('neutralPunch3', [36, 37, 38], 11, false);
 
-        player.animations.add('neutralPunch4', [39, 40], 12, false);
-        player.animations.add('neutralPunch5', [41, 42, 43, 44], 12, false);
+        player.animations.add('neutralPunch4', [39, 40], 11, false);
+        player.animations.add('neutralPunch5', [41, 42, 43, 44], 11, false);
         player.animations.add('neutralKick', [45, 46, 47, 48, 49, 50, 51], 12, false);
+
+        player.animations.add('specialKick1', [63, 64, 65, 66, 67, 68, 69], 14, false);
 
 
 
@@ -116,15 +118,38 @@ demo.state1.prototype = {
 
             //Will play animation until its finished
             switch (e) {
-
+                //standard kick
                 case 's':
                     player.animations.play('neutralKick');
                     playerCombo[0] = (player.animations.currentAnim.name);
                     console.log(playerCombo);
 
                     break;
+                
+                // 'd' will be the special button. Hit this button attack the right time, and you might unleash a speciall attack or combo
+                case 'd':
+
+                //will only play if the last attack(animation) was neutralPunch3
+
+
+                    if (playerCombo[0] == 'neutralPunch3' && player.animations.currentAnim.name != 'idle') {
+                        if (player.animations.currentAnim.name === 'neutralPunch3' || player.animations.currentAnim.isFinished) {
+
+                            player.animations.play('specialKick1');
+                            playerCombo[0] = (player.animations.currentAnim.name);
+
+                            console.log(playerCombo);
+                        } else {
+                            return;
+                        }
+
+                    }
+
+
+                        break;
+                //standard attack
                 case 'a':
-                    if (playerCombo[0] == 'neutralPunch1' && player.animations.currentAnim.name !='idle' ) {
+                    if (playerCombo[0] == 'neutralPunch1' && player.animations.currentAnim.name != 'idle') {
                         if (player.animations.currentAnim.name === 'neutralPunch1' || player.animations.currentAnim.isFinished) {
 
                             player.animations.play('neutralPunch2');
@@ -133,7 +158,7 @@ demo.state1.prototype = {
                         } else {
                             return;
                         }
-                    } else if (playerCombo[0] == 'neutralPunch2' && player.animations.currentAnim.name !='idle') {
+                    } else if (playerCombo[0] == 'neutralPunch2' && player.animations.currentAnim.name != 'idle') {
                         if (player.animations.currentAnim.name === 'neutralPunch2' || player.animations.currentAnim.isFinished) {
 
                             player.animations.play('neutralPunch3');
@@ -142,7 +167,7 @@ demo.state1.prototype = {
                         } else {
                             return;
                         }
-                    } else if (playerCombo[0] == 'neutralPunch3' && player.animations.currentAnim.name !='idle') {
+                    } else if (playerCombo[0] == 'neutralPunch3' && player.animations.currentAnim.name != 'idle') {
                         if (player.animations.currentAnim.name === 'neutralPunch3' || player.animations.currentAnim.isFinished) {
 
                             player.animations.play('neutralPunch4');
@@ -151,7 +176,7 @@ demo.state1.prototype = {
                         } else {
                             return;
                         }
-                    } else if (playerCombo[0] == 'neutralPunch4' && player.animations.currentAnim.name !='idle') {
+                    } else if (playerCombo[0] == 'neutralPunch4' && player.animations.currentAnim.name != 'idle') {
                         if (player.animations.currentAnim.name === 'neutralPunch4' || player.animations.currentAnim.isFinished) {
                             player.animations.play('neutralPunch5');
                             playerCombo[0] = (player.animations.currentAnim.name);
@@ -165,7 +190,7 @@ demo.state1.prototype = {
                             player.animations.play('neutralPunch1');
                             playerCombo[0] = (player.animations.currentAnim.name);
                             console.log(playerCombo);
-                        }else{
+                        } else {
                             console.log('not ready');
                         }
                     }
@@ -300,15 +325,15 @@ demo.state1.prototype = {
                 */
 
 
-                function comboReset (){
-                    console.log('combo rest init');
-                    reseter = setTimeout(function (){
-                        playerCombo = [];
-                        console.log('playerCombo has been reset');
-                    }, 2000);
+        function comboReset() {
+            console.log('combo rest init');
+            reseter = setTimeout(function () {
+                playerCombo = [];
+                console.log('playerCombo has been reset');
+            }, 2000);
 
 
-                }
+        }
 
 
     }
