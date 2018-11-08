@@ -7,6 +7,15 @@ let player,
     hasJumped = false,
     canCheckJump = true;
 
+const keys = {
+    'up': Phaser.KeyCode.UP,
+    'down': Phaser.KeyCode.DOWN,
+    'left': Phaser.KeyCode.LEFT,
+    'right': Phaser.KeyCode.RIGHT,
+    'a': Phaser.KeyCode.A,
+    's': Phaser.KeyCode.S
+};
+
 demo.state1 = function () { };
 demo.state1.prototype = {
     preload: function () {
@@ -16,7 +25,12 @@ demo.state1.prototype = {
 
     },
     create: function () {
+
+
+
+
         // Starting game physics
+
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         //game.physics.arcade.gravity.y = 900;
@@ -61,7 +75,6 @@ demo.state1.prototype = {
         //player and platform will collide
         game.physics.arcade.collide(player, platform);
 
-
         //when the left arrow key is held down
         if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
             player.animations.play('run');
@@ -87,6 +100,8 @@ demo.state1.prototype = {
 
             //If RIGHT arrow is currently being pressed and UP just got pressed...
             //Needs work,'jump' animation is not playing...
+
+            /*
             if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
                 if (!hasJumped) {
                     console.log(hasJumped);
@@ -95,7 +110,9 @@ demo.state1.prototype = {
 
                     hasJumped = true;
                 }
-            }
+
+                
+            }*/
 
             //when the up arrow key is held down
         } else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
@@ -103,30 +120,30 @@ demo.state1.prototype = {
             if (!hasJumped) {
                 player.animations.play('jump');
                 player.y -= 14;
+
                 if (canCheckJump) {
-                    setTimeout(function(){
+                    canCheckJump = false;
+                    setTimeout(function () {
                         hasJumped = true;
                     }, 350);
                     setTimeout(function () {
                         checkJump();
                     }, 500);
 
-                    canCheckJump = false;
+                } else {
+                    return false;
                 }
 
 
-            }else{
-                return;
+            } else {
+                return false;
             }
             //player.animations.play('jump');
             //player.y -= 14;
 
-        } else if (game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+        } else if (game.input.keyboard.isDown(keys.a)) {
+            player.animations.play('neutralPunch1');
 
-
-
-            player.animations.play('jump');
-            player.y -= 14;
 
         } else {
             //Playes 'idle' animation if no LEFT or RIGHT keys are pressed
@@ -135,14 +152,22 @@ demo.state1.prototype = {
 
         }
 
+        render();
 
         function checkJump() {
-
-            if(hasJumped){
+            if (hasJumped) {
                 hasJumped = false;
-            }else{
+            } else {
                 return;
             }
+
+        }
+        function render() {
+
+            // Display
+            //game.debug.spriteBounds(player);
+            game.debug.body(player);
+            //game.debug.body(sprite2);
 
         }
 
