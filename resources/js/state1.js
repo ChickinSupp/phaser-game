@@ -3,8 +3,10 @@ let demo = window.demo || (window.demo = {});
 let pSpeed = 15;
 
 let player,
+    playerCombo = [],
     platform,
     playerJump = 15,
+    reseter,
     hasJumped = false,
     arrowKey,
     canCheckJump = true;
@@ -66,7 +68,7 @@ demo.state1.prototype = {
         player.animations.add('neutralPunch1', [28, 29, 30, 31], 12, false);
         player.animations.add('neutralPunch2', [32, 33, 34, 35], 12, false);
         player.animations.add('neutralPunch3', [36, 37, 38], 12, false);
-        player.animations.add('neutralPunch3', [36, 37, 38], 12, false);
+
         player.animations.add('neutralPunch4', [39, 40], 12, false);
         player.animations.add('neutralPunch5', [41, 42, 43, 44], 12, false);
         player.animations.add('neutralKick', [45, 46, 47, 48, 49, 50, 51], 12, false);
@@ -111,21 +113,81 @@ demo.state1.prototype = {
         game.input.keyboard.onPressCallback = function (e) {
             console.log("key pressed", e);
 
+
             //Will play animation until its finished
             switch (e) {
 
                 case 's':
                     player.animations.play('neutralKick');
+                    playerCombo[0] = (player.animations.currentAnim.name);
+                    console.log(playerCombo);
+
                     break;
                 case 'a':
-                    player.animations.play('neutralPunch1');
+                    if (playerCombo[0] == 'neutralPunch1' && player.animations.currentAnim.name !='idle' ) {
+                        if (player.animations.currentAnim.name === 'neutralPunch1' || player.animations.currentAnim.isFinished) {
+
+                            player.animations.play('neutralPunch2');
+                            playerCombo[0] = (player.animations.currentAnim.name);
+                            console.log(playerCombo);
+                        } else {
+                            return;
+                        }
+                    } else if (playerCombo[0] == 'neutralPunch2' && player.animations.currentAnim.name !='idle') {
+                        if (player.animations.currentAnim.name === 'neutralPunch2' || player.animations.currentAnim.isFinished) {
+
+                            player.animations.play('neutralPunch3');
+                            playerCombo[0] = (player.animations.currentAnim.name);
+                            console.log(playerCombo);
+                        } else {
+                            return;
+                        }
+                    } else if (playerCombo[0] == 'neutralPunch3' && player.animations.currentAnim.name !='idle') {
+                        if (player.animations.currentAnim.name === 'neutralPunch3' || player.animations.currentAnim.isFinished) {
+
+                            player.animations.play('neutralPunch4');
+                            playerCombo[0] = (player.animations.currentAnim.name);
+                            console.log(playerCombo);
+                        } else {
+                            return;
+                        }
+                    } else if (playerCombo[0] == 'neutralPunch4' && player.animations.currentAnim.name !='idle') {
+                        if (player.animations.currentAnim.name === 'neutralPunch4' || player.animations.currentAnim.isFinished) {
+                            player.animations.play('neutralPunch5');
+                            playerCombo[0] = (player.animations.currentAnim.name);
+                            console.log(playerCombo);
+                        } else {
+                            return;
+                        }
+                    } else {
+                        if (player.animations.currentAnim.name === 'idle' || player.animations.currentAnim.isFinished) {
+
+                            player.animations.play('neutralPunch1');
+                            playerCombo[0] = (player.animations.currentAnim.name);
+                            console.log(playerCombo);
+                        }else{
+                            console.log('not ready');
+                        }
+                    }
+
                     break;
 
                 default:
                     break;
             }
 
+
+            /*
+            if(e == ('a')){
+                clearTimeout(reseter);
+                comboReset();
+            }
+
+            */
+
         }
+
+
 
         //if current animation is finished, the idle nimation will play
         if (player.animations.currentAnim.isFinished) {
@@ -236,6 +298,18 @@ demo.state1.prototype = {
         
                 }
                 */
+
+
+                function comboReset (){
+                    console.log('combo rest init');
+                    reseter = setTimeout(function (){
+                        playerCombo = [];
+                        console.log('playerCombo has been reset');
+                    }, 2000);
+
+
+                }
+
 
     }
 };
