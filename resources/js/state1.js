@@ -1,16 +1,17 @@
 let demo = window.demo || (window.demo = {});
 
 let pSpeed = 15;
+
 let player,
     platform,
-    isAttack;
+    hasJumped = false,
+    canCheckJump = true;
 
 demo.state1 = function () { };
 demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
         game.load.spritesheet('tester', 'resources/art/test-scott-run-attack-combo.png', 213, 204, 63);
-        
         game.load.spritesheet('ground', 'resources/art/platform.png', 123, 204);
 
     },
@@ -28,19 +29,19 @@ demo.state1.prototype = {
 
 
         //selects frames from the assigned spritesheet and sets them apart for its animation
-        player.animations.add('idle',[0,1,2,3,4,5,6,7], 12, true);
-        player.animations.add('run', [8,9,10,11,12,13,14,15], 12, true);
-        player.animations.add('jump', [16,17,18,19,20,21,22,23,24,25], 12, false);
+        player.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
+        player.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 12, true);
+        player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
         //neutralpunch2 would follow nuetralpunch1 after it finishes running, like a combo
         //would require input, let's say that hitting 'a' for example, would trigger neutralPunch1, if pressed again at the right...
         //..moment, would trigger neutralPunch2, and so forth 
-        player.animations.add('neutralPunch1', [28,29,30,31], 12, false);
-        player.animations.add('neutralPunch2', [32,33,34,35], 12, false);
-        player.animations.add('neutralPunch3', [36,37,38], 12, false);
-        player.animations.add('neutralPunch3', [36,37,38], 12, false);
-        player.animations.add('neutralPunch4', [39,40], 12, false);
-        player.animations.add('neutralPunch5', [41,42,43,44], 12, false);
-        player.animations.add('neutralKick', [45,46,47,48,49,50,51], 12, false);
+        player.animations.add('neutralPunch1', [28, 29, 30, 31], 12, false);
+        player.animations.add('neutralPunch2', [32, 33, 34, 35], 12, false);
+        player.animations.add('neutralPunch3', [36, 37, 38], 12, false);
+        player.animations.add('neutralPunch3', [36, 37, 38], 12, false);
+        player.animations.add('neutralPunch4', [39, 40], 12, false);
+        player.animations.add('neutralPunch5', [41, 42, 43, 44], 12, false);
+        player.animations.add('neutralKick', [45, 46, 47, 48, 49, 50, 51], 12, false);
 
         //plays added animaiton
         player.animations.play('idle');
@@ -54,30 +55,27 @@ demo.state1.prototype = {
         platform.enableBody = true;
         player.body.gravity.y = 1900;
         platform.body.immovable = true;
-        
+
     },
     update: function () {
         //player and platform will collide
         game.physics.arcade.collide(player, platform);
-    
-
 
 
         //when the left arrow key is held down
         if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            player.animations.play('run', 13, true);
+            player.animations.play('run');
             //first arg in setTo flips sprite orientation to LEFT
             player.scale.setTo(-1, 1);
+
             player.x -= 8;
 
-            if(game.input.keyboard.isDown(Phaser.Keyboard.UP)){
+            if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
                 //player.animations.stop('run');
                 player.animations.play('jump');
                 player.y -= 14;
-    
+
             }
-
-
         }
 
         //when the right arrow key is held down
@@ -89,16 +87,44 @@ demo.state1.prototype = {
 
             //If RIGHT arrow is currently being pressed and UP just got pressed...
             //Needs work,'jump' animation is not playing...
-            if(game.input.keyboard.isDown(Phaser.Keyboard.UP)){
-                //player.animations.stop('run');
-                player.animations.play('jump');
-                player.y -= 14;
-    
+            if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+                if (!hasJumped) {
+                    console.log(hasJumped);
+                    player.animations.play('jump');
+                    player.y -= 14;
+
+                    hasJumped = true;
+                }
             }
 
-
             //when the up arrow key is held down
-        }else if(game.input.keyboard.isDown(Phaser.Keyboard.UP)){
+        } else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+
+            if (!hasJumped) {
+                player.animations.play('jump');
+                player.y -= 14;
+                if (canCheckJump) {
+                    setTimeout(function(){
+                        hasJumped = true;
+                    }, 350);
+                    setTimeout(function () {
+                        checkJump();
+                    }, 500);
+
+                    canCheckJump = false;
+                }
+
+
+            }else{
+                return;
+            }
+            //player.animations.play('jump');
+            //player.y -= 14;
+
+        } else if (game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+
+
+
             player.animations.play('jump');
             player.y -= 14;
 
@@ -110,64 +136,15 @@ demo.state1.prototype = {
         }
 
 
+        function checkJump() {
 
+            if(hasJumped){
+                hasJumped = false;
+            }else{
+                return;
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-        //changes player position onkeydown
-
-        /*
-        if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-            player.animations.stop('run');
-            player.animations.stop('idle');
-            player.animations.play('jump');
-            player.y -= 14;
         }
-        else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-            player.y += 2;
-        }
-        */
 
-
-        /*
-        if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
-            player.x += pSpeed;
-            player.animaiton.play()
-        }
-        */
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-// function players () {
-//     let player = game.add.sprite(492,408, 'test');
-//         game.physics.enable( [ player ], Phaser.Physics.ARCADE);
-//         player.anchor.setTo(0.5,0.5);
-//         player.body.collideWorldBounds = true;
-//         player.body.gravity.y = 200;
-
-
-//     let idle = player.animations.add('idle');
-//         player.animations.play('idle',13 ,true);
-//         console.log('animation is working');
-//         console.log('state1');
-// }; 
