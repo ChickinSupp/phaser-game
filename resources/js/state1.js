@@ -3,9 +3,12 @@ let demo = window.demo || (window.demo = {});
 let pSpeed = 15;
 
 let player,
+    atkBox,
     playerCombo = [],
     platform,
     playerJump = 15,
+    relativePosX = 0,
+    relativePosY = 0,
     reseter,
     hasJumped = false,
     arrowKey,
@@ -37,6 +40,7 @@ demo.state1.prototype = {
         //preloads spritesheets to be used in create
         game.load.spritesheet('tester', 'resources/art/test-scott.png', 213, 204, 69);
         game.load.spritesheet('ground', 'resources/art/platform.png', 123, 204);
+        game.load.spritesheet('hbox', 'resources/art/hbox.png', 40, 40);
 
 
     },
@@ -77,7 +81,18 @@ demo.state1.prototype = {
 
 
 
+        //creates hitbox when player attacks
+        //gets attack animname passed in playerCombo
+        //based on what attack it is, it renders around the attack point, and disappears after 1 second
 
+        //creates a hitbox group
+        hitboxes = game.add.group();
+        hitboxes.enableBody = true;
+
+        //creates an instance of hitbox;
+        atkBox = hitboxes.create(0, 0, 'hbox');
+        //sets the size of the hitbox, without any offset
+        atkBox.body.setSize(40, 40, 0, 0);
 
         //plays added animaiton
         player.animations.play('idle');
@@ -94,14 +109,14 @@ demo.state1.prototype = {
         platform = game.add.sprite(400, 450, 'ground');
 
         //enables gravity on player but not on platform
-        game.physics.arcade.enable([player, platform]);
+        game.physics.arcade.enable([player, platform, atkBox]);
         player.body.collideWorldBounds = true;
         platform.enableBody = true;
         player.body.gravity.y = 1900;
         platform.body.immovable = true;
 
-
-
+        console.log(atkBox);
+        console.log(player);
 
     },
     update: function () {
@@ -125,11 +140,11 @@ demo.state1.prototype = {
                     console.log(playerCombo);
 
                     break;
-                
+
                 // 'd' will be the special button. Hit this button attack the right time, and you might unleash a speciall attack or combo
                 case 'd':
 
-                //will only play if the last attack(animation) was neutralPunch3
+                    //will only play if the last attack(animation) was neutralPunch3
 
 
                     if (playerCombo[0] == 'neutralPunch3' && player.animations.currentAnim.name != 'idle') {
@@ -146,7 +161,7 @@ demo.state1.prototype = {
                     }
 
 
-                        break;
+                    break;
                 //standard attack
                 case 'a':
                     if (playerCombo[0] == 'neutralPunch1' && player.animations.currentAnim.name != 'idle') {
@@ -217,123 +232,92 @@ demo.state1.prototype = {
         //if current animation is finished, the idle nimation will play
         if (player.animations.currentAnim.isFinished) {
             player.animations.play('idle');
-        }
-
-        /*
-        if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-
-            player.y -= 14;
+            playerCombo = [];
 
         }
-        */
 
+        movePlayerAttackBox(atkBox);
 
-        /*
-                //when the left arrow key is held down
-                if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-                    player.animations.play('run');
-                    //first arg in setTo flips sprite orientation to LEFT
-                    player.scale.setTo(-1, 1);
-        
-                    player.x -= 8;
-        
-                    if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-                        //player.animations.stop('run');
-                        player.animations.play('jump');
-                        player.y -= 14;
-        
-                    }
-                }
-        
-                //when the right arrow key is held down
-                else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-                    //first arg in setTo flips sprite orientation to RIGHT
-                    player.scale.setTo(1, 1);
-                    player.animations.play('run', 13, true);
-                    player.x += 8;
-        
-                    //If RIGHT arrow is currently being pressed and UP just got pressed...
-                    //Needs work,'jump' animation is not playing...
-        
-        
-                    if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-        
-                        player.animations.play('jump');
-                        player.y -= 14;
-        
-        
-        
-        
-                    }
-        
-                    //when the up arrow key is held down
-                } else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-        
-                    if (!hasJumped) {
-                        player.animations.play('jump');
-                        player.y -= 14;
-        
-                        if (canCheckJump) {
-                            canCheckJump = false;
-                            setTimeout(function () {
-                                hasJumped = true;
-                            }, 350);
-                            setTimeout(function () {
-                                checkJump();
-                            }, 500);
-        
-                        } else {
-                            return false;
-                        }
-        
-        
-                    } else {
-                        return false;
-                    }
-                    //player.animations.play('jump');
-                    //player.y -= 14;
-        
-                } else if (game.input.keyboard.isDown(keys.a)) {
-                    player.animations.play('neutralPunch1');
-        
-        
-                } else {
-                    //Playes 'idle' animation if no LEFT or RIGHT keys are pressed
-                    //player.animations.stop('run');
-                    player.animations.play('idle', 13, true);
-        
-                }
-        
-                render();
-        
-                function checkJump() {
-                    if (hasJumped) {
-                        hasJumped = false;
-                    } else {
-                        return;
-                    }
-        
-                }
-                function render() {
-        
-                    // Display
-                    //game.debug.spriteBounds(player);
-                    game.debug.body(player);
-                    game.debug.body(platform);
-        
-                }
-                */
+        //renders hitbox temporarily while attacking
+        function movePlayerAttackBox(atkBox) {
+            let posX = player.x + relativePosX;
+            let posY = player.y + relativePosY;
+            atkBox.x = posX;
+            atkBox.y = posY;
+            atkBox.alpha = 0;
+          
+            //sets the position of the hitbox
+            atkBox.position = {
+                x: posX,
+                y: posY,
+                type: 25
+            }
+            //game.debug.body(atkBox);
+            game.debug.body(player);
 
+            switch (playerCombo[0]) {
+                case 'neutralPunch1':
+                    relativePosX = 150;
+                    relativePosY = 90;
+                    atkBox.alpha = 0.6;
+                    resetHitBox (atkBox);
+                    break;
+                case 'neutralPunch2':
+                    relativePosX = 150;
+                    relativePosY = 90;
+                    atkBox.alpha = 0.6;
+                    resetHitBox (atkBox);
+                    break;
+                case 'neutralPunch3':
+                    atkBox.alpha = 0.6;
+                    resetHitBox (atkBox);
+                    break;
+                case 'neutralPunch4':
+                    atkBox.alpha = 0.6;
+                    resetHitBox (atkBox);
+                    break;
 
-        function comboReset() {
-            console.log('combo rest init');
-            reseter = setTimeout(function () {
-                playerCombo = [];
-                console.log('playerCombo has been reset');
-            }, 2000);
+                case 'neutralPunch5':
+                    relativePosX = 130;
+                    relativePosY = 120;
+                    atkBox.alpha = 0.6;
+                    resetHitBox (atkBox);
+                    break;
+                case 'neutralKick':
+                    relativePosX = 140;
+                    relativePosY = 120;
+                    atkBox.alpha = 0.6;
+                    resetHitBox (atkBox);
+
+                    break;
+                case 'specialKick1':
+                    //atkBox.angle = 45;
+                    relativePosX = 30;
+                    relativePosY = 90;
+                    atkBox.width = 150;
+                    atkBox.alpha = 0.6;
+                    resetHitBox (atkBox);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        //reset the size, angle, and visibility of the hitbox after .5 sec
+
+        function resetHitBox (hitbox){
+            
+            setTimeout(function(){
+                hitbox.width = 40;
+                hitbox.height = 40;
+                hitbox.alpha = 0;
+                hitbox.angle = 0;
+
+            },500);
 
 
         }
+
 
 
     }
