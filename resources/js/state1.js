@@ -5,6 +5,7 @@ let pSpeed = 15;
 let player,
     atkBox,
     playerCombo = [],
+    pKeyPressed,
     platform,
     playerJump = 15,
     relativePosX = 0,
@@ -38,7 +39,7 @@ demo.state1 = function () { };
 demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
-        game.load.spritesheet('tester', 'resources/art/test-scott.png', 213, 204, 69);
+        game.load.spritesheet('tester', 'resources/art/test-scott.png', 213, 204, 78);
         game.load.spritesheet('ground', 'resources/art/platform.png', 123, 204);
         game.load.spritesheet('hbox', 'resources/art/hbox.png', 40, 40);
 
@@ -64,7 +65,7 @@ demo.state1.prototype = {
 
         //selects frames from the assigned spritesheet and sets them apart for its animation
         player.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
-        player.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 12, true);
+        player.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 12, false);
         player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
         //neutralpunch2 would follow nuetralpunch1 after it finishes running, like a combo
         //would require input, let's say that hitting 'a' for example, would trigger neutralPunch1, if pressed again at the right...
@@ -78,6 +79,8 @@ demo.state1.prototype = {
         player.animations.add('neutralKick', [45, 46, 47, 48, 49, 50, 51], 12, false);
 
         player.animations.add('specialKick1', [63, 64, 65, 66, 67, 68, 69], 14, false);
+
+        player.animations.add('runAttack', [70, 71, 72, 73, 74, 75, 76, 77, 78], 14, false);
 
 
 
@@ -117,6 +120,7 @@ demo.state1.prototype = {
 
         console.log(atkBox);
         console.log(player);
+        console.log(game.input.keyboard._onKeyPress(Phaser.Keyboard.RIGHT));
 
     },
     update: function () {
@@ -124,8 +128,16 @@ demo.state1.prototype = {
         //player and platform will collide
 
         game.physics.arcade.collide(player, platform);
-
+/*         if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
+            player.x +=2;
+            player.animations.play('run');
+            
+        }else if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && pKeyPressed){
+            return;
+        } */
         //runs function on key press
+
+        runJumpIdle();
 
         game.input.keyboard.onPressCallback = function (e) {
             console.log("key pressed", e);
@@ -137,8 +149,9 @@ demo.state1.prototype = {
                 case 's':
                     player.animations.play('neutralKick');
                     playerCombo[0] = (player.animations.currentAnim.name);
+                    pKeyPressed = 's';
                     console.log(playerCombo);
-
+                    console.log(pKeyPressed);
                     break;
 
                 // 'd' will be the special button. Hit this button attack the right time, and you might unleash a speciall attack or combo
@@ -149,7 +162,7 @@ demo.state1.prototype = {
 
                     if (playerCombo[0] == 'neutralPunch3' && player.animations.currentAnim.name != 'idle') {
                         if (player.animations.currentAnim.name === 'neutralPunch3' || player.animations.currentAnim.isFinished) {
-
+                            pKeyPressed = 'd';
                             player.animations.play('specialKick1');
                             playerCombo[0] = (player.animations.currentAnim.name);
 
@@ -164,6 +177,7 @@ demo.state1.prototype = {
                     break;
                 //standard attack
                 case 'a':
+                
                     if (playerCombo[0] == 'neutralPunch1' && player.animations.currentAnim.name != 'idle') {
                         if (player.animations.currentAnim.name === 'neutralPunch1' || player.animations.currentAnim.isFinished) {
 
@@ -200,8 +214,8 @@ demo.state1.prototype = {
                             return;
                         }
                     } else {
-                        if (player.animations.currentAnim.name === 'idle' || player.animations.currentAnim.isFinished) {
-
+                        if ((player.animations.currentAnim.name === 'idle' || player.animations.currentAnim.name === 'run' ) || player.animations.currentAnim.isFinished) {
+                            pKeyPressed = 'a';
                             player.animations.play('neutralPunch1');
                             playerCombo[0] = (player.animations.currentAnim.name);
                             console.log(playerCombo);
@@ -212,33 +226,51 @@ demo.state1.prototype = {
 
                     break;
 
+                    case 'ArrowRight':
+                    console.log('left');
+                    break;
+
                 default:
                     break;
             }
 
-
-            /*
-            if(e == ('a')){
-                clearTimeout(reseter);
-                comboReset();
-            }
-
-            */
-
         }
+        game.input.keyboard.onUpCallback = function (e) {
+            // These can be checked against Phaser.Keyboard.UP, for example.
+            console.log(e);
+        };
 
 
 
-        //if current animation is finished, the idle nimation will play
-        if (player.animations.currentAnim.isFinished) {
-            player.animations.play('idle');
-            playerCombo = [];
 
-        }
-
+        
         movePlayerAttackBox(atkBox);
 
-        //renders hitbox temporarily while attacking
+        //runs script to decide when the character should be playing its running, idle, or jumping anims
+        function runJumpIdle (){
+            //if current animation is finished, the idle animation will play, playerCombos will be rest as well as pKeyPressed
+            if (player.animations.currentAnim.isFinished) {
+                player.animations.play('idle');
+                playerCombo = [];
+                if(player.animations.currentAnim != 'neutralKick' || playerCombo === []){
+                    pKeyPressed = '';
+                }
+               
+    
+            }else if(player.animations.currentAnim == 'idle' && player.animations.currentAnim != ('neutralKick' || 'neutralPunch1' || 'neutralPunch2' || 'neutralPunch3' || 'neutralPunch4'  ) || (!player.animations.currentAnim.isFinished)  ){
+                if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && !pKeyPressed ){
+                    player.animations.play('run');
+                    player.x += 3;
+                }else if(!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || pKeyPressed || game.input.keyboard.isDown(Phaser.Keyboard.A) || game.input.keyboard.isDown(keys.d) || game.input.keyboard.isDown(keys.w) ){
+                    player.animations.stop('run');
+                }
+            }
+
+
+        }
+
+        
+        //renders hitbox temporarily while attacking (debugging)
         function movePlayerAttackBox(atkBox) {
             let posX = player.x + relativePosX;
             let posY = player.y + relativePosY;
@@ -252,8 +284,7 @@ demo.state1.prototype = {
                 y: posY,
                 type: 25
             }
-            //game.debug.body(atkBox);
-            game.debug.body(player);
+
 
             switch (playerCombo[0]) {
                 case 'neutralPunch1':
@@ -278,7 +309,7 @@ demo.state1.prototype = {
                     break;
 
                 case 'neutralPunch5':
-                    relativePosX = 130;
+                    relativePosX = 100;
                     relativePosY = 120;
                     atkBox.alpha = 0.6;
                     resetHitBox (atkBox);
