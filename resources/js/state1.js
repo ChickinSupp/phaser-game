@@ -6,6 +6,7 @@ let player,
     atkBox,
     playerCombo = [],
     pKeyPressed,
+    pLeft = false,
     platform,
     playerJump = 15,
     relativePosX = 0,
@@ -128,13 +129,13 @@ demo.state1.prototype = {
         //player and platform will collide
 
         game.physics.arcade.collide(player, platform);
-/*         if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
-            player.x +=2;
-            player.animations.play('run');
-            
-        }else if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && pKeyPressed){
-            return;
-        } */
+        /*         if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
+                    player.x +=2;
+                    player.animations.play('run');
+                    
+                }else if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && pKeyPressed){
+                    return;
+                } */
         //runs function on key press
 
         runJumpIdle();
@@ -177,7 +178,7 @@ demo.state1.prototype = {
                     break;
                 //standard attack
                 case 'a':
-                
+
                     if (playerCombo[0] == 'neutralPunch1' && player.animations.currentAnim.name != 'idle') {
                         if (player.animations.currentAnim.name === 'neutralPunch1' || player.animations.currentAnim.isFinished) {
 
@@ -214,7 +215,7 @@ demo.state1.prototype = {
                             return;
                         }
                     } else {
-                        if ((player.animations.currentAnim.name === 'idle' || player.animations.currentAnim.name === 'run' ) || player.animations.currentAnim.isFinished) {
+                        if ((player.animations.currentAnim.name === 'idle' || player.animations.currentAnim.name === 'run') || player.animations.currentAnim.isFinished) {
                             pKeyPressed = 'a';
                             player.animations.play('neutralPunch1');
                             playerCombo[0] = (player.animations.currentAnim.name);
@@ -226,7 +227,7 @@ demo.state1.prototype = {
 
                     break;
 
-                    case 'ArrowRight':
+                case 'ArrowRight':
                     console.log('left');
                     break;
 
@@ -243,25 +244,33 @@ demo.state1.prototype = {
 
 
 
-        
+
         movePlayerAttackBox(atkBox);
 
         //runs script to decide when the character should be playing its running, idle, or jumping anims
-        function runJumpIdle (){
+        function runJumpIdle() {
             //if current animation is finished, the idle animation will play, playerCombos will be rest as well as pKeyPressed
             if (player.animations.currentAnim.isFinished) {
                 player.animations.play('idle');
                 playerCombo = [];
-                if(player.animations.currentAnim != 'neutralKick' || playerCombo === []){
+                if (player.animations.currentAnim != 'neutralKick' || playerCombo === []) {
                     pKeyPressed = '';
                 }
-               
-    
-            }else if(player.animations.currentAnim == 'idle' && player.animations.currentAnim != ('neutralKick' || 'neutralPunch1' || 'neutralPunch2' || 'neutralPunch3' || 'neutralPunch4'  ) || (!player.animations.currentAnim.isFinished)  ){
-                if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && !pKeyPressed ){
+
+                                                                //insert OR 'run'
+            } else if (player.animations.currentAnim == 'idle' && player.animations.currentAnim != ('neutralKick' || 'neutralPunch1' || 'neutralPunch2' || 'neutralPunch3' || 'neutralPunch4') || (!player.animations.currentAnim.isFinished)) {
+                if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && !pKeyPressed) {
+                    player.scale.setTo(1, 1);
+                    pLeft = false;
                     player.animations.play('run');
-                    player.x += 3;
-                }else if(!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || pKeyPressed || game.input.keyboard.isDown(Phaser.Keyboard.A) || game.input.keyboard.isDown(keys.d) || game.input.keyboard.isDown(keys.w) ){
+                    player.x += 8;
+                } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && !pKeyPressed) {
+                    player.scale.setTo(-1, 1);
+                    pLeft = true;
+                    player.animations.play('run');
+                    player.x -= 8;
+
+                } else if ((!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) || (!game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) || pKeyPressed || game.input.keyboard.isDown(Phaser.Keyboard.A) || game.input.keyboard.isDown(keys.d) || game.input.keyboard.isDown(keys.w)) {
                     player.animations.stop('run');
                 }
             }
@@ -269,7 +278,7 @@ demo.state1.prototype = {
 
         }
 
-        
+
         //renders hitbox temporarily while attacking (debugging)
         function movePlayerAttackBox(atkBox) {
             let posX = player.x + relativePosX;
@@ -277,7 +286,7 @@ demo.state1.prototype = {
             atkBox.x = posX;
             atkBox.y = posY;
             atkBox.alpha = 0;
-          
+
             //sets the position of the hitbox
             atkBox.position = {
                 x: posX,
@@ -288,46 +297,103 @@ demo.state1.prototype = {
 
             switch (playerCombo[0]) {
                 case 'neutralPunch1':
-                    relativePosX = 150;
-                    relativePosY = 90;
-                    atkBox.alpha = 0.6;
-                    resetHitBox (atkBox);
+                    if (pLeft) {
+                        relativePosX = -180;
+                        relativePosY = 90;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    } else {
+                        relativePosX = 150;
+                        relativePosY = 90;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    }
+
                     break;
                 case 'neutralPunch2':
-                    relativePosX = 150;
-                    relativePosY = 90;
-                    atkBox.alpha = 0.6;
-                    resetHitBox (atkBox);
+                    if (pLeft) {
+                        relativePosX = -180;
+                        relativePosY = 90;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    } else {
+                        relativePosX = 150;
+                        relativePosY = 90;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    }
+
                     break;
                 case 'neutralPunch3':
-                    atkBox.alpha = 0.6;
-                    resetHitBox (atkBox);
+                    if (pLeft) {
+                        relativePosX = -180;
+                        relativePosY = 90;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    } else {
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    }
+
                     break;
                 case 'neutralPunch4':
-                    atkBox.alpha = 0.6;
-                    resetHitBox (atkBox);
+                    if (pLeft) {
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    } else {
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    }
+
                     break;
 
                 case 'neutralPunch5':
-                    relativePosX = 100;
-                    relativePosY = 120;
-                    atkBox.alpha = 0.6;
-                    resetHitBox (atkBox);
+                    if (pLeft) {
+                        relativePosX = -150;
+                        relativePosY = 110;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    } else {
+                        relativePosX = 100;
+                        relativePosY = 110;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    }
+
                     break;
                 case 'neutralKick':
-                    relativePosX = 140;
-                    relativePosY = 120;
-                    atkBox.alpha = 0.6;
-                    resetHitBox (atkBox);
+                    if (pLeft) {
+                        relativePosX = -180;
+                        relativePosY = 115;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    } else {
+                        relativePosX = 140;
+                        relativePosY = 120;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    }
+
 
                     break;
                 case 'specialKick1':
-                    //atkBox.angle = 45;
-                    relativePosX = 30;
-                    relativePosY = 90;
-                    atkBox.width = 150;
-                    atkBox.alpha = 0.6;
-                    resetHitBox (atkBox);
+                    if (pLeft) {
+                        relativePosX = -170;
+                        relativePosY = 90;
+                        atkBox.height = 45;
+                        atkBox.width = 150;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    } else {
+                        //atkBox.angle = 45;
+                        relativePosX = 30;
+                        relativePosY = 90;
+                        atkBox.height = 45;
+                        atkBox.width = 150;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    }
+
                     break;
                 default:
                     break;
@@ -336,15 +402,15 @@ demo.state1.prototype = {
 
         //reset the size, angle, and visibility of the hitbox after .5 sec
 
-        function resetHitBox (hitbox){
-            
-            setTimeout(function(){
+        function resetHitBox(hitbox) {
+
+            setTimeout(function () {
                 hitbox.width = 40;
                 hitbox.height = 40;
                 hitbox.alpha = 0;
                 hitbox.angle = 0;
 
-            },500);
+            }, 500);
 
 
         }
