@@ -8,6 +8,8 @@ let player,
     pKeyPressed,
     pLeft = false,
     platform,
+    isGrounded = false,
+    canJumpAgain = true,
     playerJump = 15,
     relativePosX = 0,
     relativePosY = 0,
@@ -16,14 +18,10 @@ let player,
     arrowKey,
     canCheckJump = true;
 
-window.addEventListener("keydown", function (event) {
-    if (event.code == 'ArrowUp') {
+/* window.addEventListener("keydown", function (event) {
 
 
-        console.log(event.code);
-    }
-
-});
+}); */
 
 const keys = {
     'up': Phaser.KeyCode.UP,
@@ -40,7 +38,7 @@ demo.state1 = function () { };
 demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
-        game.load.spritesheet('tester', 'resources/art/test-scott.png', 213, 204, 78);
+        game.load.spritesheet('tester', 'resources/art/test-scott.png', 213, 204, 114);
         game.load.spritesheet('ground', 'resources/art/platform.png', 123, 204);
         game.load.spritesheet('hbox', 'resources/art/hbox.png', 40, 40);
 
@@ -81,8 +79,11 @@ demo.state1.prototype = {
 
         player.animations.add('specialKick1', [63, 64, 65, 66, 67, 68, 69], 14, false);
 
-        player.animations.add('runAttack', [70, 71, 72, 73, 74, 75, 76, 77, 78], 14, false);
-
+        player.animations.add('runAttack', [70, 71, 72, 73, 74, 75, 76, 77, 78], 16, false);
+        player.animations.add('block', [79, 80, 81, 82, 83, 84, 85], 14, false);
+        player.animations.add('lowKick', [86, 87, 88, 89, 90, 91], 14, false);
+        player.animations.add('dodge', [92, 93, 94, 95], 14, false);
+        player.animations.add('knockback', [96, 97, 98, 99, 100], 14, false);
 
 
         //creates hitbox when player attacks
@@ -112,6 +113,7 @@ demo.state1.prototype = {
         // Creating platform
         platform = game.add.sprite(400, 450, 'ground');
 
+
         //enables gravity on player but not on platform
         game.physics.arcade.enable([player, platform, atkBox]);
         player.body.collideWorldBounds = true;
@@ -128,7 +130,7 @@ demo.state1.prototype = {
 
         //player and platform will collide
 
-        game.physics.arcade.collide(player, platform);
+        game.physics.arcade.collide(player, platform, signalGrounded);
         /*         if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
                     player.x +=2;
                     player.animations.play('run');
@@ -137,8 +139,12 @@ demo.state1.prototype = {
                     return;
                 } */
         //runs function on key press
-
+        moveRunAttack(player, 12);
         runJumpIdle();
+
+
+
+
 
         game.input.keyboard.onPressCallback = function (e) {
             console.log("key pressed", e);
@@ -148,11 +154,14 @@ demo.state1.prototype = {
             switch (e) {
                 //standard kick
                 case 's':
-                    player.animations.play('neutralKick');
-                    playerCombo[0] = (player.animations.currentAnim.name);
-                    pKeyPressed = 's';
-                    console.log(playerCombo);
-                    console.log(pKeyPressed);
+                    if (player.animations.currentAnim.name != 'jump') {
+                        player.animations.play('neutralKick');
+                        playerCombo[0] = (player.animations.currentAnim.name);
+                        pKeyPressed = 's';
+                        console.log(playerCombo);
+                        console.log(pKeyPressed);
+                    }
+
                     break;
 
                 // 'd' will be the special button. Hit this button attack the right time, and you might unleash a speciall attack or combo
@@ -171,7 +180,12 @@ demo.state1.prototype = {
                         } else {
                             return;
                         }
+                        //forward attack OR attack while running
+                    } else if ((game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) && player.animations.currentAnim.name != 'runAttack' && player.animations.currentAnim.name == 'run') {
+                        pKeyPressed = 'd';
 
+                        player.animations.play('runAttack');
+                        playerCombo[0] = (player.animations.currentAnim.name);
                     }
 
 
@@ -179,7 +193,7 @@ demo.state1.prototype = {
                 //standard attack
                 case 'a':
 
-                    if (playerCombo[0] == 'neutralPunch1' && player.animations.currentAnim.name != 'idle') {
+                    if (playerCombo[0] == 'neutralPunch1' && player.animations.currentAnim.name != 'idle' && player.animations.currentAnim.name != 'jump') {
                         if (player.animations.currentAnim.name === 'neutralPunch1' || player.animations.currentAnim.isFinished) {
 
                             player.animations.play('neutralPunch2');
@@ -226,11 +240,19 @@ demo.state1.prototype = {
                     }
 
                     break;
+                case 'x':
 
-                case 'ArrowRight':
-                    console.log('left');
+                    player.animations.stop('idle');
+                    isGrounded = false;
+                    player.animations.play('jump');
+
+
                     break;
+                case 'z':
+                player.animations.stop('idle');
+                    player.animations.play('block');
 
+                    break;
                 default:
                     break;
             }
@@ -241,33 +263,98 @@ demo.state1.prototype = {
             console.log(e);
         };
 
+        game.input.keyboard.onUpCallback = function (e) {
+            if (e.keyCode == Phaser.Keyboard.X) {
+                canJumpAgain = true;
+            }
+        };
+
+
+
 
 
 
 
         movePlayerAttackBox(atkBox);
 
+        jump(player, 5);
+
+
+
+
+        //**************** H E L P E R    F U N C T I O N S*******************//
+
+        function signalGrounded() {
+
+            isGrounded = true;
+
+
+
+            player.animations.stop('jump');
+
+
+
+        }
+        function jump(sprite, maxHeight) {
+
+
+            let height = 0;
+
+            do {
+                height++;
+                sprite.y -= height
+            } while (game.input.keyboard.isDown(Phaser.Keyboard.X) && height < maxHeight);
+        }
+
+        //mainly used for forward attacks
+        function moveForward(sprite, max) {
+            let distance = 0;
+
+            while (game.input.keyboard.isDown(Phaser.Keyboard.D) && distance < max) {
+                distance++;
+                sprite.x += 1;
+            }
+        }
+
+        /* && !player.animations._anims.jump.isFinished */
+
         //runs script to decide when the character should be playing its running, idle, or jumping anims
         function runJumpIdle() {
             //if current animation is finished, the idle animation will play, playerCombos will be rest as well as pKeyPressed
+
+
             if (player.animations.currentAnim.isFinished) {
-                player.animations.play('idle');
-                playerCombo = [];
-                if (player.animations.currentAnim != 'neutralKick' || playerCombo === []) {
+                if (game.input.keyboard.isDown(Phaser.Keyboard.X)) {
+                    player.animations.stop('idle');
+                    playerCombo = [];
+
+                    pKeyPressed = '';
+                } else {
+                    player.animations.play('idle');
+                    playerCombo = [];
+
                     pKeyPressed = '';
                 }
 
-                                                                //insert OR 'run'
-            } else if (player.animations.currentAnim == 'idle' && player.animations.currentAnim != ('neutralKick' || 'neutralPunch1' || 'neutralPunch2' || 'neutralPunch3' || 'neutralPunch4') || (!player.animations.currentAnim.isFinished)) {
-                if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && !pKeyPressed) {
+
+
+                //insert OR 'run'
+            } else if ((player.animations.currentAnim == 'idle' || player.animations.currentAnim == 'run' || player.animations.currentAnim == 'jump' || isGrounded) && player.animations.currentAnim.name != ('neutralKick' || 'neutralPunch1' || 'neutralPunch2' || 'neutralPunch3' || 'neutralPunch4') || (!player.animations.currentAnim.isFinished)) {
+                if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && (!pKeyPressed && player.animations.currentAnim.name !== 'runAttack')) {
                     player.scale.setTo(1, 1);
                     pLeft = false;
-                    player.animations.play('run');
+
                     player.x += 8;
-                } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && !pKeyPressed) {
+                    if (player.animations.currentAnim.name != 'jump' && !game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded == true) {
+                        player.animations.play('run');
+                    }
+                } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && (!pKeyPressed && player.animations.currentAnim.name !== 'runAttack')) {
                     player.scale.setTo(-1, 1);
                     pLeft = true;
-                    player.animations.play('run');
+                    if (player.animations.currentAnim.name != 'jump' && !game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded == true) {
+                        player.animations.play('run');
+                    }
+
                     player.x -= 8;
 
                 } else if ((!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) || (!game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) || pKeyPressed || game.input.keyboard.isDown(Phaser.Keyboard.A) || game.input.keyboard.isDown(keys.d) || game.input.keyboard.isDown(keys.w)) {
@@ -276,7 +363,11 @@ demo.state1.prototype = {
             }
 
 
+
         }
+
+
+
 
 
         //renders hitbox temporarily while attacking (debugging)
@@ -395,12 +486,43 @@ demo.state1.prototype = {
                     }
 
                     break;
+                case 'runAttack':
+                    if (pLeft) {
+                        relativePosX = -185;
+                        relativePosY = 40;
+                        atkBox.height = 95;
+                        atkBox.width = 115;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    } else {
+                        //atkBox.angle = 45;
+                        relativePosX = 60;
+                        relativePosY = 40;
+                        atkBox.height = 95;
+                        atkBox.width = 115;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    }
+
+                    break;
                 default:
                     break;
             }
         }
 
         //reset the size, angle, and visibility of the hitbox after .5 sec
+
+
+
+
+        function moveRunAttack(sprite, speed) {
+            if (sprite.animations.currentAnim.name == 'runAttack' && game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+                sprite.x += speed;
+
+            } else if (sprite.animations.currentAnim.name == 'runAttack' && game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+                sprite.x -= speed;
+            }
+        }
 
         function resetHitBox(hitbox) {
 
