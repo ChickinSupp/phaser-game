@@ -5,11 +5,23 @@ let pSpeed = 15;
 let player,
     atkBox,
     playerCombo = [],
+    pDirection = '',
     currentKey = '',
     pKeyPressed,
     pLeft = false,
     platform,
     isGrounded = false,
+    isPlayerJumping = false,
+    isPlayerAirAttack = false,
+
+
+
+
+    isDownAirAtk1 = false,
+    isDownAirAtk2 = false,
+    isDownAirAtk3 = false,
+
+
     canJumpAgain = true,
     playerJump = 15,
     jumpTimer,
@@ -37,7 +49,7 @@ const keys = {
     's': Phaser.KeyCode.S,
     'w': Phaser.KeyCode.W,
     'd': Phaser.KeyCode.D,
-    'x' : Phaser.KeyCode.X
+    'x': Phaser.KeyCode.X
 };
 
 demo.state1 = function () { };
@@ -94,6 +106,10 @@ demo.state1.prototype = {
         player.animations.add('dodge', [92, 93, 94, 95], 14, false);
         player.animations.add('knockback', [96, 97, 98, 99, 100], 14, false);
 
+        player.animations.add('startDwnKick', [100, 101, 102], 12, false);
+        player.animations.add('loopDwnKick', [103, 104, 105], 12, true);
+        player.animations.add('endDwnKick', [106], 12, false);
+
 
         //creates hitbox when player attacks
         //gets attack animname passed in playerCombo
@@ -149,7 +165,7 @@ demo.state1.prototype = {
                 } */
         //runs function on key press
         moveRunAttack(player, 12);
-        
+
 
 
 
@@ -158,7 +174,7 @@ demo.state1.prototype = {
         game.input.keyboard.onPressCallback = function (e) {
             console.log("key pressed", e);
             currentKey = e;
-            setInterval(function(){
+            setInterval(function () {
                 currentKey = '';
             }, 100)
 
@@ -167,12 +183,15 @@ demo.state1.prototype = {
             switch (e) {
                 //standard kick
                 case 's':
-                    if (player.animations.currentAnim.name != 'jump') {
+                    if (!isPlayerJumping) {
                         player.animations.play('neutralKick');
                         playerCombo[0] = (player.animations.currentAnim.name);
                         pKeyPressed = 's';
                         console.log(playerCombo);
                         console.log(pKeyPressed);
+                    } else if (isPlayerJumping) {
+                        isPlayerAirAttack = true;
+                        console.log(isPlayerAirAttack);
                     }
 
                     break;
@@ -254,9 +273,9 @@ demo.state1.prototype = {
 
                     break;
                 case 'x':
-
+                    isPlayerJumping = true;
                     player.animations.stop('idle');
-                    
+
                     isGrounded = false;
                     playerCombo[0] = 'jump';
                     //player.animations.play('jump');
@@ -296,7 +315,7 @@ demo.state1.prototype = {
         runJumpIdle();
         jumpAnimLoop(player);
         glideDownJump(player, 1200, 800);
-        
+
 
 
 
@@ -310,7 +329,7 @@ demo.state1.prototype = {
 
 
 
-           // player.animations.stop('jump');
+            // player.animations.stop('jump');
 
 
 
@@ -318,7 +337,8 @@ demo.state1.prototype = {
 
 
 
-
+        //manipulates sprite gravity when jumping and falling
+        //how far should the character jump and fast should he fall?
         function glideDownJump(sprite, fallingGravity, postGravity) {
             if (!isGrounded || playerCombo[0] === 'jump') {
                 sprite.body.gravity.y = fallingGravity;
@@ -330,21 +350,30 @@ demo.state1.prototype = {
 
         }
 
+        /*         function airKickLoop (){
+                    if()
+        
+        
+        
+        
+                } */
+
         function jumpAnimLoop(sprite) {
 
-            if(completedJump){
+            if (completedJump) {
                 //TODO fix this. It's not running, check conditionals
-                if(canPlayerJump){
-                    if ( (isGrounded && startedJump) || (isGrounded && startedJump && playerCombo[0] == 'jump')  ) {
+                if (!isPlayerAirAttack && canPlayerJump) {
+                    if ((isGrounded && startedJump) || (isGrounded && startedJump && playerCombo[0] == 'jump')) {
                         console.log('ye');
                         sprite.animations.play('endJump');
                         startedJump = false;
-                        //completedJump = true;
+
+                        isPlayerJumping = false;
                         canPlayerJump = false;
-                        setTimeout(function(){
+                        setTimeout(function () {
 
                             canPlayerJump = true;
-                        },400);
+                        }, 400);
 
                     }
                     else if (playerCombo[0] == 'jump' && !isGrounded && startedJump) {
@@ -352,34 +381,110 @@ demo.state1.prototype = {
                         sprite.animations.play('loopJump');
                     } else if (playerCombo[0] == 'jump' && !isGrounded && !startedJump) {
                         startedJump = true;
+                        isPlayerJumping = true;
                         sprite.animations.stop('idle');
                         sprite.animations.play('startJump');
                         console.log('current');
 
-                        
+
                         //completedJump = false;
-                    }else{
+                    } else {
                         return false;
                     }
+                } else {
+                    return;
+                }
+            }
+
+        }
+
+        downAerial();
+        dwnArialMotion(player, 'high');
+
+        //param 1 = sprite name , param 2 = level of speed for the movement
+        //For param 2 you can pass 'low' , 'med' , 'high' , 'ultra'
+        function dwnArialMotion(sprite, intensity){
+            if(intensity.toLowerCase() == 'low'){
+                if(sprite.animations.currentAnim.name == 'loopDwnKick'){
+                    if(pLeft){
+                        sprite.x -= 7;
+                    }else{
+                        sprite.x += 7;
+                    }
+                    
+                    sprite.y -= 7;
                 }else{
                     return;
                 }
+            }else if(intensity.toLowerCase() == 'med'){
+                if(sprite.animations.currentAnim.name == 'loopDwnKick'){
+                    if(pLeft){
+                        sprite.x -= 9;
+                    }else{
+                        sprite.x += 9;
+                    }
+                    sprite.y -= 7;
+                }else{
+                    return;
                 }
-/*             if (playerCombo[0] == 'jump' && !isGrounded) {
-                sprite.animations.play('startJump');
-                console.log('current');
-
+            }else if(intensity.toLowerCase() == 'high'){
+                if(sprite.animations.currentAnim.name == 'loopDwnKick'){
+                    if(pLeft){
+                        sprite.x -= 11;
+                    }else{
+                        sprite.x += 11;
+                    }
+                    sprite.y -= 8;
+                }else{
+                    return;
+                }
+            }else if(intensity.toLowerCase() == 'ultra'){
+                if(sprite.animations.currentAnim.name == 'loopDwnKick'){
+                    if(pLeft){
+                        sprite.x -= 14;
+                    }else{
+                        sprite.x += 14;
+                    }
+                    
+                    sprite.y -= 14;
+                }else{
+                    return;
+                }
             }
-            else if (playerCombo[0] == 'jump' && !isGrounded && sprite.animations.currentAnim.name == 'startJump' && sprite.animations.currentAnim.isFinished) {
-                sprite.animations.stop('startJump');
-                sprite.animations.play('loopJump');
-            } else if (sprite.animations.currentAnim.isFinished && isGrounded) {
-                console.log('ye');
-                sprite.animations.stop('loopJump');
-                sprite.animations.play('endJump');
-            } */
+
+        }
 
 
+        function downAerial() {
+            if (isPlayerAirAttack) {
+                if (!isDownAirAtk1) {
+                    isDownAirAtk1 = true;
+                    player.animations.play('startDwnKick');
+                    /* if (player.animations.currentAnim.isFinished) { */
+
+                        isDownAirAtk2 = true;
+                        console.log('a')
+                    
+                } else if (isDownAirAtk2 && !isGrounded) {
+                    player.animations.play('loopDwnKick');
+                    playerCombo[0] = 'loopDwnKick';
+                    /* if (player.animations.currentAnim.isFinished) { */
+                        isDownAirAtk2 = false;
+                        isDownAirAtk3 = true;
+
+                        console.log('b')
+                    
+                } else if (isDownAirAtk3 && isGrounded && completedJump) {
+                    player.animations.play('endDwnKick');
+                    isDownAirAtk2 = true;
+                    isDownAirAtk3 = false;
+                    isDownAirAtk1 = false;
+                    isPlayerAirAttack = false;
+                    console.log('c')
+                }
+            } else {
+                return;
+            }
 
 
         }
@@ -393,9 +498,6 @@ demo.state1.prototype = {
                 sprite.y -= height
 
             } while (game.input.keyboard.isDown(Phaser.Keyboard.X) && height < maxHeight);
-
-
-
         }
 
         //mainly used for forward attacks
@@ -416,12 +518,13 @@ demo.state1.prototype = {
 
 
             if (player.animations.currentAnim.isFinished) {
-                if (game.input.keyboard.isDown(Phaser.Keyboard.X) || !completedJump || player.animations.currentAnim.name == ('jump' || 'startjump' ||'loopJump' || 'endJump') ) {
+                if (game.input.keyboard.isDown(Phaser.Keyboard.X) || !completedJump || player.animations.currentAnim.name == ('jump' || 'startjump' || 'loopJump' || 'endJump')) {
                     player.animations.stop('idle');
                     //playerCombo = [];
 
                     pKeyPressed = '';
-                } else if( completedJump || (!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && player.animations.currentAnim.name == 'run' || !game.input.keyboard.isDown(Phaser.Keyboard.LEFT)   && player.animations.currentAnim.name == 'run'))  {
+                } else if (completedJump || (!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && player.animations.currentAnim.name == 'run' || !game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && player.animations.currentAnim.name == 'run')) {
+
                     player.animations.play('idle');
                     playerCombo = [];
                     console.log('asas');
@@ -437,19 +540,19 @@ demo.state1.prototype = {
                     pLeft = false;
 
                     player.x += 8;
-                    if (player.animations.currentAnim.name != ('jump' || 'startjump' ||'loopJump' || 'endJump') && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded !== false || startedJump == false )) {
+                    if (player.animations.currentAnim.name != ('jump' || 'startjump' || 'loopJump' || 'endJump') && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded !== false || startedJump == false)) {
                         player.animations.play('run');
                     }
                 } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && (!pKeyPressed && player.animations.currentAnim.name !== 'runAttack')) {
                     player.scale.setTo(-1, 1);
                     pLeft = true;
-                    if (player.animations.currentAnim.name != ('jump' || 'startjump' ||'loopJump' || 'endJump') && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded !== false || startedJump == false)) {
+                    if (player.animations.currentAnim.name != ('jump' || 'startjump' || 'loopJump' || 'endJump') && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded !== false || startedJump == false)) {
                         player.animations.play('run');
                     }
 
                     player.x -= 8;
 
-                } else if ((!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) || (!game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) || pKeyPressed || game.input.keyboard.isDown(Phaser.Keyboard.A) || game.input.keyboard.isDown(keys.d) || game.input.keyboard.isDown(keys.w) || game.input.keyboard.isDown(keys.x) || startedJump ) {
+                } else if ((!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) || (!game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) || pKeyPressed || game.input.keyboard.isDown(Phaser.Keyboard.A) || game.input.keyboard.isDown(keys.d) || game.input.keyboard.isDown(keys.w) || game.input.keyboard.isDown(keys.x) || startedJump) {
                     player.animations.stop('run');
                 }
             }
@@ -469,6 +572,7 @@ demo.state1.prototype = {
             atkBox.x = posX;
             atkBox.y = posY;
             atkBox.alpha = 0;
+            atkBox.angle = 0;
 
             //sets the position of the hitbox
             atkBox.position = {
@@ -592,6 +696,26 @@ demo.state1.prototype = {
                         relativePosY = 40;
                         atkBox.height = 95;
                         atkBox.width = 115;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    }
+
+                    break;
+                    case 'loopDwnKick':
+                    if (pLeft) {
+                        atkBox.angle = -25;
+                        relativePosX = -230;
+                        relativePosY = 160;
+                        atkBox.height = 30;
+                        atkBox.width = 100;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    } else {
+                        atkBox.angle = 25;
+                        relativePosX = 140;
+                        relativePosY = 125;
+                        atkBox.height = 30;
+                        atkBox.width = 100;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     }
