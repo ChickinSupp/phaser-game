@@ -110,6 +110,10 @@ demo.state1.prototype = {
         player.animations.add('loopDwnKick', [103, 104, 105], 12, true);
         player.animations.add('endDwnKick', [106], 12, false);
 
+        player.animations.add('slideKick', [107,108,109,110,111,112,113], 16, false);
+
+
+
 
         //creates hitbox when player attacks
         //gets attack animname passed in playerCombo
@@ -164,7 +168,13 @@ demo.state1.prototype = {
                     return;
                 } */
         //runs function on key press
-        moveRunAttack(player, 12);
+        moveRunAttack(player, 'runAttack', 10);
+        moveRunAttack(player, 'slideKick', 12);
+
+
+        
+
+        
 
 
 
@@ -183,7 +193,7 @@ demo.state1.prototype = {
             switch (e) {
                 //standard kick
                 case 's':
-                    if (!isPlayerJumping) {
+                    if (!isPlayerJumping && player.animations.currentAnim.name !== 'run') {
                         player.animations.play('neutralKick');
                         playerCombo[0] = (player.animations.currentAnim.name);
                         pKeyPressed = 's';
@@ -192,6 +202,11 @@ demo.state1.prototype = {
                     } else if (isPlayerJumping) {
                         isPlayerAirAttack = true;
                         console.log(isPlayerAirAttack);
+                    }else if ((game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) && player.animations.currentAnim.name != 'slideKick' && player.animations.currentAnim.name == 'run') {
+                        pKeyPressed = 's';
+
+                        player.animations.play('slideKick');
+                        playerCombo[0] = (player.animations.currentAnim.name);
                     }
 
                     break;
@@ -721,6 +736,25 @@ demo.state1.prototype = {
                     }
 
                     break;
+                    case 'slideKick':
+                    if (pLeft) {
+                        relativePosX = -195;
+                        relativePosY = 160;
+                        atkBox.height = 30;
+                        atkBox.width = 120;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    } else {
+                        //atkBox.angle = 45;
+                        relativePosX = 80;
+                        relativePosY = 160;
+                        atkBox.height = 30;
+                        atkBox.width = 120;
+                        atkBox.alpha = 0.6;
+                        resetHitBox(atkBox);
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -731,11 +765,11 @@ demo.state1.prototype = {
 
 
 
-        function moveRunAttack(sprite, speed) {
-            if (sprite.animations.currentAnim.name == 'runAttack' && game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+        function moveRunAttack(sprite, animName, speed) {
+            if (sprite.animations.currentAnim.name == animName && game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
                 sprite.x += speed;
 
-            } else if (sprite.animations.currentAnim.name == 'runAttack' && game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+            } else if (sprite.animations.currentAnim.name == animName && game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
                 sprite.x -= speed;
             }
         }
