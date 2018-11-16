@@ -3,36 +3,57 @@ let demo = window.demo || (window.demo = {});
 let pSpeed = 15;
 
 let player,
+    //var containing the hitbox that we will render whwnever the plaer lanches an attack
     atkBox,
+    //var that will contain the most recent anim name of an attack
     playerCombo = [],
+    // null
     pDirection = '',
+    //null
     currentKey = '',
+    //var that will contain the key just pressed
     pKeyPressed,
+    //var that if true, player is facing Left
     pLeft = false,
+    //var that will contain the stages platform
     platform,
+    //checks to see if player is currently touching a platform
     isGrounded = false,
+    //checks to see if player is currenlty jumping
     isPlayerJumping = false,
+    //checks to see if currently attacking from the air
     isPlayerAirAttack = false,
 
 
 
-
+    //set of var that serves are 'gates' to which down air attack anim should be playing
     isDownAirAtk1 = false,
     isDownAirAtk2 = false,
     isDownAirAtk3 = false,
 
-
+    //indicates if plaer can jump again
     canJumpAgain = true,
+    //null
     playerJump = 15,
+    //null
     jumpTimer,
+    //
     canPlayerJump = true,
+
+    //checks to see if player finished jumping 
     completedJump = true,
+    //checks to see if player started jumping
     startedJump = false,
+    //meant for hitboxes, position relative to the sprite its a hitbox for
     relativePosX = 0,
     relativePosY = 0,
+    //null
     reseter,
+    //null
     hasJumped = false,
+
     arrowKey,
+    //null
     canCheckJump = true;
 
 /* window.addEventListener("keydown", function (event) {
@@ -168,6 +189,9 @@ demo.state1.prototype = {
                     return;
                 } */
         //runs function on key press
+
+
+
         moveRunAttack(player, 'runAttack', 10);
         moveRunAttack(player, 'slideKick', 12);
 
@@ -180,9 +204,10 @@ demo.state1.prototype = {
 
 
 
-
+        //returns name of key pressed (does not include arrow keys)
         game.input.keyboard.onPressCallback = function (e) {
             console.log("key pressed", e);
+
             currentKey = e;
             setInterval(function () {
                 currentKey = '';
@@ -193,18 +218,28 @@ demo.state1.prototype = {
             switch (e) {
                 //standard kick
                 case 's':
+                //if the player is'nt jumping or running
+                //then the player will kick normally
                     if (!isPlayerJumping && player.animations.currentAnim.name !== 'run') {
                         player.animations.play('neutralKick');
                         playerCombo[0] = (player.animations.currentAnim.name);
                         pKeyPressed = 's';
                         console.log(playerCombo);
                         console.log(pKeyPressed);
+
+
+                    //if he is jumping, then will set isPlayerAirAttack to true
+                     //this will allow downAerial() to run and the initiate the DownAirKick animation
                     } else if (isPlayerJumping) {
                         isPlayerAirAttack = true;
                         console.log(isPlayerAirAttack);
+
+
+                    //if the player is running either to the left or right side, and if the current animation is not already 'slidekick'
+                    //then play the 'slideKick' animation
+                    //would not want to play the same animation if its already playing....
                     }else if ((game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) && player.animations.currentAnim.name != 'slideKick' && player.animations.currentAnim.name == 'run') {
                         pKeyPressed = 's';
-
                         player.animations.play('slideKick');
                         playerCombo[0] = (player.animations.currentAnim.name);
                     }
@@ -287,7 +322,11 @@ demo.state1.prototype = {
                     }
 
                     break;
+
                 case 'x':
+                //initizates the jumping animation by setting isPlayerJumping to true
+                //stoping the 'idle anim if its currently playing
+                //sets isGrounded to false since the player is not longer on the floor
                     isPlayerJumping = true;
                     player.animations.stop('idle');
 
@@ -299,6 +338,9 @@ demo.state1.prototype = {
 
                     break;
                 case 'z':
+                //initiates the 'block' anim
+                //will be used to block attacks
+                //possibly counter them as well, might add another mechanic for that soon
                     player.animations.stop('idle');
                     player.animations.play('block');
 
@@ -308,6 +350,8 @@ demo.state1.prototype = {
             }
 
         }
+
+        
         game.input.keyboard.onUpCallback = function (e) {
             // These can be checked against Phaser.Keyboard.UP, for example.
             console.log(e);
@@ -338,16 +382,9 @@ demo.state1.prototype = {
 
         //**************** H E L P E R    F U N C T I O N S*******************//
 
+        //will only run if the player collides with a platform
         function signalGrounded() {
-
             isGrounded = true;
-
-
-
-            // player.animations.stop('jump');
-
-
-
         }
 
 
@@ -365,14 +402,10 @@ demo.state1.prototype = {
 
         }
 
-        /*         function airKickLoop (){
-                    if()
+        //initiates the jump animation
+        //there are 3 anims.
+        //1 for starting to jump, another to loop while in mid-air, and another that plays when landing
         
-        
-        
-        
-                } */
-
         function jumpAnimLoop(sprite) {
 
             if (completedJump) {
@@ -469,6 +502,7 @@ demo.state1.prototype = {
 
         }
 
+        //inits the down areial attack. For now this will show the sprite kicking downwards until he hits the platform
 
         function downAerial() {
             if (isPlayerAirAttack) {
@@ -503,8 +537,9 @@ demo.state1.prototype = {
 
 
         }
-        function jump(sprite, maxHeight) {
 
+        //starts our jump motion
+        function jump(sprite, maxHeight) {
 
             let height = 0;
 
@@ -525,7 +560,7 @@ demo.state1.prototype = {
             }
         }
 
-        /* && !player.animations._anims.jump.isFinished */
+        
 
         //runs script to decide when the character should be playing its running, idle, or jumping anims
         function runJumpIdle() {
@@ -548,7 +583,7 @@ demo.state1.prototype = {
 
 
 
-                //insert OR 'run'
+                
             } else if ((player.animations.currentAnim == 'idle' || player.animations.currentAnim == 'run' || player.animations.currentAnim == 'jump' || isGrounded) && player.animations.currentAnim.name != ('neutralKick' || 'neutralPunch1' || 'neutralPunch2' || 'neutralPunch3' || 'neutralPunch4') || (!player.animations.currentAnim.isFinished)) {
                 if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && (!pKeyPressed && player.animations.currentAnim.name !== 'runAttack')) {
                     player.scale.setTo(1, 1);
@@ -764,7 +799,7 @@ demo.state1.prototype = {
 
 
 
-
+        //plays an animations when either the right or left arrows are held down
         function moveRunAttack(sprite, animName, speed) {
             if (sprite.animations.currentAnim.name == animName && game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
                 sprite.x += speed;
@@ -773,7 +808,7 @@ demo.state1.prototype = {
                 sprite.x -= speed;
             }
         }
-
+        //resets the hitbox's attributes
         function resetHitBox(hitbox) {
 
             setTimeout(function () {
