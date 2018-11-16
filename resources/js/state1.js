@@ -5,12 +5,17 @@ let pSpeed = 15;
 let player,
     atkBox,
     playerCombo = [],
+    currentKey = '',
     pKeyPressed,
     pLeft = false,
     platform,
     isGrounded = false,
     canJumpAgain = true,
     playerJump = 15,
+    jumpTimer,
+    canPlayerJump = true,
+    completedJump = true,
+    startedJump = false,
     relativePosX = 0,
     relativePosY = 0,
     reseter,
@@ -31,7 +36,8 @@ const keys = {
     'a': Phaser.KeyCode.A,
     's': Phaser.KeyCode.S,
     'w': Phaser.KeyCode.W,
-    'd': Phaser.KeyCode.D
+    'd': Phaser.KeyCode.D,
+    'x' : Phaser.KeyCode.X
 };
 
 demo.state1 = function () { };
@@ -39,7 +45,7 @@ demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
         game.load.spritesheet('tester', 'resources/art/test-scott.png', 213, 204, 114);
-        game.load.spritesheet('ground', 'resources/art/platform.png', 123, 204);
+        game.load.spritesheet('ground', 'resources/art/big-platform.png');
         game.load.spritesheet('hbox', 'resources/art/hbox.png', 40, 40);
 
 
@@ -65,7 +71,10 @@ demo.state1.prototype = {
         //selects frames from the assigned spritesheet and sets them apart for its animation
         player.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
         player.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 12, false);
-        player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
+        //player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
+        player.animations.add('startJump', [17, 18, 19, 20, 21, 22, 23, 24], 18, false);
+        player.animations.add('loopJump', [24, 25], 12, true);
+        player.animations.add('endJump', [27], 12, false);
         //neutralpunch2 would follow nuetralpunch1 after it finishes running, like a combo
         //would require input, let's say that hitting 'a' for example, would trigger neutralPunch1, if pressed again at the right...
         //..moment, would trigger neutralPunch2, and so forth 
@@ -111,7 +120,7 @@ demo.state1.prototype = {
 
 
         // Creating platform
-        platform = game.add.sprite(400, 450, 'ground');
+        platform = game.add.sprite(0, 700, 'ground');
 
 
         //enables gravity on player but not on platform
@@ -140,7 +149,7 @@ demo.state1.prototype = {
                 } */
         //runs function on key press
         moveRunAttack(player, 12);
-        runJumpIdle();
+        
 
 
 
@@ -148,6 +157,10 @@ demo.state1.prototype = {
 
         game.input.keyboard.onPressCallback = function (e) {
             console.log("key pressed", e);
+            currentKey = e;
+            setInterval(function(){
+                currentKey = '';
+            }, 100)
 
 
             //Will play animation until its finished
@@ -243,13 +256,16 @@ demo.state1.prototype = {
                 case 'x':
 
                     player.animations.stop('idle');
+                    
                     isGrounded = false;
-                    player.animations.play('jump');
+                    playerCombo[0] = 'jump';
+                    //player.animations.play('jump');
+
 
 
                     break;
                 case 'z':
-                player.animations.stop('idle');
+                    player.animations.stop('idle');
                     player.animations.play('block');
 
                     break;
@@ -274,10 +290,14 @@ demo.state1.prototype = {
 
 
 
-
         movePlayerAttackBox(atkBox);
 
         jump(player, 5);
+        runJumpIdle();
+        jumpAnimLoop(player);
+        glideDownJump(player, 1200, 800);
+        
+
 
 
 
@@ -290,7 +310,75 @@ demo.state1.prototype = {
 
 
 
-            player.animations.stop('jump');
+           // player.animations.stop('jump');
+
+
+
+        }
+
+
+
+
+        function glideDownJump(sprite, fallingGravity, postGravity) {
+            if (!isGrounded || playerCombo[0] === 'jump') {
+                sprite.body.gravity.y = fallingGravity;
+            } else {
+                sprite.body.gravity.y = postGravity;
+            }
+
+
+
+        }
+
+        function jumpAnimLoop(sprite) {
+
+            if(completedJump){
+                //TODO fix this. It's not running, check conditionals
+                if(canPlayerJump){
+                    if ( (isGrounded && startedJump) || (isGrounded && startedJump && playerCombo[0] == 'jump')  ) {
+                        console.log('ye');
+                        sprite.animations.play('endJump');
+                        startedJump = false;
+                        //completedJump = true;
+                        canPlayerJump = false;
+                        setTimeout(function(){
+
+                            canPlayerJump = true;
+                        },400);
+
+                    }
+                    else if (playerCombo[0] == 'jump' && !isGrounded && startedJump) {
+                        console.log('looping');
+                        sprite.animations.play('loopJump');
+                    } else if (playerCombo[0] == 'jump' && !isGrounded && !startedJump) {
+                        startedJump = true;
+                        sprite.animations.stop('idle');
+                        sprite.animations.play('startJump');
+                        console.log('current');
+
+                        
+                        //completedJump = false;
+                    }else{
+                        return false;
+                    }
+                }else{
+                    return;
+                }
+                }
+/*             if (playerCombo[0] == 'jump' && !isGrounded) {
+                sprite.animations.play('startJump');
+                console.log('current');
+
+            }
+            else if (playerCombo[0] == 'jump' && !isGrounded && sprite.animations.currentAnim.name == 'startJump' && sprite.animations.currentAnim.isFinished) {
+                sprite.animations.stop('startJump');
+                sprite.animations.play('loopJump');
+            } else if (sprite.animations.currentAnim.isFinished && isGrounded) {
+                console.log('ye');
+                sprite.animations.stop('loopJump');
+                sprite.animations.play('endJump');
+            } */
+
 
 
 
@@ -303,7 +391,11 @@ demo.state1.prototype = {
             do {
                 height++;
                 sprite.y -= height
+
             } while (game.input.keyboard.isDown(Phaser.Keyboard.X) && height < maxHeight);
+
+
+
         }
 
         //mainly used for forward attacks
@@ -324,15 +416,15 @@ demo.state1.prototype = {
 
 
             if (player.animations.currentAnim.isFinished) {
-                if (game.input.keyboard.isDown(Phaser.Keyboard.X)) {
+                if (game.input.keyboard.isDown(Phaser.Keyboard.X) || !completedJump || player.animations.currentAnim.name == ('jump' || 'startjump' ||'loopJump' || 'endJump') ) {
                     player.animations.stop('idle');
-                    playerCombo = [];
+                    //playerCombo = [];
 
                     pKeyPressed = '';
-                } else {
+                } else if( completedJump || (!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && player.animations.currentAnim.name == 'run' || !game.input.keyboard.isDown(Phaser.Keyboard.LEFT)   && player.animations.currentAnim.name == 'run'))  {
                     player.animations.play('idle');
                     playerCombo = [];
-
+                    console.log('asas');
                     pKeyPressed = '';
                 }
 
@@ -345,19 +437,19 @@ demo.state1.prototype = {
                     pLeft = false;
 
                     player.x += 8;
-                    if (player.animations.currentAnim.name != 'jump' && !game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded == true) {
+                    if (player.animations.currentAnim.name != ('jump' || 'startjump' ||'loopJump' || 'endJump') && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded !== false || startedJump == false )) {
                         player.animations.play('run');
                     }
                 } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && (!pKeyPressed && player.animations.currentAnim.name !== 'runAttack')) {
                     player.scale.setTo(-1, 1);
                     pLeft = true;
-                    if (player.animations.currentAnim.name != 'jump' && !game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded == true) {
+                    if (player.animations.currentAnim.name != ('jump' || 'startjump' ||'loopJump' || 'endJump') && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded !== false || startedJump == false)) {
                         player.animations.play('run');
                     }
 
                     player.x -= 8;
 
-                } else if ((!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) || (!game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) || pKeyPressed || game.input.keyboard.isDown(Phaser.Keyboard.A) || game.input.keyboard.isDown(keys.d) || game.input.keyboard.isDown(keys.w)) {
+                } else if ((!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) || (!game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) || pKeyPressed || game.input.keyboard.isDown(Phaser.Keyboard.A) || game.input.keyboard.isDown(keys.d) || game.input.keyboard.isDown(keys.w) || game.input.keyboard.isDown(keys.x) || startedJump ) {
                     player.animations.stop('run');
                 }
             }
