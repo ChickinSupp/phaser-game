@@ -3,6 +3,7 @@ let demo = window.demo || (window.demo = {});
 let pSpeed = 15;
 
 let player,
+    dummy,
     //var containing the hitbox that we will render whwnever the plaer lanches an attack
     atkBox,
     //var that will contain the most recent anim name of an attack
@@ -19,10 +20,14 @@ let player,
     platform,
     //checks to see if player is currently touching a platform
     isGrounded = false,
+
+    dummyGrounded = false,
     //checks to see if player is currenlty jumping
     isPlayerJumping = false,
-    //checks to see if currently attacking from the air
+    //checks to see if the player is currently attacking from the air
     isPlayerAirAttack = false,
+    timer = 1,
+    isAtkBoxActive = false,
 
 
 
@@ -31,8 +36,12 @@ let player,
     isDownAirAtk2 = false,
     isDownAirAtk3 = false,
 
+
+
+
     //indicates if plaer can jump again
     canJumpAgain = true,
+
     //null
     playerJump = 15,
     //null
@@ -44,9 +53,13 @@ let player,
     completedJump = true,
     //checks to see if player started jumping
     startedJump = false,
+
+    playerHP = 100,
+    dummyHP = 100,
     //meant for hitboxes, position relative to the sprite its a hitbox for
     relativePosX = 0,
     relativePosY = 0,
+    isOverlapping = false,
     //null
     reseter,
     //null
@@ -78,16 +91,13 @@ demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
         game.load.spritesheet('tester', 'resources/art/test-scott.png', 213, 204, 114);
+        game.load.spritesheet('tester2', 'resources/art/test-scott-2.png', 213, 204, 114);
         game.load.spritesheet('ground', 'resources/art/big-platform.png');
         game.load.spritesheet('hbox', 'resources/art/hbox.png', 40, 40);
 
 
     },
     create: function () {
-
-
-
-
         // Starting game physics
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -98,6 +108,7 @@ demo.state1.prototype = {
 
         // Generating player 1
         player = game.add.sprite(400, 100, 'tester');
+        dummy = game.add.sprite(100, 100, 'tester2');
 
 
 
@@ -131,7 +142,40 @@ demo.state1.prototype = {
         player.animations.add('loopDwnKick', [103, 104, 105], 12, true);
         player.animations.add('endDwnKick', [106], 12, false);
 
-        player.animations.add('slideKick', [107,108,109,110,111,112,113], 16, false);
+        player.animations.add('slideKick', [107, 108, 109, 110, 111, 112, 113], 16, false);
+
+
+
+        dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
+        dummy.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 12, false);
+        //player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
+        dummy.animations.add('startJump', [17, 18, 19, 20, 21, 22, 23, 24], 18, false);
+        dummy.animations.add('loopJump', [24, 25], 12, true);
+        dummy.animations.add('endJump', [27], 12, false);
+        //neutralpunch2 would follow nuetralpunch1 after it finishes running, like a combo
+        //would require input, let's say that hitting 'a' for example, would trigger neutralPunch1, if pressed again at the right...
+        //..moment, would trigger neutralPunch2, and so forth 
+        dummy.animations.add('neutralPunch1', [28, 29, 30, 31], 11, false);
+        dummy.animations.add('neutralPunch2', [32, 33, 34, 35], 11, false);
+        dummy.animations.add('neutralPunch3', [36, 37, 38], 11, false);
+
+        dummy.animations.add('neutralPunch4', [39, 40], 11, false);
+        dummy.animations.add('neutralPunch5', [41, 42, 43, 44], 11, false);
+        dummy.animations.add('neutralKick', [45, 46, 47, 48, 49, 50, 51], 12, false);
+
+        dummy.animations.add('specialKick1', [63, 64, 65, 66, 67, 68, 69], 14, false);
+
+        dummy.animations.add('runAttack', [70, 71, 72, 73, 74, 75, 76, 77, 78], 16, false);
+        dummy.animations.add('block', [79, 80, 81, 82, 83, 84, 85], 14, false);
+        dummy.animations.add('lowKick', [86, 87, 88, 89, 90, 91], 14, false);
+        dummy.animations.add('dodge', [92, 93, 94, 95], 14, false);
+        dummy.animations.add('knockback', [96, 97, 98, 99, 100], 14, false);
+
+        dummy.animations.add('startDwnKick', [100, 101, 102], 12, false);
+        dummy.animations.add('loopDwnKick', [103, 104, 105], 12, true);
+        dummy.animations.add('endDwnKick', [106], 12, false);
+
+        dummy.animations.add('slideKick', [107, 108, 109, 110, 111, 112, 113], 16, false);
 
 
 
@@ -152,6 +196,8 @@ demo.state1.prototype = {
         //plays added animaiton
         player.animations.play('idle');
 
+        dummy.animations.play('idle');
+
         //opens up info on current anim
         console.log(player.animations.currentAnim);
         //gets name for current anim
@@ -165,10 +211,22 @@ demo.state1.prototype = {
 
 
         //enables gravity on player but not on platform
-        game.physics.arcade.enable([player, platform, atkBox]);
+        game.physics.arcade.enable([player, dummy, platform, atkBox]);
         player.body.collideWorldBounds = true;
+        dummy.body.collideWorldBounds = true;
         platform.enableBody = true;
         player.body.gravity.y = 1900;
+        dummy.body.gravity.y = 1900;
+        //dummy.body.gravity.set(0, 180);
+
+
+        //testing player collsinion box resize
+
+        player.body.setSize(104, 176, 30, 27);
+        dummy.body.setSize(104, 176, 30, 30);
+
+        
+
         platform.body.immovable = true;
 
         console.log(atkBox);
@@ -181,13 +239,11 @@ demo.state1.prototype = {
         //player and platform will collide
 
         game.physics.arcade.collide(player, platform, signalGrounded);
-        /*         if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
-                    player.x +=2;
-                    player.animations.play('run');
-                    
-                }else if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && pKeyPressed){
-                    return;
-                } */
+        game.physics.arcade.collide(dummy, platform);
+        game.physics.arcade.overlap(atkBox, dummy, hit);
+
+        game.debug.body(player);
+        game.debug.body(dummy);
         //runs function on key press
 
 
@@ -196,9 +252,9 @@ demo.state1.prototype = {
         moveRunAttack(player, 'slideKick', 12);
 
 
-        
 
-        
+
+
 
 
 
@@ -218,8 +274,8 @@ demo.state1.prototype = {
             switch (e) {
                 //standard kick
                 case 's':
-                //if the player is'nt jumping or running
-                //then the player will kick normally
+                    //if the player is'nt jumping or running
+                    //then the player will kick normally
                     if (!isPlayerJumping && player.animations.currentAnim.name !== 'run') {
                         player.animations.play('neutralKick');
                         playerCombo[0] = (player.animations.currentAnim.name);
@@ -228,17 +284,17 @@ demo.state1.prototype = {
                         console.log(pKeyPressed);
 
 
-                    //if he is jumping, then will set isPlayerAirAttack to true
-                     //this will allow downAerial() to run and the initiate the DownAirKick animation
+                        //if he is jumping, then will set isPlayerAirAttack to true
+                        //this will allow downAerial() to run and the initiate the DownAirKick animation
                     } else if (isPlayerJumping) {
                         isPlayerAirAttack = true;
                         console.log(isPlayerAirAttack);
 
 
-                    //if the player is running either to the left or right side, and if the current animation is not already 'slidekick'
-                    //then play the 'slideKick' animation
-                    //would not want to play the same animation if its already playing....
-                    }else if ((game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) && player.animations.currentAnim.name != 'slideKick' && player.animations.currentAnim.name == 'run') {
+                        //if the player is running either to the left or right side, and if the current animation is not already 'slidekick'
+                        //then play the 'slideKick' animation
+                        //would not want to play the same animation if its already playing....
+                    } else if ((game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) && player.animations.currentAnim.name != 'slideKick' && player.animations.currentAnim.name == 'run') {
                         pKeyPressed = 's';
                         player.animations.play('slideKick');
                         playerCombo[0] = (player.animations.currentAnim.name);
@@ -324,9 +380,9 @@ demo.state1.prototype = {
                     break;
 
                 case 'x':
-                //initizates the jumping animation by setting isPlayerJumping to true
-                //stoping the 'idle anim if its currently playing
-                //sets isGrounded to false since the player is not longer on the floor
+                    //initizates the jumping animation by setting isPlayerJumping to true
+                    //stoping the 'idle anim if its currently playing
+                    //sets isGrounded to false since the player is not longer on the floor
                     isPlayerJumping = true;
                     player.animations.stop('idle');
 
@@ -338,11 +394,18 @@ demo.state1.prototype = {
 
                     break;
                 case 'z':
-                //initiates the 'block' anim
-                //will be used to block attacks
-                //possibly counter them as well, might add another mechanic for that soon
-                    player.animations.stop('idle');
-                    player.animations.play('block');
+                    //initiates the 'block' anim
+                    //will be used to block attacks
+                    //possibly counter them as well, might add another mechanic for that soon
+                    if (game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+                        player.animations.stop('idle');
+                        player.animations.play('dodge');
+
+                    } else {
+                        player.animations.stop('idle');
+                        player.animations.play('block');
+
+                    }
 
                     break;
                 default:
@@ -351,7 +414,7 @@ demo.state1.prototype = {
 
         }
 
-        
+
         game.input.keyboard.onUpCallback = function (e) {
             // These can be checked against Phaser.Keyboard.UP, for example.
             console.log(e);
@@ -374,6 +437,8 @@ demo.state1.prototype = {
         runJumpIdle();
         jumpAnimLoop(player);
         glideDownJump(player, 1200, 800);
+
+        hurt(dummy);
 
 
 
@@ -405,14 +470,14 @@ demo.state1.prototype = {
         //initiates the jump animation
         //there are 3 anims.
         //1 for starting to jump, another to loop while in mid-air, and another that plays when landing
-        
+
         function jumpAnimLoop(sprite) {
 
             if (completedJump) {
-                //TODO fix this. It's not running, check conditionals
+
                 if (!isPlayerAirAttack && canPlayerJump) {
                     if ((isGrounded && startedJump) || (isGrounded && startedJump && playerCombo[0] == 'jump')) {
-                        console.log('ye');
+                        console.log('ending jump');
                         sprite.animations.play('endJump');
                         startedJump = false;
 
@@ -451,51 +516,51 @@ demo.state1.prototype = {
 
         //param 1 = sprite name , param 2 = level of speed for the movement
         //For param 2 you can pass 'low' , 'med' , 'high' , 'ultra'
-        function dwnArialMotion(sprite, intensity){
-            if(intensity.toLowerCase() == 'low'){
-                if(sprite.animations.currentAnim.name == 'loopDwnKick'){
-                    if(pLeft){
+        function dwnArialMotion(sprite, intensity) {
+            if (intensity.toLowerCase() == 'low') {
+                if (sprite.animations.currentAnim.name == 'loopDwnKick') {
+                    if (pLeft) {
                         sprite.x -= 7;
-                    }else{
+                    } else {
                         sprite.x += 7;
                     }
-                    
+
                     sprite.y -= 7;
-                }else{
+                } else {
                     return;
                 }
-            }else if(intensity.toLowerCase() == 'med'){
-                if(sprite.animations.currentAnim.name == 'loopDwnKick'){
-                    if(pLeft){
+            } else if (intensity.toLowerCase() == 'med') {
+                if (sprite.animations.currentAnim.name == 'loopDwnKick') {
+                    if (pLeft) {
                         sprite.x -= 9;
-                    }else{
+                    } else {
                         sprite.x += 9;
                     }
                     sprite.y -= 7;
-                }else{
+                } else {
                     return;
                 }
-            }else if(intensity.toLowerCase() == 'high'){
-                if(sprite.animations.currentAnim.name == 'loopDwnKick'){
-                    if(pLeft){
+            } else if (intensity.toLowerCase() == 'high') {
+                if (sprite.animations.currentAnim.name == 'loopDwnKick') {
+                    if (pLeft) {
                         sprite.x -= 11;
-                    }else{
+                    } else {
                         sprite.x += 11;
                     }
                     sprite.y -= 8;
-                }else{
+                } else {
                     return;
                 }
-            }else if(intensity.toLowerCase() == 'ultra'){
-                if(sprite.animations.currentAnim.name == 'loopDwnKick'){
-                    if(pLeft){
+            } else if (intensity.toLowerCase() == 'ultra') {
+                if (sprite.animations.currentAnim.name == 'loopDwnKick') {
+                    if (pLeft) {
                         sprite.x -= 14;
-                    }else{
+                    } else {
                         sprite.x += 14;
                     }
-                    
+
                     sprite.y -= 14;
-                }else{
+                } else {
                     return;
                 }
             }
@@ -511,18 +576,18 @@ demo.state1.prototype = {
                     player.animations.play('startDwnKick');
                     /* if (player.animations.currentAnim.isFinished) { */
 
-                        isDownAirAtk2 = true;
-                        console.log('a')
-                    
+                    isDownAirAtk2 = true;
+                    console.log('a')
+
                 } else if (isDownAirAtk2 && !isGrounded) {
                     player.animations.play('loopDwnKick');
                     playerCombo[0] = 'loopDwnKick';
                     /* if (player.animations.currentAnim.isFinished) { */
-                        isDownAirAtk2 = false;
-                        isDownAirAtk3 = true;
+                    isDownAirAtk2 = false;
+                    isDownAirAtk3 = true;
 
-                        console.log('b')
-                    
+                    console.log('b')
+
                 } else if (isDownAirAtk3 && isGrounded && completedJump) {
                     player.animations.play('endDwnKick');
                     isDownAirAtk2 = true;
@@ -560,13 +625,13 @@ demo.state1.prototype = {
             }
         }
 
-        
+
 
         //runs script to decide when the character should be playing its running, idle, or jumping anims
         function runJumpIdle() {
             //if current animation is finished, the idle animation will play, playerCombos will be rest as well as pKeyPressed
 
-
+            //HANDLES IDLE ANIM
             if (player.animations.currentAnim.isFinished) {
                 if (game.input.keyboard.isDown(Phaser.Keyboard.X) || !completedJump || player.animations.currentAnim.name == ('jump' || 'startjump' || 'loopJump' || 'endJump')) {
                     player.animations.stop('idle');
@@ -580,11 +645,8 @@ demo.state1.prototype = {
                     console.log('asas');
                     pKeyPressed = '';
                 }
-
-
-
-                
-            } else if ((player.animations.currentAnim == 'idle' || player.animations.currentAnim == 'run' || player.animations.currentAnim == 'jump' || isGrounded) && player.animations.currentAnim.name != ('neutralKick' || 'neutralPunch1' || 'neutralPunch2' || 'neutralPunch3' || 'neutralPunch4') || (!player.animations.currentAnim.isFinished)) {
+                //HANDLES RUN ANIM
+            } else if ((player.animations.currentAnim.name == 'idle' || player.animations.currentAnim.name == 'run' || player.animations.currentAnim.name == 'jump' || isGrounded) && player.animations.currentAnim.name != ('neutralKick' || 'neutralPunch1' || 'neutralPunch2' || 'neutralPunch3' || 'neutralPunch4') || (!player.animations.currentAnim.isFinished)) {
                 if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && (!pKeyPressed && player.animations.currentAnim.name !== 'runAttack')) {
                     player.scale.setTo(1, 1);
                     pLeft = false;
@@ -639,6 +701,7 @@ demo.state1.prototype = {
                         relativePosY = 90;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
+
                     } else {
                         relativePosX = 150;
                         relativePosY = 90;
@@ -751,7 +814,7 @@ demo.state1.prototype = {
                     }
 
                     break;
-                    case 'loopDwnKick':
+                case 'loopDwnKick':
                     if (pLeft) {
                         atkBox.angle = -25;
                         relativePosX = -230;
@@ -771,7 +834,7 @@ demo.state1.prototype = {
                     }
 
                     break;
-                    case 'slideKick':
+                case 'slideKick':
                     if (pLeft) {
                         relativePosX = -195;
                         relativePosY = 160;
@@ -807,6 +870,66 @@ demo.state1.prototype = {
             } else if (sprite.animations.currentAnim.name == animName && game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
                 sprite.x -= speed;
             }
+        }
+
+        //collision type denotes what collsiion are we focusing on with the sprite that gets hit?
+        //is it a bounding box or another sprite? (sprite simialr to hbox.png)
+
+
+
+
+        //********************************************HIT LOGIC********************* */
+
+        //the following code is extemely crude and is only used for testing purposes
+
+        //this entire file will be refactored soon.
+
+        
+
+        function hit() {
+            if(player.animations.currentAnim.name != 'idle' && (['neutralKick','neutralPunch1' ,'neutralPunch2' ,
+            
+            'neutralPunch3' , 'neutralPunch4' , 'specialKick1' , 'runAttack'].includes(player.animations.currentAnim.name))){
+                isOverlapping = true;
+                isAtkBoxActive = true;
+            }else{
+                isOverlapping = false;
+                isAtkBoxActive = false;
+            }
+
+        }
+        groundDummy(dummy);
+        function groundDummy(sprite){
+            if(sprite.body.velocity.y == 0){
+                dummyGrounded = true;
+            }else{
+                dummyGround = false;
+            }
+            
+        }
+
+        slowDownXVel (dummy);
+        function slowDownXVel (sprite){
+            if(sprite.body.velocity.y == 0 && dummyGrounded ){
+                sprite.body.velocity.setTo(0);
+            }
+
+
+        }
+        function hurt(sprite, pushback, length, collisionType, hboxName) {
+
+            if (isOverlapping && isAtkBoxActive) {
+                Xvector = 50;
+                Yvector = 110;
+                sprite.animations.play('knockback');
+
+                sprite.body.velocity.setTo(Xvector, -Yvector);
+                
+                isOverlapping = false;
+                isAtkBoxActive = false;
+                //sprite.body.velocity = 0;
+            }
+
         }
         //resets the hitbox's attributes
         function resetHitBox(hitbox) {
