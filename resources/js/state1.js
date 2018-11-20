@@ -252,8 +252,8 @@ demo.state1.prototype = {
 
         //enables gravity on player but not on platform
         game.physics.arcade.enable([player, dummy, platform, platform2, platform3,battlefield, atkBox]);
-        player.body.collideWorldBounds = true;
-        dummy.body.collideWorldBounds = true;
+        //player.body.collideWorldBounds = true;
+        //dummy.body.collideWorldBounds = true;
 
         platform.enableBody = true;
         platform2.enableBody = true;
