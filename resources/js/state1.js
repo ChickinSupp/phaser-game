@@ -54,8 +54,9 @@ let player,
     //checks to see if player started jumping
     startedJump = false,
 
-    playerHP = 100,
-    dummyHP = 100,
+    atkBoxCanHurt = false,
+
+
     //meant for hitboxes, position relative to the sprite its a hitbox for
     relativePosX = 0,
     relativePosY = 0,
@@ -67,7 +68,36 @@ let player,
 
     arrowKey,
     //null
-    canCheckJump = true;
+    canCheckJump = true,
+
+
+
+
+
+    /********************** HEALTH AND DAMAGE MULTIPLIER VARS********************* */
+
+
+
+    //THE KNOCKBACK MECHANIC VARS
+    // p denotes 'player' and d denotes 'dummy'
+    pDamage = 0;
+dDamage = 0;
+pHP = 100,
+    dHP = 100;
+
+pLuck = 20;
+dLuck = 20;
+
+random = Math.floor(Math.random() * pLuck);
+
+
+pStrength = 10;
+dStrength = 10;
+
+pWeight = 10;
+
+pEvadesLeft = 5;
+
 
 /* window.addEventListener("keydown", function (event) {
 
@@ -216,8 +246,11 @@ demo.state1.prototype = {
         dummy.body.collideWorldBounds = true;
         platform.enableBody = true;
         player.body.gravity.y = 1900;
-        dummy.body.gravity.y = 1900;
+        dummy.body.gravity.y = 2100;
         //dummy.body.gravity.set(0, 180);
+
+        dummy.body.drag.x = 400;
+        dummy.body.drag.y = 0;
 
 
         //testing player collsinion box resize
@@ -225,7 +258,7 @@ demo.state1.prototype = {
         player.body.setSize(104, 176, 30, 27);
         dummy.body.setSize(104, 176, 30, 30);
 
-        
+
 
         platform.body.immovable = true;
 
@@ -884,53 +917,43 @@ demo.state1.prototype = {
 
         //this entire file will be refactored soon.
 
-        
+
 
         function hit() {
-            if(player.animations.currentAnim.name != 'idle' && (['neutralKick','neutralPunch1' ,'neutralPunch2' ,
-            
-            'neutralPunch3' , 'neutralPunch4' , 'specialKick1' , 'runAttack'].includes(player.animations.currentAnim.name))){
+            if (player.animations.currentAnim.name != 'idle' && (['neutralKick', 'neutralPunch1', 'neutralPunch2',
+
+                'neutralPunch3', 'neutralPunch4', 'specialKick1', 'runAttack', 'slideKick', 'loopDwnKick'].includes(player.animations.currentAnim.name))) {
                 isOverlapping = true;
                 isAtkBoxActive = true;
-            }else{
+            } else {
                 isOverlapping = false;
                 isAtkBoxActive = false;
             }
 
         }
         groundDummy(dummy);
-        function groundDummy(sprite){
-            if(sprite.body.velocity.y == 0){
+        function groundDummy(sprite) {
+            if (sprite.body.velocity.y == 0) {
                 dummyGrounded = true;
-            }else{
+            } else {
                 dummyGround = false;
             }
-            
+
         }
 
-        slowDownXVel (dummy);
-        function slowDownXVel (sprite){
-            if(sprite.body.velocity.y == 0 && dummyGrounded ){
+        //slowDownXVel (dummy);
+        function slowDownXVel(sprite) {
+            if (sprite.body.velocity.y == 0 && dummyGrounded) {
                 sprite.body.velocity.setTo(0);
             }
 
 
-        }
-        function hurt(sprite, pushback, length, collisionType, hboxName) {
 
-            if (isOverlapping && isAtkBoxActive) {
-                Xvector = 50;
-                Yvector = 110;
-                sprite.animations.play('knockback');
-
-                sprite.body.velocity.setTo(Xvector, -Yvector);
-                
-                isOverlapping = false;
-                isAtkBoxActive = false;
-                //sprite.body.velocity = 0;
-            }
 
         }
+
+
+
         //resets the hitbox's attributes
         function resetHitBox(hitbox) {
 
@@ -939,8 +962,9 @@ demo.state1.prototype = {
                 hitbox.height = 40;
                 hitbox.alpha = 0;
                 hitbox.angle = 0;
+                atkBoxCanHurt = false;
 
-            }, 500);
+            }, 100);
 
 
         }
@@ -949,3 +973,116 @@ demo.state1.prototype = {
 
     }
 };
+
+
+function getLaunchAmount(hitbox, attacker, injured, currentDamage) {
+    let Xvector;
+    let Yvector;
+    console.log(attacker.animations.currentAnim.name);
+    if (isOverlapping && isAtkBoxActive) {
+        if (attacker.animations.currentAnim.name == 'slideKick') {
+            Xvector = 15 + currentDamage;
+            Yvector = -500 - currentDamage;
+        } else if ((['neutralPunch1', 'neutralPunch2', 'neutralPunch3'].includes(attacker.animations.currentAnim.name))) {
+            if (pLeft) {
+                Xvector = -1 - currentDamage;
+
+            } else {
+                Xvector = 1 + currentDamage;
+
+            }
+
+        } else if (attacker.animations.currentAnim.name == 'neutralPunch4') {
+            if (pLeft) {
+                Xvector = -25 - currentDamage;
+                Yvector = -100 - currentDamage;
+
+            } else {
+                Xvector = 25 + currentDamage;
+                Yvector = -100 - currentDamage;
+
+            }
+        } else if (attacker.animations.currentAnim.name == 'specialKick1') {
+            if (pLeft) {
+                Xvector = -35 - currentDamage;
+                Yvector = -120 - currentDamage;
+
+            } else {
+                Xvector = 35 + currentDamage;
+                Yvector = -120 - currentDamage;
+
+            }
+        } else if (attacker.animations.currentAnim.name == 'neutralKick') {
+            if (pLeft) {
+                Xvector = -90 - currentDamage;
+                
+
+            } else {
+                Xvector = 90 + currentDamage;
+               
+
+            }
+        }else if (attacker.animations.currentAnim.name == 'runAttack') {
+            if (pLeft) {
+                Xvector = -300 - currentDamage;
+                Yvector = -200 - currentDamage;
+
+                
+
+            } else {
+                Xvector = 300 + currentDamage;
+                Yvector = -200 - currentDamage;
+               
+
+            }
+        }else if (attacker.animations.currentAnim.name == 'loopDwnKick') {
+            if (pLeft) {
+                Xvector = -300 - currentDamage;
+                Yvector = 280 + currentDamage;
+
+                
+
+            } else {
+                Xvector = 300 + currentDamage;
+                Yvector = 280 + currentDamage;
+               
+
+            }
+        }
+
+    }
+
+    launchSprite(null, injured, true, Xvector, Yvector);
+
+}
+//hitbox = name of attacker's hitbox
+//injured = the name of the sprite that recived the hit
+//isSpec = if there ther is a specified velocity from an attack anim
+//if so, then add those coords to x and y (these amounts are acutally passed with getLaunchAmount)
+
+function launchSprite(hitbox, injured, isSpec, x, y) {
+    if (isSpec) {
+        injured.body.velocity.setTo(x, y);
+    } else {
+        Xvector = ((hitbox.x - injured.x) * (3));
+        Yvector = ((hitbox.y - injured.y) * (3));
+
+        injured.body.velocity.setTo(Xvector, Yvector);
+    }
+
+
+}
+
+
+function hurt(sprite, pushback, length, collisionType, hboxName) {
+    if (isOverlapping && isAtkBoxActive) {
+        dDamage += 0.93;
+        console.log(dDamage);
+        sprite.animations.play('knockback');
+        getLaunchAmount(null, player, dummy, dDamage);
+        isOverlapping = false;
+        isAtkBoxActive = false;
+        //sprite.body.velocity = 0;
+    }
+
+}
