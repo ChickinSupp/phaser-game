@@ -18,6 +18,10 @@ let player,
     pLeft = false,
     //var that will contain the stages platform
     platform,
+    platform1,
+    platform2,
+    platform3,
+    battlefield,
     //checks to see if player is currently touching a platform
     isGrounded = false,
 
@@ -120,10 +124,13 @@ demo.state1 = function () { };
 demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
-        game.load.spritesheet('tester', 'resources/art/test-scott.png', 213, 204, 114);
+        game.load.spritesheet('tester', 'resources/art/2xscott.png', 142, 136, 114);
         game.load.spritesheet('tester2', 'resources/art/test-scott-2.png', 213, 204, 114);
         game.load.spritesheet('ground', 'resources/art/big-platform.png');
-        game.load.spritesheet('hbox', 'resources/art/hbox.png', 40, 40);
+        game.load.spritesheet('hbox', 'resources/art/hbox.png', 25, 25);
+        game.load.spritesheet('platform1', 'resources/art/platform1.png', 50, 11);
+        game.load.spritesheet('battlestage1', 'resources/art/base-stage1.png', 321, 126);
+
 
 
     },
@@ -158,7 +165,7 @@ demo.state1.prototype = {
 
         player.animations.add('neutralPunch4', [39, 40], 11, false);
         player.animations.add('neutralPunch5', [41, 42, 43, 44], 11, false);
-        player.animations.add('neutralKick', [45, 46, 47, 48, 49, 50, 51], 12, false);
+        player.animations.add('neutralKick', [45, 46, 47, 48, 49, 50, 51], 14, false);
 
         player.animations.add('specialKick1', [63, 64, 65, 66, 67, 68, 69], 14, false);
 
@@ -221,7 +228,7 @@ demo.state1.prototype = {
         //creates an instance of hitbox;
         atkBox = hitboxes.create(0, 0, 'hbox');
         //sets the size of the hitbox, without any offset
-        atkBox.body.setSize(40, 40, 0, 0);
+        //atkBox.body.setSize(15, 15, 0, 0);
 
         //plays added animaiton
         player.animations.play('idle');
@@ -237,15 +244,26 @@ demo.state1.prototype = {
 
 
         // Creating platform
-        platform = game.add.sprite(0, 700, 'ground');
+        platform = game.add.sprite(400, 500, 'platform1');
+       platform2 = game.add.sprite(500, 300, 'platform1');
+        platform3 = game.add.sprite(800, 500, 'platform1');
+        battlefield = game.add.sprite(200, 500, 'battlestage1');
 
 
         //enables gravity on player but not on platform
-        game.physics.arcade.enable([player, dummy, platform, atkBox]);
+        game.physics.arcade.enable([player, dummy, platform, platform2, platform3,battlefield, atkBox]);
         player.body.collideWorldBounds = true;
         dummy.body.collideWorldBounds = true;
+
         platform.enableBody = true;
+        platform2.enableBody = true;
+        platform3.enableBody = true;
+        battlefield.enableBody = true;
+        battlefield.scale.setTo(2,2);
+        battlefield.body.setSize(321,126,0,25);
+
         player.body.gravity.y = 1900;
+        
         dummy.body.gravity.y = 2100;
         //dummy.body.gravity.set(0, 180);
 
@@ -255,12 +273,15 @@ demo.state1.prototype = {
 
         //testing player collsinion box resize
 
-        player.body.setSize(104, 176, 30, 27);
+        player.body.setSize(60, 120, 20, 15);
         dummy.body.setSize(104, 176, 30, 30);
 
 
 
         platform.body.immovable = true;
+        platform2.body.immovable = true;
+        platform3.body.immovable = true;
+        battlefield.body.immovable = true;
 
         console.log(atkBox);
         console.log(player);
@@ -271,8 +292,8 @@ demo.state1.prototype = {
 
         //player and platform will collide
 
-        game.physics.arcade.collide(player, platform, signalGrounded);
-        game.physics.arcade.collide(dummy, platform);
+        game.physics.arcade.collide(player, [platform, platform1, platform2,platform3, battlefield], signalGrounded);
+        game.physics.arcade.collide(dummy, [platform, platform1, platform2, platform3, battlefield]);
         game.physics.arcade.overlap(atkBox, dummy, hit);
 
         game.debug.body(player);
@@ -730,14 +751,14 @@ demo.state1.prototype = {
             switch (playerCombo[0]) {
                 case 'neutralPunch1':
                     if (pLeft) {
-                        relativePosX = -180;
-                        relativePosY = 90;
+                        relativePosX = -110;
+                        relativePosY = 55;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
 
                     } else {
-                        relativePosX = 150;
-                        relativePosY = 90;
+                        relativePosX = 80;
+                        relativePosY = 55;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     }
@@ -745,13 +766,13 @@ demo.state1.prototype = {
                     break;
                 case 'neutralPunch2':
                     if (pLeft) {
-                        relativePosX = -180;
-                        relativePosY = 90;
+                        relativePosX = -110;
+                        relativePosY = 55;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     } else {
-                        relativePosX = 150;
-                        relativePosY = 90;
+                        relativePosX = 80;
+                        relativePosY = 55;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     }
@@ -759,8 +780,8 @@ demo.state1.prototype = {
                     break;
                 case 'neutralPunch3':
                     if (pLeft) {
-                        relativePosX = -180;
-                        relativePosY = 90;
+                        relativePosX = -110;
+                        relativePosY = 55;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     } else {
@@ -782,13 +803,13 @@ demo.state1.prototype = {
 
                 case 'neutralPunch5':
                     if (pLeft) {
-                        relativePosX = -150;
-                        relativePosY = 110;
+                        relativePosX = -95;
+                        relativePosY = 65;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     } else {
-                        relativePosX = 100;
-                        relativePosY = 110;
+                        relativePosX = 65;
+                        relativePosY = 65;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     }
@@ -796,13 +817,13 @@ demo.state1.prototype = {
                     break;
                 case 'neutralKick':
                     if (pLeft) {
-                        relativePosX = -180;
-                        relativePosY = 115;
+                        relativePosX = -110;
+                        relativePosY = 70;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     } else {
-                        relativePosX = 140;
-                        relativePosY = 120;
+                        relativePosX = 80;
+                        relativePosY = 70;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     }
@@ -811,18 +832,18 @@ demo.state1.prototype = {
                     break;
                 case 'specialKick1':
                     if (pLeft) {
-                        relativePosX = -170;
-                        relativePosY = 90;
-                        atkBox.height = 45;
-                        atkBox.width = 150;
+                        relativePosX = -100;
+                        relativePosY = 60;
+                        atkBox.height = 30;
+                        atkBox.width = 75;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     } else {
                         //atkBox.angle = 45;
                         relativePosX = 30;
-                        relativePosY = 90;
-                        atkBox.height = 45;
-                        atkBox.width = 150;
+                        relativePosY = 60;
+                        atkBox.height = 30;
+                        atkBox.width = 75;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     }
@@ -830,18 +851,18 @@ demo.state1.prototype = {
                     break;
                 case 'runAttack':
                     if (pLeft) {
-                        relativePosX = -185;
+                        relativePosX = -110;
                         relativePosY = 40;
-                        atkBox.height = 95;
-                        atkBox.width = 115;
+                        atkBox.height = 40;
+                        atkBox.width = 55;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     } else {
                         //atkBox.angle = 45;
                         relativePosX = 60;
                         relativePosY = 40;
-                        atkBox.height = 95;
-                        atkBox.width = 115;
+                        atkBox.height = 40;
+                        atkBox.width = 55;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     }
@@ -850,18 +871,18 @@ demo.state1.prototype = {
                 case 'loopDwnKick':
                     if (pLeft) {
                         atkBox.angle = -25;
-                        relativePosX = -230;
-                        relativePosY = 160;
-                        atkBox.height = 30;
-                        atkBox.width = 100;
+                        relativePosX = -150;
+                        relativePosY = 80;
+                        atkBox.height = 25;
+                        atkBox.width = 50;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     } else {
                         atkBox.angle = 25;
-                        relativePosX = 140;
-                        relativePosY = 125;
-                        atkBox.height = 30;
-                        atkBox.width = 100;
+                        relativePosX = 120;
+                        relativePosY = 80;
+                        atkBox.height = 25;
+                        atkBox.width = 50;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     }
@@ -869,18 +890,18 @@ demo.state1.prototype = {
                     break;
                 case 'slideKick':
                     if (pLeft) {
-                        relativePosX = -195;
-                        relativePosY = 160;
-                        atkBox.height = 30;
-                        atkBox.width = 120;
+                        relativePosX = -130;
+                        relativePosY = 110;
+                        atkBox.height = 15;
+                        atkBox.width = 60;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     } else {
                         //atkBox.angle = 45;
                         relativePosX = 80;
-                        relativePosY = 160;
-                        atkBox.height = 30;
-                        atkBox.width = 120;
+                        relativePosY = 110;
+                        atkBox.height = 15;
+                        atkBox.width = 60;
                         atkBox.alpha = 0.6;
                         resetHitBox(atkBox);
                     }
@@ -958,8 +979,8 @@ demo.state1.prototype = {
         function resetHitBox(hitbox) {
 
             setTimeout(function () {
-                hitbox.width = 40;
-                hitbox.height = 40;
+                hitbox.width = 25;
+                hitbox.height = 25;
                 hitbox.alpha = 0;
                 hitbox.angle = 0;
                 atkBoxCanHurt = false;
