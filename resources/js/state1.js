@@ -125,7 +125,7 @@ demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
         game.load.spritesheet('tester', 'resources/art/2xscott.png', 142, 136, 114);
-        game.load.spritesheet('tester2', 'resources/art/test-scott-2.png', 213, 204, 114);
+        game.load.spritesheet('tester2', 'resources/art/test-scott-2.png', 142, 136, 114);
         game.load.spritesheet('ground', 'resources/art/big-platform.png');
         game.load.spritesheet('hbox', 'resources/art/hbox.png', 25, 25);
         game.load.spritesheet('platform1', 'resources/art/platform1.png', 50, 11);
@@ -145,7 +145,7 @@ demo.state1.prototype = {
 
         // Generating player 1
         player = game.add.sprite(400, 100, 'tester');
-        dummy = game.add.sprite(100, 100, 'tester2');
+        dummy = game.add.sprite(200, 100, 'tester2');
 
 
 
@@ -274,7 +274,7 @@ demo.state1.prototype = {
         //testing player collsinion box resize
 
         player.body.setSize(60, 120, 20, 15);
-        dummy.body.setSize(104, 176, 30, 30);
+        dummy.body.setSize(60, 120, 20, 15);
 
 
 
@@ -1002,8 +1002,15 @@ function getLaunchAmount(hitbox, attacker, injured, currentDamage) {
     console.log(attacker.animations.currentAnim.name);
     if (isOverlapping && isAtkBoxActive) {
         if (attacker.animations.currentAnim.name == 'slideKick') {
-            Xvector = 15 + currentDamage;
-            Yvector = -500 - currentDamage;
+            if(pLeft){
+                Xvector =  -24 - currentDamage;
+                Yvector = -500 - currentDamage;
+
+            }else{
+                Xvector =  24 + currentDamage;
+                Yvector = -500 - currentDamage;
+            }
+
         } else if ((['neutralPunch1', 'neutralPunch2', 'neutralPunch3'].includes(attacker.animations.currentAnim.name))) {
             if (pLeft) {
                 Xvector = -1 - currentDamage;
@@ -1025,12 +1032,12 @@ function getLaunchAmount(hitbox, attacker, injured, currentDamage) {
             }
         } else if (attacker.animations.currentAnim.name == 'specialKick1') {
             if (pLeft) {
-                Xvector = -35 - currentDamage;
-                Yvector = -120 - currentDamage;
+                Xvector = -50 - currentDamage;
+                Yvector = -140 - currentDamage;
 
             } else {
-                Xvector = 35 + currentDamage;
-                Yvector = -120 - currentDamage;
+                Xvector = 50 + currentDamage;
+                Yvector = -140 - currentDamage;
 
             }
         } else if (attacker.animations.currentAnim.name == 'neutralKick') {
