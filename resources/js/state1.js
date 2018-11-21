@@ -244,9 +244,9 @@ demo.state1.prototype = {
 
 
         // Creating platform
-        platform = game.add.sprite(400, 500, 'platform1');
-       platform2 = game.add.sprite(500, 300, 'platform1');
-        platform3 = game.add.sprite(800, 500, 'platform1');
+        platform = game.add.sprite(400, 200, 'platform1');
+        platform2 = game.add.sprite(500, 300, 'platform1');
+        platform3 = game.add.sprite(800, 200, 'platform1');
         battlefield = game.add.sprite(200, 500, 'battlestage1');
 
 
