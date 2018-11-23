@@ -1,5 +1,39 @@
 let demo = window.demo || (window.demo = {});
 
+
+
+// TODO
+
+
+//0
+//Develop base mechanics (80% complete)
+
+
+//1
+//Set up a placeholder game (could be just the user contorlling 2 sprites), deploy it to heroku or AWS, use NODE, EXPRESS, SOCKETS.io, and get make it playerbale online,
+//All wee need is for the game to playable online. 1 host. and 1 person connecting to the host. Both players should be able to move the sprites in realtime.
+
+//TODO
+//2
+//Refactor code, divide into objects, use MVC
+
+//TODO
+//3
+//Create the 'Main Menu', 'Character Select', 'VS char', 'Global Stats??(mysql, express, battle stats idea)', states
+//Brainstorm if we need more states
+
+//TODO
+//4
+//Develop compentent CPU for battle
+
+//TODO
+//5
+//Rebalance battle mechanics
+
+//OPTIONAL
+//Research Tweens as an alternative to velocity animations
+
+
 let pSpeed = 15;
 
 let player,
@@ -30,6 +64,13 @@ let player,
     isPlayerJumping = false,
     //checks to see if the player is currently attacking from the air
     isPlayerAirAttack = false,
+
+    isPlayerDodging = false,
+
+
+    isPlayerAirDodging = false,
+
+    canAirDodge = true,
     timer = 1,
     isAtkBoxActive = false,
 
@@ -72,19 +113,55 @@ let player,
 
     arrowKey,
     //null
+    onlyDoOnce = false,
+
     canCheckJump = true,
 
+    shieldActive = false,
+
+    shieldHP = 100,
+
+    shieldRelativeX,
+    shieldRelativeY,
+
+
+    airDodgeDirect = '',
+
+    playerStopMotion = false,
+
+    playerGravity = 1500,
+
+
+    /**********************************************************Testing HITs on player and shield*********************** */
+    playerBeenHit = false,
+
+    barrierrHit = false,
+
+    dummyBox,
+
+    dummyCombo = [],
+
+dummyRelX = 0,
+dummyRelY = 0,
 
 
 
 
-    /********************** HEALTH AND DAMAGE MULTIPLIER VARS********************* */
 
 
 
-    //THE KNOCKBACK MECHANIC VARS
-    // p denotes 'player' and d denotes 'dummy'
-    pDamage = 0;
+
+
+
+
+
+/********************** HEALTH AND DAMAGE MULTIPLIER VARS********************* */
+
+
+
+//THE KNOCKBACK MECHANIC VARS
+// p denotes 'player' and d denotes 'dummy'
+pDamage = 0;
 dDamage = 0;
 pHP = 100,
     dHP = 100;
@@ -124,12 +201,17 @@ demo.state1 = function () { };
 demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
-        game.load.spritesheet('tester', 'resources/art/2xscott.png', 142, 136, 114);
+        game.load.spritesheet('tester', 'resources/art/2xscott.png', 142, 136, 128);
         game.load.spritesheet('tester2', 'resources/art/test-scott-2.png', 142, 136, 114);
         game.load.spritesheet('ground', 'resources/art/big-platform.png');
         game.load.spritesheet('hbox', 'resources/art/hbox.png', 25, 25);
         game.load.spritesheet('platform1', 'resources/art/platform1.png', 50, 11);
         game.load.spritesheet('battlestage1', 'resources/art/base-stage1.png', 321, 126);
+
+        game.load.spritesheet('barrier', 'resources/art/barrier.png', 108, 94, 6);
+
+        game.load.spritesheet('elecHit', 'resources/art/hit.png', 88, 54, 3);
+
 
 
 
@@ -182,6 +264,12 @@ demo.state1.prototype = {
         player.animations.add('slideKick', [107, 108, 109, 110, 111, 112, 113], 16, false);
 
 
+        player.animations.add('moveDodge', [114, 115, 116, 117, 118, 119, 120], 20, false);
+
+        player.animations.add('holdShield', [121, 122, 123, 124], 15, false);
+
+        player.animations.add('airDodge', [125, 126, 127], 14, true);
+
 
         dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
         dummy.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 12, false);
@@ -217,6 +305,8 @@ demo.state1.prototype = {
 
 
 
+
+
         //creates hitbox when player attacks
         //gets attack animname passed in playerCombo
         //based on what attack it is, it renders around the attack point, and disappears after 1 second
@@ -228,7 +318,42 @@ demo.state1.prototype = {
         //creates an instance of hitbox;
         atkBox = hitboxes.create(0, 0, 'hbox');
         //sets the size of the hitbox, without any offset
+
+        dummyBox = hitboxes.create(0, 0, 'hbox');
+
+        
+
+
+
+
+        shields = game.add.group();
+
+        shields.enableBody = true;
+
+        shield = shields.create(0, 0, 'barrier');
+
+        shield.animations.add('on', [0, 1, 2, 3, 4, 5, 6], 25, false);
+
+        shield.alpha = 0;
         //atkBox.body.setSize(15, 15, 0, 0);
+
+
+
+
+
+        hitEffects = game.add.group();
+
+        elec = hitEffects.create(0, 0, 'hit');
+
+        elec.animations.add('show', [0, 1, 2], 3, false);
+
+        elec.alpha = 0;
+
+
+
+
+
+
 
         //plays added animaiton
         player.animations.play('idle');
@@ -250,8 +375,10 @@ demo.state1.prototype = {
         battlefield = game.add.sprite(200, 500, 'battlestage1');
 
 
+
+
         //enables gravity on player but not on platform
-        game.physics.arcade.enable([player, dummy, platform, platform2, platform3,battlefield, atkBox]);
+        game.physics.arcade.enable([player, dummy, platform, platform2, platform3, battlefield, atkBox, dummyBox]);
         //player.body.collideWorldBounds = true;
         //dummy.body.collideWorldBounds = true;
 
@@ -259,14 +386,16 @@ demo.state1.prototype = {
         platform2.enableBody = true;
         platform3.enableBody = true;
         battlefield.enableBody = true;
-        battlefield.scale.setTo(2,2);
-        battlefield.body.setSize(321,126,0,25);
+        battlefield.scale.setTo(2, 2);
+        battlefield.body.setSize(321, 126, 0, 25);
 
-        player.body.gravity.y = 1900;
-        
+        player.body.gravity.y = playerGravity;
+
         dummy.body.gravity.y = 2100;
         //dummy.body.gravity.set(0, 180);
 
+        player.body.drag.x = 500;
+        //player.body.drag.y = 500;
         dummy.body.drag.x = 400;
         dummy.body.drag.y = 0;
 
@@ -292,9 +421,11 @@ demo.state1.prototype = {
 
         //player and platform will collide
 
-        game.physics.arcade.collide(player, [platform, platform1, platform2,platform3, battlefield], signalGrounded);
+        game.physics.arcade.collide(player, [/* platform, platform1, platform2,platform3, */ battlefield], signalGrounded);
         game.physics.arcade.collide(dummy, [platform, platform1, platform2, platform3, battlefield]);
         game.physics.arcade.overlap(atkBox, dummy, hit);
+
+        game.physics.arcade.overlap(dummyBox, dummy, hit);
 
         game.debug.body(player);
         game.debug.body(dummy);
@@ -305,7 +436,7 @@ demo.state1.prototype = {
         moveRunAttack(player, 'runAttack', 10);
         moveRunAttack(player, 'slideKick', 12);
 
-
+        //console.log(airDodgeDirect);
 
 
 
@@ -384,7 +515,7 @@ demo.state1.prototype = {
                     break;
                 //standard attack
                 case 'a':
-
+                    pKeyPressed = 'a';
                     if (playerCombo[0] == 'neutralPunch1' && player.animations.currentAnim.name != 'idle' && player.animations.currentAnim.name != 'jump') {
                         if (player.animations.currentAnim.name === 'neutralPunch1' || player.animations.currentAnim.isFinished) {
 
@@ -437,12 +568,21 @@ demo.state1.prototype = {
                     //initizates the jumping animation by setting isPlayerJumping to true
                     //stoping the 'idle anim if its currently playing
                     //sets isGrounded to false since the player is not longer on the floor
-                    isPlayerJumping = true;
-                    player.animations.stop('idle');
 
-                    isGrounded = false;
-                    playerCombo[0] = 'jump';
-                    //player.animations.play('jump');
+                    if (!onlyDoOnce) {
+                        isPlayerJumping = true;
+                        player.animations.stop('idle');
+
+                        isGrounded = false;
+                        playerCombo[0] = 'jump';
+                        //pKeyPressed = '';
+                        console.log("ddddd");
+                        onlyDoOnce = true;
+                        //player.animations.play('jump');
+                    } else {
+                        return;
+                    }
+
 
 
 
@@ -451,15 +591,44 @@ demo.state1.prototype = {
                     //initiates the 'block' anim
                     //will be used to block attacks
                     //possibly counter them as well, might add another mechanic for that soon
+                    pKeyPressed = 'z';
                     if (game.input.keyboard.isDown(Phaser.Keyboard.D)) {
                         player.animations.stop('idle');
                         player.animations.play('dodge');
 
-                    } else {
-                        player.animations.stop('idle');
-                        player.animations.play('block');
+                    } else if (!isPlayerAirDodging && isGrounded && (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.LEFT))) {
+                        isPlayerDodging = true;
+
+
+                    } else if (canAirDodge && !isGrounded && (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.LEFT))) {
+
+                        if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+                            isPlayerAirDodging = true;
+                            airDodgeDirect = 'right';
+                            canAirDodge = false;
+                        } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+                            isPlayerAirDodging = true;
+                            airDodgeDirect = 'left';
+                            canAirDodge = false;
+
+                        }
+
+
+                    } else if (isGrounded) {
+                        shieldActive = true;
 
                     }
+
+                    break;
+
+                //TESTING ENEMY ATTACKS
+                case 't':
+                    dummyCombo[0] = 'hit';
+                    dummy.animations.play('neutralPunch1');
+                    setTimeout(function () {
+                        dummyCombo = [];
+                    }, 100)
+
 
                     break;
                 default:
@@ -474,11 +643,11 @@ demo.state1.prototype = {
             console.log(e);
         };
 
-        game.input.keyboard.onUpCallback = function (e) {
-            if (e.keyCode == Phaser.Keyboard.X) {
-                canJumpAgain = true;
-            }
-        };
+        /*    game.input.keyboard.onUpCallback = function (e) {
+               if (e.keyCode == Phaser.Keyboard.X) {
+                   canJumpAgain = true;
+               }
+           }; */
 
 
 
@@ -486,6 +655,8 @@ demo.state1.prototype = {
 
 
         movePlayerAttackBox(atkBox);
+
+        tempDummyAttack(dummyBox);
 
         jump(player, 5);
         runJumpIdle();
@@ -496,8 +667,11 @@ demo.state1.prototype = {
 
 
 
-
-
+        moveDodge(player);
+        showShield(shield, player);
+        resizeToSprite(shield, player);
+        airDodged(player, airDodgeDirect);
+        resetAirDodge(player);
 
         //**************** H E L P E R    F U N C T I O N S*******************//
 
@@ -529,7 +703,7 @@ demo.state1.prototype = {
 
             if (completedJump) {
 
-                if (!isPlayerAirAttack && canPlayerJump) {
+                if (!isPlayerAirAttack && !isPlayerAirDodging && canPlayerJump && sprite.animations.currentAnim.name !== 'airDodge') {
                     if ((isGrounded && startedJump) || (isGrounded && startedJump && playerCombo[0] == 'jump')) {
                         console.log('ending jump');
                         sprite.animations.play('endJump');
@@ -537,13 +711,13 @@ demo.state1.prototype = {
 
                         isPlayerJumping = false;
                         canPlayerJump = false;
-                        setTimeout(function () {
-
-                            canPlayerJump = true;
-                        }, 400);
+                        /*                       setTimeout(function () {
+                      
+                                                  canPlayerJump = true;
+                                              }, 400); */
 
                     }
-                    else if (playerCombo[0] == 'jump' && !isGrounded && startedJump) {
+                    else if (!isGrounded && startedJump) {
                         console.log('looping');
                         sprite.animations.play('loopJump');
                     } else if (playerCombo[0] == 'jump' && !isGrounded && !startedJump) {
@@ -661,12 +835,16 @@ demo.state1.prototype = {
         function jump(sprite, maxHeight) {
 
             let height = 0;
+            if (!isPlayerAirDodging) {
+                do {
+                    height++;
+                    sprite.y -= height
 
-            do {
-                height++;
-                sprite.y -= height
+                } while (game.input.keyboard.isDown(Phaser.Keyboard.X) && height < maxHeight);
+            } else {
+                return;
+            }
 
-            } while (game.input.keyboard.isDown(Phaser.Keyboard.X) && height < maxHeight);
         }
 
         //mainly used for forward attacks
@@ -679,56 +857,99 @@ demo.state1.prototype = {
             }
         }
 
-
+        /* game.input.keyboard.isDown(Phaser.Keyboard.X) || */
 
         //runs script to decide when the character should be playing its running, idle, or jumping anims
         function runJumpIdle() {
             //if current animation is finished, the idle animation will play, playerCombos will be rest as well as pKeyPressed
 
             //HANDLES IDLE ANIM
-            if (player.animations.currentAnim.isFinished) {
-                if (game.input.keyboard.isDown(Phaser.Keyboard.X) || !completedJump || player.animations.currentAnim.name == ('jump' || 'startjump' || 'loopJump' || 'endJump')) {
-                    player.animations.stop('idle');
-                    //playerCombo = [];
 
-                    pKeyPressed = '';
-                } else if (completedJump || (!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && player.animations.currentAnim.name == 'run' || !game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && player.animations.currentAnim.name == 'run')) {
 
-                    player.animations.play('idle');
-                    playerCombo = [];
-                    console.log('asas');
-                    pKeyPressed = '';
-                }
-                //HANDLES RUN ANIM
-            } else if ((player.animations.currentAnim.name == 'idle' || player.animations.currentAnim.name == 'run' || player.animations.currentAnim.name == 'jump' || isGrounded) && player.animations.currentAnim.name != ('neutralKick' || 'neutralPunch1' || 'neutralPunch2' || 'neutralPunch3' || 'neutralPunch4') || (!player.animations.currentAnim.isFinished)) {
-                if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && (!pKeyPressed && player.animations.currentAnim.name !== 'runAttack')) {
-                    player.scale.setTo(1, 1);
-                    pLeft = false;
 
-                    player.x += 8;
-                    if (player.animations.currentAnim.name != ('jump' || 'startjump' || 'loopJump' || 'endJump') && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded !== false || startedJump == false)) {
-                        player.animations.play('run');
+            if (!playerStopMotion) {
+                if (player.animations.currentAnim.isFinished) {
+                    if (isPlayerDodging && (['startJump', 'loopJump', 'dodge', 'block', 'moveDodge'].includes(player.animations.currentAnim.name))) {
+                        player.animations.stop('idle');
+                        //playerCombo = [];
+                        console.log('dddaaaaaad');
+                        pKeyPressed = '';
+                    } else if ((!isPlayerDodging || !isPlayerAirDodging) && !game.input.keyboard.isDown(Phaser.Keyboard.Z) && !game.input.keyboard.isDown(Phaser.Keyboard.X) && completedJump || (!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && player.animations.currentAnim.name == 'run' || !game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && player.animations.currentAnim.name == 'run')) {
+                        onlyDoOnce = false;
+                        canPlayerJump = true;
+                        player.animations.play('idle');
+                        playerCombo = [];
+                        console.log('asas');
+                        pKeyPressed = '';
                     }
-                } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && (!pKeyPressed && player.animations.currentAnim.name !== 'runAttack')) {
-                    player.scale.setTo(-1, 1);
-                    pLeft = true;
-                    if (player.animations.currentAnim.name != ('jump' || 'startjump' || 'loopJump' || 'endJump') && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded !== false || startedJump == false)) {
-                        player.animations.play('run');
+                    //HANDLES RUN ANIM  isPlayerAirDodging
+                } else if (((!shieldActive || !isPlayerAirDodging) && player.animations.currentAnim.name == 'idle' || player.animations.currentAnim.name == 'run' || player.animations.currentAnim.name == 'jump' || isGrounded) && !['neutralKick', 'neutralPunch1', 'neutralPunch2', 'neutralPunch3', 'neutralPunch4'].includes(player.animations.currentAnim.name) || (!player.animations.currentAnim.isFinished)) {
+                    if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && ((!['s', 'a'].includes(pKeyPressed)) && player.animations.currentAnim.name !== 'runAttack' && (!isPlayerAirDodging && !shieldActive))) {
+                        player.scale.setTo(1, 1);
+                        pLeft = false;
+
+                        player.x += 8;
+                        console.log('sssa');
+
+
+                        if ((!['jump', 'startJump', 'loopJump', 'endJump', 'dodge', 'block', 'moveDodge', 'loopDwnKick', 'airDodge'].includes(player.animations.currentAnim.name)) && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded !== false || startedJump == false)) {
+                            player.animations.play('run');
+                        }
+                    } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && ((!['s', 'a'].includes(pKeyPressed)) && player.animations.currentAnim.name !== 'runAttack' && (!isPlayerAirDodging && !shieldActive))) {
+                        player.scale.setTo(-1, 1);
+                        pLeft = true;
+
+
+                        player.x -= 8;
+                        console.log(' running left');
+
+                        if ((!['jump', 'startJump', 'loopJump', 'endJump', 'dodge', 'block', 'moveDodge', 'loopDwnKick', 'airDodge'].includes(player.animations.currentAnim.name)) && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && isGrounded !== false || startedJump == false)) {
+                            player.animations.play('run');
+                        }
+
+                    } else if ((!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) || (!game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) || pKeyPressed || game.input.keyboard.isDown(Phaser.Keyboard.Z) || game.input.keyboard.isDown(Phaser.Keyboard.A) || game.input.keyboard.isDown(keys.d) || game.input.keyboard.isDown(keys.w) || game.input.keyboard.isDown(keys.x) || startedJump) {
+                        player.animations.stop('run');
+
+
                     }
-
-                    player.x -= 8;
-
-                } else if ((!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) || (!game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) || pKeyPressed || game.input.keyboard.isDown(Phaser.Keyboard.A) || game.input.keyboard.isDown(keys.d) || game.input.keyboard.isDown(keys.w) || game.input.keyboard.isDown(keys.x) || startedJump) {
-                    player.animations.stop('run');
                 }
+
+
+
+            } else {
+                return;
             }
-
-
 
         }
 
 
+        function tempDummyAttack(hb) {
+            let posX = dummy.x + dummyRelX;
+            let posY = dummy.y + dummyRelY;
+            hb.x = posX;
+            hb.y = posY;
+            hb.alpha = 0;
+            hb.angle = 0;
 
+            //sets the position of the hitbox
+            hb.position = {
+                x: posX,
+                y: posY,
+                type: 25
+            }
+
+            switch (dummyCombo[0]) {
+                case 'neutralPunch1':
+                    relativePosX = 80;
+                    relativePosY = 55;
+                    hb.alpha = 0.6;
+                    resetHitBox(hb);
+                    break;
+
+                default:
+                    break;
+            }
+        }
 
 
         //renders hitbox temporarily while attacking (debugging)
@@ -932,7 +1153,7 @@ demo.state1.prototype = {
 
 
 
-        //********************************************HIT LOGIC********************* */
+        //********************************************HIT LOGIC*********************************************************** */
 
         //the following code is extemely crude and is only used for testing purposes
 
@@ -990,8 +1211,61 @@ demo.state1.prototype = {
 
         }
 
+        //still need to add code onc ontact with enemey hitbox
+        function showShield(shield, sprite) {
+
+            let posX = sprite.x + shieldRelativeX;
+            let posY = sprite.y + shieldRelativeY;
+            shield.x = posX;
+            shield.y = posY;
+
+            shield.position = {
+                x: posX,
+                y: posY,
+                type: 25
+            }
+
+            // if the the shield is active and the Z key is held down
+            if (isGrounded && shieldActive && game.input.keyboard.isDown(Phaser.Keyboard.Z)) {
+                //play the shield animation
+                player.animations.play('holdShield');
+                shield.animations.play('on');
 
 
+                if (pLeft) {
+                    shieldRelativeX = -110;
+                    shieldRelativeY = 0;
+                } else {
+                    shieldRelativeX = -20;
+                    shieldRelativeY = 0;
+                }
+
+                if (shieldActive && shieldHP > 76) {
+                    //set the alpha to 1
+                    shield.alpha = 1;
+                } else if (shieldActive && 50 <= shieldHP <= 75) {
+                    //set alpha to 0.7 if shieldHP is between 50 and 75
+                    //the idea here is the the shield will appear 'weaker' or 'more tranasparent', the less HP it has
+                    shield.alpha = 0.7;
+                } else if (shieldActive && 25 <= shieldHP <= 50) {
+                    shield.alpha = 0.5;
+                } else if (shieldActive && 0 < shieldHP < 24) {
+                    shield.alpha = 0.3;
+                } else if (shieldActive && shieldHP <= 0) {
+                    shield.alpha = 0;
+                    shieldActive = false;
+                    shield.destroy();
+                }
+
+
+            } else {
+                shield.animations.stop('on');
+                shield.alpha = 0;
+                shieldActive = false;
+                return;
+            }
+
+        }
     }
 };
 
@@ -1002,12 +1276,12 @@ function getLaunchAmount(hitbox, attacker, injured, currentDamage) {
     console.log(attacker.animations.currentAnim.name);
     if (isOverlapping && isAtkBoxActive) {
         if (attacker.animations.currentAnim.name == 'slideKick') {
-            if(pLeft){
-                Xvector =  -24 - currentDamage;
+            if (pLeft) {
+                Xvector = -24 - currentDamage;
                 Yvector = -500 - currentDamage;
 
-            }else{
-                Xvector =  24 + currentDamage;
+            } else {
+                Xvector = 24 + currentDamage;
                 Yvector = -500 - currentDamage;
             }
 
@@ -1043,37 +1317,37 @@ function getLaunchAmount(hitbox, attacker, injured, currentDamage) {
         } else if (attacker.animations.currentAnim.name == 'neutralKick') {
             if (pLeft) {
                 Xvector = -90 - currentDamage;
-                
+
 
             } else {
                 Xvector = 90 + currentDamage;
-               
+
 
             }
-        }else if (attacker.animations.currentAnim.name == 'runAttack') {
+        } else if (attacker.animations.currentAnim.name == 'runAttack') {
             if (pLeft) {
                 Xvector = -300 - currentDamage;
                 Yvector = -200 - currentDamage;
 
-                
+
 
             } else {
                 Xvector = 300 + currentDamage;
                 Yvector = -200 - currentDamage;
-               
+
 
             }
-        }else if (attacker.animations.currentAnim.name == 'loopDwnKick') {
+        } else if (attacker.animations.currentAnim.name == 'loopDwnKick') {
             if (pLeft) {
                 Xvector = -300 - currentDamage;
                 Yvector = 280 + currentDamage;
 
-                
+
 
             } else {
                 Xvector = 300 + currentDamage;
                 Yvector = 280 + currentDamage;
-               
+
 
             }
         }
@@ -1085,7 +1359,7 @@ function getLaunchAmount(hitbox, attacker, injured, currentDamage) {
 }
 //hitbox = name of attacker's hitbox
 //injured = the name of the sprite that recived the hit
-//isSpec = if there ther is a specified velocity from an attack anim
+//isSpec = boolean, if there ther is a specified velocity from an attack anim
 //if so, then add those coords to x and y (these amounts are acutally passed with getLaunchAmount)
 
 function launchSprite(hitbox, injured, isSpec, x, y) {
@@ -1114,3 +1388,94 @@ function hurt(sprite, pushback, length, collisionType, hboxName) {
     }
 
 }
+
+
+function moveDodge(sprite) {
+    if (!game.input.keyboard.isDown(Phaser.Keyboard.X) && !isPlayerAirDodging && isPlayerDodging && !shieldActive) {
+        sprite.animations.play('moveDodge');
+
+        if (pLeft) {
+            sprite.body.velocity.setTo(-340, 0);
+        } else {
+            sprite.body.velocity.setTo(340, 0);
+        }
+
+    }
+
+    isPlayerDodging = false;
+}
+
+//sprtie would be the image we want resize
+//example, would be the sprite whose dimensions we want to set for the other sprite
+//
+function resizeToSprite(sprite, example) {
+    if ((sprite.width < example.width) &&
+        (sprite.height < example.height)) {
+        sprite.width = example.width;
+        sprite.height = example.height;
+
+    } else {
+        return;
+    }
+}
+
+let move;
+function airDodged(sprite, direction) {
+    if (isPlayerAirDodging && sprite.animations.currentAnim.name !== 'airDodge') {
+        toggleSpriteMotion();
+
+        console.log('ssss');
+        if (direction === 'right') {
+            sprite.animations.play('airDodge');
+            game.add.tween(sprite).to({ x: '-80' }, 500, Phaser.Easing.Cubic.Out, true);
+            doTimeout(toggleSpriteMotion, 500);
+            //sprite.body.velocity.setTo(-125, 0);
+            //game.add.tween(sprite).onComplete.add(toggleSpriteMotion, this);
+            isPlayerAirDodging = false;
+            airDodgeDirect = '';
+            console.log('asasassssss');
+        } else if (direction === 'left') {
+            sprite.animations.play('airDodge');
+            game.add.tween(sprite).to({ x: '80' }, 500, Phaser.Easing.Cubic.Out, true);
+            doTimeout(toggleSpriteMotion, 500);
+            //game.add.tween(sprite).onComplete.add(toggleSpriteMotion, this);
+            //sprite.body.velocity.setTo(125, 0);
+            isPlayerAirDodging = false;
+            airDodgeDirect = '';
+            console.log('asdsdsdsaaadffff');
+        } else {
+            return;
+        }
+
+    }
+
+}
+
+function resetAirDodge(sprite) {
+    if (isGrounded && sprite.animations.currentAnim.name !== 'airDodge') {
+        canAirDodge = true;
+    }
+    if (sprite.animations.currentAnim.name == 'airDodge' && sprite.animations.currentAnim.loopCount >= 1) {
+        sprite.animations.stop('airDodge');
+    }
+}
+
+function toggleSpriteMotion(sprite) {
+    playerStopMotion ? playerStopMotion = false : playerStopMotion = true;
+    player.body.gravity.y > 0 ? player.body.gravity.y = 0 : player.body.gravity.y = playerGravity;
+    player.body.moves ? player.body.moves = false : player.body.moves = true;
+    /*     if(player.animations.currentAnim.name == 'airDodge'){
+            player.animations.stop('airDodge');
+        } */
+
+}
+
+function doTimeout(func, time) {
+    setTimeout(function () {
+        func();
+    }, time)
+}
+
+//sets the position of the shield to the passed sprite
+
+
