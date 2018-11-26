@@ -201,20 +201,14 @@ demo.state1 = function () { };
 demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
-        game.load.spritesheet('tester', 'resources/art/2xscott.png', 142, 136, 128);
-        game.load.spritesheet('tester2', 'resources/art/test-scott-2.png', 142, 136, 114);
-        game.load.spritesheet('ground', 'resources/art/big-platform.png');
-        game.load.spritesheet('hbox', 'resources/art/hbox.png', 25, 25);
-        game.load.spritesheet('platform1', 'resources/art/platform1.png', 50, 11);
-        game.load.spritesheet('battlestage1', 'resources/art/base-stage1.png', 321, 126);
-
-        game.load.spritesheet('barrier', 'resources/art/barrier.png', 108, 94, 6);
-
-        game.load.spritesheet('elecHit', 'resources/art/hit.png', 88, 54, 3);
-
-
-
-
+        game.load.spritesheet('tester', 'resources/client/assets/art/2xscott.png', 142, 136, 128);
+        game.load.spritesheet('tester2', 'resources/client/assets/art/test-scott-2.png', 142, 136, 114);
+        game.load.spritesheet('ground', 'resources/client/assets/art/big-platform.png');
+        game.load.spritesheet('hbox', 'resources/client/assets/art/hbox.png', 25, 25);
+        game.load.spritesheet('platform1', 'resources/client/assets/art/platform1.png', 50, 11);
+        game.load.spritesheet('battlestage1', 'resources/client/assets/art/base-stage1.png', 321, 126);
+        game.load.spritesheet('barrier', 'resources/client/assets/art/barrier.png', 108, 94, 6);
+        game.load.spritesheet('elecHit', 'resources/client/assets/art/hit.png', 88, 54, 3);
     },
     create: function () {
         // Starting game physics
