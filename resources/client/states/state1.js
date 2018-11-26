@@ -30,7 +30,7 @@ let demo = window.demo || (window.demo = {});
 //5
 //Rebalance battle mechanics
 
-//OPTIONAL
+//OPTIONAL1
 //Research Tweens as an alternative to velocity animations
 
 
@@ -319,7 +319,7 @@ demo.state1.prototype = {
         atkBox = hitboxes.create(0, 0, 'hbox');
         //sets the size of the hitbox, without any offset
 
-        dummyBox = hitboxes.create(0, 0, 'hbox');
+        //dummyBox = hitboxes.create(0, 0, 'hbox');
 
         
 
@@ -378,7 +378,7 @@ demo.state1.prototype = {
 
 
         //enables gravity on player but not on platform
-        game.physics.arcade.enable([player, dummy, platform, platform2, platform3, battlefield, atkBox, dummyBox]);
+        game.physics.arcade.enable([player, dummy, platform, platform2, platform3, battlefield, atkBox]);
         //player.body.collideWorldBounds = true;
         //dummy.body.collideWorldBounds = true;
 
@@ -425,10 +425,10 @@ demo.state1.prototype = {
         game.physics.arcade.collide(dummy, [platform, platform1, platform2, platform3, battlefield]);
         game.physics.arcade.overlap(atkBox, dummy, hit);
 
-        game.physics.arcade.overlap(dummyBox, dummy, hit);
+        //game.physics.arcade.overlap(dummyBox, dummy, hit);
 
-        game.debug.body(player);
-        game.debug.body(dummy);
+        //game.debug.body(player);
+        //game.debug.body(dummy);
         //runs function on key press
 
 
@@ -656,7 +656,7 @@ demo.state1.prototype = {
 
         movePlayerAttackBox(atkBox);
 
-        tempDummyAttack(dummyBox);
+        //tempDummyAttack(dummyBox);
 
         jump(player, 5);
         runJumpIdle();
