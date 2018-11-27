@@ -5,6 +5,7 @@ let app = express();
 const server = require('http').Server(app);
 const path = require('path');
 
+app.use('/resources',express.static(__dirname + '/resources'));
 app.use('/states',express.static(__dirname + '/resources/client/states'));
 app.use('/js',express.static(__dirname + '/resources/client/js'));
 
