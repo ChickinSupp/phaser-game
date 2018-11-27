@@ -1,15 +1,16 @@
 // *** main dependencies *** //
 const express = require('express');
-const path = require('path');
-
-
 // *** express instance *** //
 let app = express();
+const server = require('http').Server(app);
+const path = require('path');
 
+app.use('/states',express.static(__dirname + '/resources/client/states'));
+app.use('/js',express.static(__dirname + '/resources/client/js'));
+
+const PORT =  process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-let PORT =  process.env.PORT || 3000;
 
 // Basic route that sends the user first to the AJAX Page
 app.get("/", function(req, res) {

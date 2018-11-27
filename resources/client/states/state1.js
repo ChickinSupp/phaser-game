@@ -1,7 +1,5 @@
 let demo = window.demo || (window.demo = {});
 
-
-
 // TODO
 
 
