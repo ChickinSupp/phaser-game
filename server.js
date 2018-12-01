@@ -1,25 +1,30 @@
-// *** main dependencies *** //
+//Dependencies
 const express = require('express');
-//const socket = require('socket.io');
-// *** express instance *** //
 let app = express();
 const server = require('http').Server(app);
-const path = require('path');
+const bodyParser = require("body-parser");
+const io = require('socket.io').listen(server);
 
-app.use('/resources',express.static(__dirname + '/resources'));
-
+app.use(express.static(__dirname + '/public'));
 const PORT =  process.env.PORT || 3000;
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
-// Basic route that sends the user first to the AJAX Page
-app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "index.html"));
-});
+app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Routes
+// =============================================================
+require("./routes/apiRoutes.js")(app);
+require("./routes/htmlRoutes.js")(app);
 
 // Starts the server to begin listening
 // =============================================================
-app.listen(PORT, function() {
-    console.log("App listening on PORT " + PORT);
+server.listen(PORT, () => {
+    console.log(`App now listening on port ${PORT}`);
 });
 
+io.on('connection',function(socket){
+    socket.emit('news', { hello: 'world' });
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
+});

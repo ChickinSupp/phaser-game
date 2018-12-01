@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/DavidDBaker/phaser-game#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "mysql": "^2.16.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "socket.io": "^2.1.1"
   }
 }
