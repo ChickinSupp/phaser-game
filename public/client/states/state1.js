@@ -52,6 +52,11 @@ function Character(name, power, gravity) {
         isOverlapping: false,
         isAtkBoxActive: false,
     };
+    this.canAirRecover = true;
+    this.isAirRecovering = false;
+    this.isInvincible = false;
+    this.timedBonusAnim;
+    this.timedBonus = false;
     this.stopMotion = false;
     this.glideDownJump = function (sprite, fallingGravity, postGravity) {
         if (!this.isGrounded || this.combo[0] === 'jump') {
@@ -65,7 +70,7 @@ function Character(name, power, gravity) {
     this.jumpAnimLoop = function (sprite) {
         if (this.completedJump) {
 
-            if (!this.isAirAttack && !this.isAirDodging && this.canPlayerJump && sprite.animations.currentAnim.name !== 'airDodge') {
+            if (!this.isAirAttack && !this.isAirDodging && this.canPlayerJump && sprite.animations.currentAnim.name !== 'airDodge' && sprite.animations.currentAnim.name !== 'airRecovery' && sprite.animations.currentAnim.name !== 'airNeutral') {
                 if ((this.isGrounded && this.startedJump) || (this.isGrounded && this.startedJump && this.combo[0] == 'jump')) {
                     console.log('ending jump');
                     sprite.animations.play('endJump');
@@ -203,8 +208,10 @@ function Character(name, power, gravity) {
                     this.canPlayerJump = true;
                     sprite.animations.play('idle');
                     this.combo = [];
+                    this.canAirRecover = true;
                     console.log('asas');
                     this.keyPressed = '';
+                    this.timedBonusAnim = '';
                 }
                 //HANDLES RUN ANIM  isspriteAirDodging
             } else if (((!this.shield.shieldActive || !this.isAirDodging) && sprite.animations.currentAnim.name == 'idle' || sprite.animations.currentAnim.name == 'run' || sprite.animations.currentAnim.name == 'jump' || this.isGrounded) && !['neutralKick', 'neutralPunch1', 'neutralPunch2', 'neutralPunch3', 'neutralPunch4'].includes(sprite.animations.currentAnim.name) || (!sprite.animations.currentAnim.isFinished)) {
@@ -212,7 +219,12 @@ function Character(name, power, gravity) {
                     sprite.scale.setTo(1, 1);
                     this.isLeft = false;
 
-                    sprite.x += 8;
+                    if (sprite.animations.currentAnim.name == 'airNeutral') {
+                        sprite.x += 13;
+                    } else {
+                        sprite.x += 8;
+                    }
+
                     console.log('sssa');
 
 
@@ -224,7 +236,11 @@ function Character(name, power, gravity) {
                     this.isLeft = true;
 
 
-                    sprite.x -= 8;
+                    if (sprite.animations.currentAnim.name == 'airNeutral') {
+                        sprite.x -= 13;
+                    } else {
+                        sprite.x -= 8;
+                    }
                     console.log(' running left');
 
                     if ((!['jump', 'startJump', 'loopJump', 'endJump', 'dodge', 'block', 'moveDodge', 'loopDwnKick', 'airDodge'].includes(sprite.animations.currentAnim.name)) && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && this.isGrounded !== false || this.startedJump == false)) {
@@ -264,13 +280,13 @@ function Character(name, power, gravity) {
             case 'neutralPunch1':
                 if (this.isLeft) {
                     this.hitbox.X = -110;
-                    this.hitbox.Y = 55;
+                    this.hitbox.Y = 104;
                     atkBox.alpha = 0.6;
                     this.resetHitbox(atkBox);
 
                 } else {
                     this.hitbox.X = 80;
-                    this.hitbox.Y = 55;
+                    this.hitbox.Y = 104;
                     atkBox.alpha = 0.6;
                     this.resetHitbox(atkBox);
                 }
@@ -279,12 +295,12 @@ function Character(name, power, gravity) {
             case 'neutralPunch2':
                 if (this.isLeft) {
                     this.hitbox.X = -110;
-                    this.hitbox.Y = 55;
+                    this.hitbox.Y = 104;
                     atkBox.alpha = 0.6;
                     this.resetHitbox(atkBox);
                 } else {
                     this.hitbox.X = 80;
-                    this.hitbox.Y = 55;
+                    this.hitbox.Y = 104;
                     atkBox.alpha = 0.6;
                     this.resetHitbox(atkBox);
                 }
@@ -293,7 +309,7 @@ function Character(name, power, gravity) {
             case 'neutralPunch3':
                 if (this.isLeft) {
                     this.hitbox.X = -110;
-                    this.hitbox.Y = 55;
+                    this.hitbox.Y = 104;
                     atkBox.alpha = 0.6;
                     this.resetHitbox(atkBox);
                 } else {
@@ -316,12 +332,12 @@ function Character(name, power, gravity) {
             case 'neutralPunch5':
                 if (this.isLeft) {
                     this.hitbox.X = -95;
-                    this.hitbox.Y = 65;
+                    this.hitbox.Y = 114;
                     atkBox.alpha = 0.6;
                     this.resetHitbox(atkBox);
                 } else {
                     this.hitbox.X = 65;
-                    this.hitbox.Y = 65;
+                    this.hitbox.Y = 114;
                     atkBox.alpha = 0.6;
                     this.resetHitbox(atkBox);
                 }
@@ -330,12 +346,12 @@ function Character(name, power, gravity) {
             case 'neutralKick':
                 if (this.isLeft) {
                     this.hitbox.X = -110;
-                    this.hitbox.Y = 70;
+                    this.hitbox.Y = 119;
                     atkBox.alpha = 0.6;
                     this.resetHitbox(atkBox);
                 } else {
-                    this.hitbox.X = 80;
-                    this.hitbox.Y = 70;
+                    this.hitbox.X = 85;
+                    this.hitbox.Y = 119;
                     atkBox.alpha = 0.6;
                     this.resetHitbox(atkBox);
                 }
@@ -345,7 +361,7 @@ function Character(name, power, gravity) {
             case 'specialKick1':
                 if (this.isLeft) {
                     this.hitbox.X = -100;
-                    this.hitbox.Y = 60;
+                    this.hitbox.Y = 109;
                     atkBox.height = 30;
                     atkBox.width = 75;
                     atkBox.alpha = 0.6;
@@ -353,7 +369,7 @@ function Character(name, power, gravity) {
                 } else {
                     //atkBox.angle = 45;
                     this.hitbox.X = 30;
-                    this.hitbox.Y = 60;
+                    this.hitbox.Y = 109;
                     atkBox.height = 30;
                     atkBox.width = 75;
                     atkBox.alpha = 0.6;
@@ -364,7 +380,7 @@ function Character(name, power, gravity) {
             case 'runAttack':
                 if (this.isLeft) {
                     this.hitbox.X = -110;
-                    this.hitbox.Y = 40;
+                    this.hitbox.Y = 89;
                     atkBox.height = 40;
                     atkBox.width = 55;
                     atkBox.alpha = 0.6;
@@ -372,7 +388,7 @@ function Character(name, power, gravity) {
                 } else {
                     //atkBox.angle = 45;
                     this.hitbox.X = 60;
-                    this.hitbox.Y = 40;
+                    this.hitbox.Y = 89;
                     atkBox.height = 40;
                     atkBox.width = 55;
                     atkBox.alpha = 0.6;
@@ -384,7 +400,7 @@ function Character(name, power, gravity) {
                 if (this.isLeft) {
                     atkBox.angle = -25;
                     this.hitbox.X = -150;
-                    this.hitbox.Y = 80;
+                    this.hitbox.Y = 129;
                     atkBox.height = 25;
                     atkBox.width = 50;
                     atkBox.alpha = 0.6;
@@ -392,7 +408,7 @@ function Character(name, power, gravity) {
                 } else {
                     atkBox.angle = 25;
                     this.hitbox.X = 120;
-                    this.hitbox.Y = 80;
+                    this.hitbox.Y = 129;
                     atkBox.height = 25;
                     atkBox.width = 50;
                     atkBox.alpha = 0.6;
@@ -403,7 +419,7 @@ function Character(name, power, gravity) {
             case 'slideKick':
                 if (this.isLeft) {
                     this.hitbox.X = -130;
-                    this.hitbox.Y = 110;
+                    this.hitbox.Y = 159;
                     atkBox.height = 15;
                     atkBox.width = 60;
                     atkBox.alpha = 0.6;
@@ -411,9 +427,69 @@ function Character(name, power, gravity) {
                 } else {
                     //atkBox.angle = 45;
                     this.hitbox.X = 80;
-                    this.hitbox.Y = 110;
+                    this.hitbox.Y = 159;
                     atkBox.height = 15;
                     atkBox.width = 60;
+                    atkBox.alpha = 0.6;
+                    this.resetHitbox(atkBox);
+                }
+
+                break;
+            case 'upNeutral':
+                if (this.isLeft) {
+                    atkBox.angle = -75;
+                    this.hitbox.X = -110;
+                    this.hitbox.Y = 120;
+
+                    atkBox.height = 50;
+                    atkBox.width = 80;
+                    atkBox.alpha = 0.6;
+                    this.resetHitbox(atkBox);
+                } else {
+                    //atkBox.angle = 45;
+                    atkBox.angle = 75;
+                    this.hitbox.X = 90;
+                    this.hitbox.Y = 50;
+                    atkBox.height = 50;
+                    atkBox.width = 80;
+                    atkBox.alpha = 0.6;
+                    this.resetHitbox(atkBox);
+                }
+
+                break;
+            case 'airNeutral':
+                //for scott, its a spike
+                if (this.isLeft) {
+                    this.hitbox.X = -120;
+                    this.hitbox.Y = 140;
+                    atkBox.alpha = 0.6;
+                    this.resetHitbox(atkBox);
+
+                } else {
+                    this.hitbox.X = 90;
+                    this.hitbox.Y = 140;
+                    atkBox.alpha = 0.6;
+                    this.resetHitbox(atkBox);
+                }
+
+                break;
+            case 'airRecovery':
+                if (this.isLeft) {
+                    atkBox.angle = -75;
+                    this.hitbox.X = -120;
+                    this.hitbox.Y = 120;
+
+                    atkBox.height = 60;
+                    atkBox.width = 120;
+                    atkBox.alpha = 0.6;
+                    this.resetHitbox(atkBox);
+                } else {
+                    //atkBox.angle = 45;
+                    atkBox.angle = 75;
+                    this.hitbox.X = 90;
+                    this.hitbox.Y = 10;
+                    atkBox.height = 60;
+                    atkBox.width = 120;
                     atkBox.alpha = 0.6;
                     this.resetHitbox(atkBox);
                 }
@@ -431,10 +507,12 @@ function Character(name, power, gravity) {
         } else if (sprite.animations.currentAnim.name == animName && game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
             sprite.x -= speed;
         }
-    }
+    };
     this.moveDodge = function (sprite) {
         if (!game.input.keyboard.isDown(Phaser.Keyboard.X) && !this.isAirDodging && this.isDodging && !this.shield.shieldActive) {
+            
             sprite.animations.play('moveDodge');
+            this.timedBonusAnim = (sprite.animations.currentAnim.name);
 
             if (this.isLeft) {
                 sprite.body.velocity.setTo(-340, 0);
@@ -473,6 +551,37 @@ function Character(name, power, gravity) {
                 return;
             }
 
+        }
+    };
+    this.upRecovery = function (sprite) {
+        if (this.isAirRecovering && sprite.animations.currentAnim.name !== 'airRecovery') {
+
+            //change param to sprite
+            this.toggleSpriteMotion(scott);
+            if (!this.isLeft) {
+                sprite.animations.play('airRecovery');
+                this.combo[0] = (sprite.animations.currentAnim.name);
+                game.add.tween(sprite).to({ x: '80', y: '-180' }, 400, Phaser.Easing.Cubic.Out, true);
+                this.doTimeout(this.toggleSpriteMotion, 400, scott);
+
+
+                this.isAirRecovering = false;
+
+                console.log('finished air recover');
+
+            } else if (this.isLeft) {
+                sprite.animations.play('airRecovery');
+                this.combo[0] = (sprite.animations.currentAnim.name);
+                game.add.tween(sprite).to({ x: '-80', y: '-180' }, 400, Phaser.Easing.Cubic.Out, true);
+                this.doTimeout(this.toggleSpriteMotion, 400, scott);
+
+
+                this.isAirRecovering = false;
+
+                console.log('finished air recover');
+            } else {
+                return;
+            }
         }
     };
     this.resetAirDodge = function (sprite) {
@@ -569,15 +678,19 @@ function Character(name, power, gravity) {
 
 //sprite = name of sprite
 //charObj  =
-function keyListener(sprite, charObj) {
+function keyListener(sprite, charObj, s) {
     game.input.keyboard.onPressCallback = function (e) {
         console.log("key pressed", e);
         switch (e) {
             //standard kick
-            case 's':
+            case s:
                 //if the player is'nt jumping or running
                 //then the player will kick normally
                 if (!charObj.isJumping && sprite.animations.currentAnim.name !== 'run') {
+                    if(sprite.animations.currentAnim.name == 'moveDodge' && [114,115,116, 117,118,119,120].includes(sprite.animations.currentAnim.currentFrame.index)){
+                        charObj.timedBonus = true;
+
+                    }
                     sprite.animations.play('neutralKick');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
                     charObj.keyPressed = 's';
@@ -596,7 +709,7 @@ function keyListener(sprite, charObj) {
                     //then play the 'slideKick' animation
                     //would not want to play the same animation if its already playing....
                 } else if ((game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) && sprite.animations.currentAnim.name != 'slideKick' && sprite.animations.currentAnim.name == 'run') {
-                    charObj
+                    
                     charObj.keyPressed = 's';
                     sprite.animations.play('slideKick');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
@@ -625,16 +738,28 @@ function keyListener(sprite, charObj) {
 
                     sprite.animations.play('runAttack');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
-                }
+                } else if ((game.input.keyboard.isDown(Phaser.Keyboard.UP))) {
+                    if (charObj.canAirRecover) {
+                        charObj.isAirRecovering = true;
+                        charObj.canAirRecover = false;
+                    } else {
+                        return;
+                    }
 
+
+                } else if (charObj.combo[0] == 'neutralPunch5' && sprite.animations.currentAnim.name !== 'idle') {
+                    charObj.keyPressed = 'd';
+                    sprite.animations.play('upNeutral');
+                    charObj.combo[0] = (sprite.animations.currentAnim.name);
+                }
 
                 break;
             //standard attack
             case 'a':
-                charObj.keyPressed = 'a';
+                //charObj.keyPressed = 'a';
                 if (charObj.combo[0] == 'neutralPunch1' && sprite.animations.currentAnim.name != 'idle' && sprite.animations.currentAnim.name != 'jump') {
                     if (sprite.animations.currentAnim.name === 'neutralPunch1' || sprite.animations.currentAnim.isFinished) {
-
+                        charObj.keyPressed = 'a';
                         sprite.animations.play('neutralPunch2');
                         charObj.combo[0] = (sprite.animations.currentAnim.name);
                         console.log(charObj.combo);
@@ -643,7 +768,7 @@ function keyListener(sprite, charObj) {
                     }
                 } else if (charObj.combo[0] == 'neutralPunch2' && sprite.animations.currentAnim.name != 'idle') {
                     if (sprite.animations.currentAnim.name === 'neutralPunch2' || sprite.animations.currentAnim.isFinished) {
-
+                        charObj.keyPressed = 'a';
                         sprite.animations.play('neutralPunch3');
                         charObj.combo[0] = (sprite.animations.currentAnim.name);
                         console.log(charObj.combo);
@@ -652,6 +777,7 @@ function keyListener(sprite, charObj) {
                     }
                 } else if (charObj.combo[0] == 'neutralPunch3' && sprite.animations.currentAnim.name != 'idle') {
                     if (sprite.animations.currentAnim.name === 'neutralPunch3' || sprite.animations.currentAnim.isFinished) {
+                        charObj.keyPressed = 'a';
 
                         sprite.animations.play('neutralPunch4');
                         charObj.combo[0] = (sprite.animations.currentAnim.name);
@@ -667,7 +793,15 @@ function keyListener(sprite, charObj) {
                     } else {
                         return;
                     }
-                } else {
+                } else if (sprite.animations.currentAnim.name != 'idle' && !charObj.isGrounded) {
+
+                    sprite.animations.play('airNeutral');
+                    charObj.combo[0] = (sprite.animations.currentAnim.name);
+                    console.log(charObj.combo);
+                }
+
+
+                else {
                     if ((sprite.animations.currentAnim.name === 'idle' || sprite.animations.currentAnim.name === 'run') || sprite.animations.currentAnim.isFinished) {
                         charObj.keyPressed = 'a';
                         sprite.animations.play('neutralPunch1');
@@ -792,7 +926,7 @@ demo.state1 = function () { };
 demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
-        game.load.spritesheet('tester', 'client/assets/art/2xscott.png', 142, 136, 128);
+        game.load.spritesheet('tester', 'client/assets/art/scott-final.png', 142, 184, 148);
         game.load.spritesheet('tester2', 'client/assets/art/test-scott-2.png', 142, 136, 114);
         game.load.spritesheet('ground', 'client/assets/art/big-platform.png');
         game.load.spritesheet('hbox', 'client/assets/art/hbox.png', 25, 25);
@@ -802,6 +936,7 @@ demo.state1.prototype = {
         game.load.spritesheet('elecHit', 'client/assets/art/hit.png', 88, 54, 3);
         game.load.spritesheet('pred', 'client/assets/art/particlered.png', 4, 4);
         game.load.spritesheet('back', 'client/assets/art/background1.png', 500, 700, 34);
+        game.load.spritesheet('bonusPtcl', 'client/assets/art/particleStar.png', 30, 30);
     },
     create: function () {
         // Starting game physics
@@ -812,7 +947,7 @@ demo.state1.prototype = {
         game.stage.backgroundColor = '#800080'
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-        bfBackground = game.add.sprite(0,0, 'back');
+        bfBackground = game.add.sprite(0, 0, 'back');
 
         scott = game.add.sprite(400, 100, 'tester');
         dummy = game.add.sprite(200, 100, 'tester2');
@@ -820,15 +955,15 @@ demo.state1.prototype = {
 
         resizeToSprite(bfBackground, game);
 
-        bfBackground.animations.add('on',[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
-            ,21,22,23,24,25,26,27,28,29,30,31,32,33], 30, true);
+        bfBackground.animations.add('on', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+            , 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33], 30, true);
 
 
         bfBackground.animations.play('on');
 
         //selects frames from the assigned spritesheet and sets them apart for its animation
         scott.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
-        scott.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 12, false);
+        scott.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 14, false);
         //player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
         scott.animations.add('startJump', [17, 18, 19, 20, 21, 22, 23, 24], 18, false);
         scott.animations.add('loopJump', [24, 25], 12, true);
@@ -864,6 +999,12 @@ demo.state1.prototype = {
         scott.animations.add('holdShield', [121, 122, 123, 124], 15, false);
 
         scott.animations.add('airDodge', [125, 126, 127], 14, true);
+
+        scott.animations.add('airRecovery', [136, 137, 138, 139, 140, 141, 142], 14, false);
+
+        scott.animations.add('upNeutral', [128, 129, 130, 131, 132, 133, 134, 135], 18, false);
+
+        scott.animations.add('airNeutral', [142, 143, 144, 145, 146, 147], 18, false);
 
 
         dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
@@ -979,8 +1120,9 @@ demo.state1.prototype = {
 
         //testing player collsinion box resize
 
-        scott.body.setSize(60, 120, 20, 15);
-        dummy.body.setSize(60, 120, 20, 15);
+        scott.body.setSize(60, 120, 20, 69);
+        dummy.body.setSize(60, 120, 20, 20);
+
 
 
 
@@ -1005,9 +1147,9 @@ demo.state1.prototype = {
 
 
         //EVERYTHING WE NEED TO HAVE SCOTT ACTIVE***************************
-
+        game.debug.body(scott);
         updateGrounded(scott, dude);
-        keyListener(scott, dude);
+        keyListener(scott, dude, 's');
         dude.runIdleControl(scott);
         dude.jump(scott, 15);
         dude.glideDownJump(scott, 1000, dude.stats.gravity);
@@ -1023,6 +1165,7 @@ demo.state1.prototype = {
         dude.airDodged(scott);
         dude.resetAirDodge(scott);
         dude.showShield(shield, scott);
+        dude.upRecovery(scott);
 
         //(sprite, injSprite, charObj, hurtCharObj)
         hurt(scott, dummy, dude, comp);
@@ -1060,7 +1203,7 @@ demo.state1.prototype = {
 
             if (sprite.animations.currentAnim.name != 'idle' && (['neutralKick', 'neutralPunch1', 'neutralPunch2',
 
-                'neutralPunch3', 'neutralPunch4', 'specialKick1', 'runAttack', 'slideKick', 'loopDwnKick'].includes(sprite.animations.currentAnim.name))) {
+                'neutralPunch3', 'neutralPunch4', 'specialKick1', 'runAttack', 'slideKick', 'loopDwnKick', 'upNeutral', 'airRecovery', 'airNeutral'].includes(sprite.animations.currentAnim.name))) {
                 charObj.hitbox.isOverlapping = true;
                 charObj.hitbox.isAtkBoxActive = true;
             } else {
@@ -1095,7 +1238,7 @@ function hurt(sprite, injSprite, charObj, hurtCharObj, pushback, length, collisi
         hurtCharObj.stats.damage += 0.93;
         console.log(hurtCharObj.stats.damage);
         injSprite.animations.play('knockback');
-        hitParticle();
+        hitParticle(charObj, hurtCharObj);
         getLaunchAmount(sprite, injSprite, charObj, hurtCharObj);
         charObj.hitbox.isOverlapping = false;
         charObj.hitbox.isAtkBoxActive = false;
@@ -1149,6 +1292,7 @@ function getLaunchAmount(attacker, injured, charObj, injCharObj) {
             }
         } else if (attacker.animations.currentAnim.name == 'specialKick1') {
             if (charObj.isLeft) {
+
                 Xvector = -50 - injCharObj.stats.damage;
                 Yvector = -140 - injCharObj.stats.damage;
 
@@ -1158,12 +1302,21 @@ function getLaunchAmount(attacker, injured, charObj, injCharObj) {
 
             }
         } else if (attacker.animations.currentAnim.name == 'neutralKick') {
+            let bonus = 0;
+            
+            if(charObj.timedBonus){
+                console.log('time bonus',charObj.timedBonus);
+                bonus = 200;
+            }
             if (charObj.isLeft) {
-                Xvector = -90 - injCharObj.stats.damage;
+                console.log(bonus);
+                Xvector = (-90 - bonus) - injCharObj.stats.damage;
+                charObj.timedBonus = false;
 
 
             } else {
-                Xvector = 90 + injCharObj.stats.damage;
+                Xvector = (90 + bonus) + injCharObj.stats.damage;
+                charObj.timedBonus = false;
 
 
             }
@@ -1193,7 +1346,49 @@ function getLaunchAmount(attacker, injured, charObj, injCharObj) {
 
 
             }
+        } else if (attacker.animations.currentAnim.name == 'upNeutral') {
+            if (charObj.isLeft) {
+                Xvector = -100 - injCharObj.stats.damage;
+                Yvector = -680 - injCharObj.stats.damage;
+
+
+
+            } else {
+                Xvector = 100 + injCharObj.stats.damage;
+                Yvector = -680 - injCharObj.stats.damage;
+
+
+            }
         }
+        else if (attacker.animations.currentAnim.name == 'airNeutral') {
+            if (charObj.isLeft) {
+                Xvector = -250 - injCharObj.stats.damage;
+                Yvector = 550 + injCharObj.stats.damage;
+
+
+
+            } else {
+                Xvector = 250 + injCharObj.stats.damage;
+                Yvector = 550 + injCharObj.stats.damage;
+
+
+            }
+        }
+     else if (attacker.animations.currentAnim.name == 'airRecovery') {
+        if (charObj.isLeft) {
+            Xvector = -115 - injCharObj.stats.damage;
+            Yvector = -400 - injCharObj.stats.damage;
+
+
+
+        } else {
+            Xvector = 115 + injCharObj.stats.damage;
+            Yvector = -400 - injCharObj.stats.damage;
+
+
+        }
+    }
+        
 
     }
 
@@ -1228,7 +1423,7 @@ function launchSprite(hitbox, injured, isSpec, x, y) {
 
 
 
-function resizeToSprite(sprite, example) {
+function resizeToSprite(sprite, example, addOrsub, which, amount) {
     if ((sprite.width < example.width) &&
         (sprite.height < example.height)) {
         sprite.width = example.width;
@@ -1240,18 +1435,33 @@ function resizeToSprite(sprite, example) {
 }
 
 
-function hitParticle() {
+function hitParticle(charObj, hurtcharObj) {
 
+    let amt = hurtcharObj.stats.damage;
+    if(charObj.timedBonus){
+        let bonusEmit;
+        bonusEmit = game.add.emitter(atkBox.x, atkBox.y, 50);
+        bonusEmit.makeParticles('bonusPtcl', [0], 90);
+        //emitter.minParticleSpeed = (1);
+        bonusEmit.setYSpeed(-10, 40);
+        bonusEmit.setXSpeed(-10, 80);
+        bonusEmit.minParticleScale = 0.3;
+        bonusEmit.maxParticleScale = 1;
+        bonusEmit.start(false, 600, null, 0.5);
+    }else{
+        emitter = game.add.emitter(atkBox.x, atkBox.y, 25 + amt);
+        //emitter.width = game.world.width;
+        emitter.makeParticles('pred', [0], 25);
+        //emitter.minParticleSpeed = (1);
+        emitter.setYSpeed(-10, 40);
+        emitter.setXSpeed(-10, 80);
+        emitter.minParticleScale = 0.7;
+        emitter.maxParticleScale = 1;
+        emitter.start(false, 400, null, 0.2);
+    }
 
-    emitter = game.add.emitter(atkBox.x, atkBox.y, 15);
-    //emitter.width = game.world.width;
-    emitter.makeParticles('pred', [0], 25);
-    //emitter.minParticleSpeed = (1);
-    emitter.setYSpeed(-10, 40);
-    emitter.setXSpeed(-10, 80);
-    emitter.minParticleScale = 0.7;
-    emitter.maxParticleScale = 1;
-    emitter.start(false, 400, null, 0.2);
+    
+    
 
 }
 
