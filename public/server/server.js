@@ -5,7 +5,7 @@ const server = require('http').Server(app);
 const bodyParser = require("body-parser");
 const io = require('socket.io').listen(server);
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '../client'));
 const PORT =  process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
@@ -13,8 +13,8 @@ app.use(bodyParser.json());
 
 // Routes
 // =============================================================
-require("./routes/apiRoutes.js")(app);
-require("./routes/htmlRoutes.js")(app);
+require("../../routes/apiRoutes.js")(app);
+require("../../routes/htmlRoutes.js")(app);
 
 // Starts the server to begin listening
 // =============================================================

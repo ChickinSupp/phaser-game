@@ -2,10 +2,10 @@
   "name": "phaser-game",
   "version": "1.0.0",
   "description": "Phaser Game",
-  "main": "server.js",
+  "main": "public/server/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node ./public/server/server.js"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,13 @@
     "mysql": "^2.16.0",
     "path": "^0.12.7",
     "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.26.3",
+    "gulp": "^4.0.0",
+    "gulp-jshint": "^2.1.0",
+    "gulp-nodemon": "^2.4.2",
+    "gulp-uglify": "^3.0.1",
+    "jshint": "^2.9.6"
   }
 }

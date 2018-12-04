@@ -596,7 +596,6 @@ function keyListener(sprite, charObj) {
                     //then play the 'slideKick' animation
                     //would not want to play the same animation if its already playing....
                 } else if ((game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) && sprite.animations.currentAnim.name != 'slideKick' && sprite.animations.currentAnim.name == 'run') {
-                    charObj
                     charObj.keyPressed = 's';
                     sprite.animations.play('slideKick');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
