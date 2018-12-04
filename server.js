@@ -22,9 +22,16 @@ server.listen(PORT, () => {
     console.log(`App now listening on port ${PORT}`);
 });
 
-io.on('connection',function(socket){
-    socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
-        console.log(data);
-    });
+var count = 0;
+
+//If a new connection is detected
+io.on('connect', function(socket) {
+    count++;
+    console.log('Number of players ' + count);
+});
+
+// Check for 'disconnect emit'
+io.on('disconnect', function() {
+    count--;
+    console.log('user disconnected' + count + 'left');
 });
