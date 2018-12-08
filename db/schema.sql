@@ -1,5 +1,5 @@
-CREATE DATABASE userRanks_db;
-USE userRanks_db;
+CREATE DATABASE user_ranksDB;
+USE user_ranksDB;
 
 CREATE TABLE ranks (
     id NOT NULL AUTO_INCREMENT,
