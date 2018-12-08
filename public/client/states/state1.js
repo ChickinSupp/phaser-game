@@ -1,4 +1,4 @@
-let demo = window.demo || (window.demo = {});
+demo = window.demo || (window.demo = {});
 
 let dude = new Character('scott', 10, 1900);
 
