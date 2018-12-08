@@ -1,3 +1,20 @@
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+
 body {
-    background: #000000;
-};
+  padding: 50px;
+  font-family: 25px "Press Start 2P", "Lucida Grande", Helvetica, Arial, sans-serif;
+  display: flex;
+  
+}
+
+a {
+  color: #00B7FF;
+}
+
+canvas {
+  margin: 0 auto;
+}
+
+/* .game{
+    height: calc(100vh - 80vw);
+} */
