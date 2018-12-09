@@ -8,7 +8,7 @@ const jshint = require('gulp-jshint');
 const del = require('del');
 const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync');
-const reload = browserSync.reload();
+const reload = browserSync.reload;
 const runSequence = require('run-sequence');
 
 /**
