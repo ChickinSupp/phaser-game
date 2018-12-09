@@ -12,7 +12,6 @@ Main.prototype = {
     }
 };
 
-
 game.state.add('state1', demo.state1);
 game.state.start('state1');
 

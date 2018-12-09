@@ -67,7 +67,6 @@ io.on('connect', (socket) => {
     // Check for 'disconnect emit'
     socket.on('disconnect', () => {
         console.log('A player disconnected');
-
     });
 
 });

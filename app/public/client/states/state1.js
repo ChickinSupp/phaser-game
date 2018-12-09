@@ -1,13 +1,8 @@
 let demo = window.demo || (window.demo = {});
-
-let dude = new Character('scott', 10, 1900);
-
-let comp = new Character('dummy', 10, 1500);
-
 let manager;
 let emitter;
-
-console.log(dude);
+let dude;
+let comp;
 
 //contains all our booleans and stats for a character
 function Character(name, power, gravity) {
@@ -566,7 +561,6 @@ function Character(name, power, gravity) {
 }
 
 //key listener that riggers animations and boolean changes
-
 //sprite = name of sprite
 //charObj  =
 function keyListener(sprite, charObj) {
@@ -788,6 +782,7 @@ const keys = {
 };
 
 demo.state1 = function () { };
+
 demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
@@ -813,6 +808,7 @@ demo.state1.prototype = {
 
         bfBackground = game.add.sprite(0,0, 'back');
 
+        //
         scott = game.add.sprite(400, 100, 'tester');
         dummy = game.add.sprite(200, 100, 'tester2');
 
@@ -1055,7 +1051,6 @@ demo.state1.prototype = {
         function hit(sprit, obj) {
             let charObj = dude;
             let sprite = scott;
-
 
             if (sprite.animations.currentAnim.name != 'idle' && (['neutralKick', 'neutralPunch1', 'neutralPunch2',
 
