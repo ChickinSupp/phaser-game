@@ -1,54 +1,101 @@
 let demo = window.demo || (window.demo = {});
-let background;
 
-// Loading start sprites and animation
-// function loadStartSprite () {
-//     background = game.add.sprite(0,0,'startMenu');
-//     background.height = 800;
-//     background.width = 1000;
+// function creating background image
+function startMenu() {
+    startMenu = game.add.image(0, 0, 'menu');
+    startMenu.width = 1000;
+    startMenu.height = 800;
+};
+
+// creating particles for background
+function particleEmitter() {
+    var emitter = game.add.emitter(game.world.centerX, 0, 400);
+
+	emitter.width = game.world.width;
+	emitter.makeParticles('particles');
+	emitter.minParticleScale = 0.1;
+	emitter.maxParticleScale = 0.5;
+	emitter.setYSpeed(300, 500);
+	emitter.setXSpeed(-5, 5);
+	emitter.minRotation = 0;
+	emitter.maxRotation = 0;
+	emitter.start(false, 1600, 5, 0);
+};
+
+// creating the Pixel smash logo with reflection
+function pixelSmash() {
+    var text = null;
+    var textReflect = null;
+    text = game.add.text(450,100, " PIXEL SMASH ");
+    //  Centers the text
+    text.anchor.set(0.5);
+    text.align = 'center';
+    //  Our font + size
+    text.font = 'PipeDream';
+    text.fontWeight = 'bold';
+    text.fontSize = 120;
+    text.fill = '#ffffff';
+    textReflect = game.add.text(450,100 + 100, " PIXEL SMASH ");
+    //  Centers the text
+    textReflect.anchor.set(0.5);
+    textReflect.align = 'center';
+    textReflect.scale.y = -1;
+    //  Our font + size
+    textReflect.font = 'PipeDream';
+    textReflect.fontWeight = 'bold';
+    textReflect.fontSize = 120;
     
-//     background.animations.add('start', [0,1,2] , 3, false);
-//     background.animations.add('enter', [2,3] , 3, true);
-//     background.animations.play('start');
-// };
+    var grd = textReflect.context.createLinearGradient(1, 1, 1, text.canvas.height);
+    //  Add in 2 color stops
+    grd.addColorStop(0, 'rgba(255,255,255,0)');
+    grd.addColorStop(1, 'rgba(255,255,255,0.08)');
+    textReflect.fill = grd;
+};
 
-// function Menu (){
-//     var self = this;
-//     this.gameRoom;
-//     this.viewId;
-//     this.playerCount;
-//     this.selectchar;
-//   }
+function startGame() {
+    let start = game.add.text(300,300, 'START GAME');
+    start.font= 'PipeDream';
+    start.fontWeight = 'bold';
+    start.fontSize = 40;
+    start.fill = '#ffffff';
+};
+
+function multiPlayer() {
+    let multiPlayer = game.add.text(350,360, 'ONLINE');
+    multiPlayer.font= 'PipeDream';
+    multiPlayer.fontWeight = 'bold';
+    multiPlayer.fontSize = 40;
+    multiPlayer.fill = '#ffffff';
+
+};
+
+function rankings() {
+    let rankings = game.add.text(320,420, 'RANKINGS');
+    rankings.font= 'PipeDream';
+    rankings.fontWeight = 'bold';
+    rankings.fontSize = 40;
+    rankings.fill = '#ffffff';
+};
 
 demo.state0 = function () {};
 demo.state0.prototype = {
-    init: function () {
-        this.titleText = game.make.text(game.world.centerX, 90, 'Pixel Smash', {
-        font: '100px PipeDream',
-        align: 'center',
-    });
-    this.titleText.addColor('white', 0);
-    this.titleText.addColor('white', 1);
-    this.titleText.addColor('white', 2);
-    this.titleText.addColor('white', 3);
-    this.titleText.addColor('white', 4);
-    this.titleText.addColor('white', 5);
-    this.titleText.addColor('white', 7);
-    this.titleText.addColor('white', 8);
-    this.titleText.addColor('white', 9);
-    this.titleText.addColor('white', 10);
-
-    this.titleText.anchor.setTo(0.5);
-    this.titleText.setShadow(5, 5, 'rgba(0, 0, 0, 0.5)', 0);
+    preload: function () {
+        game.load.image('menu', 'client/assets/art/start-state-background.png');
+        game.load.spritesheet('particles', 'client/assets/art/startParticle.png');
     },
+   
     create: function () {
-        game.add.existing(this.titleText);
-    },
-    update: function () {
-        // if(background.animations.currentAnim.name =='start' && background.animations.currentAnim.isFinished) {
+        startMenu();
+        pixelSmash();
+        particleEmitter();
+        startGame();
+        multiPlayer();
+        rankings();
 
-        //     background.animations.play('enter');
-        // }
-        //background.animations.play('enter');
+    },
+    
+    update: function () {
+        multiPlayer();
     }
 };
+
