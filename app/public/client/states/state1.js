@@ -1,13 +1,8 @@
 let demo = window.demo || (window.demo = {});
-
-let dude = new Character('scott', 10, 1900);
-
-let comp = new Character('dummy', 10, 1500);
-
 let manager;
 let emitter;
-
-console.log(dude);
+let dude = new Character('scott', 10, 1900);
+let comp = new Character('dummy', 10, 1500);
 
 //contains all our booleans and stats for a character
 function Character(name, power, gravity) {
@@ -675,7 +670,6 @@ function Character(name, power, gravity) {
 }
 
 //key listener that riggers animations and boolean changes
-
 //sprite = name of sprite
 //charObj  =
 function keyListener(sprite, charObj, s) {
@@ -709,7 +703,10 @@ function keyListener(sprite, charObj, s) {
                     //then play the 'slideKick' animation
                     //would not want to play the same animation if its already playing....
                 } else if ((game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) || game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) && sprite.animations.currentAnim.name != 'slideKick' && sprite.animations.currentAnim.name == 'run') {
+<<<<<<< HEAD:public/client/states/state1.js
                     
+=======
+>>>>>>> 5e6cbc78f35d9b53f97026b52324daa237ae1b14:app/public/client/states/state1.js
                     charObj.keyPressed = 's';
                     sprite.animations.play('slideKick');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
@@ -923,9 +920,11 @@ const keys = {
 };
 
 demo.state1 = function () { };
+
 demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
+<<<<<<< HEAD:public/client/states/state1.js
         game.load.spritesheet('tester', 'client/assets/art/scott-final.png', 142, 184, 148);
         game.load.spritesheet('tester2', 'client/assets/art/test-scott-2.png', 142, 136, 114);
         game.load.spritesheet('ground', 'client/assets/art/big-platform.png');
@@ -937,6 +936,18 @@ demo.state1.prototype = {
         game.load.spritesheet('pred', 'client/assets/art/particlered.png', 4, 4);
         game.load.spritesheet('back', 'client/assets/art/background1.png', 500, 700, 34);
         game.load.spritesheet('bonusPtcl', 'client/assets/art/particleStar.png', 30, 30);
+=======
+        game.load.spritesheet('tester', '../assets/art/2xscott.png', 142, 136, 128);
+        game.load.spritesheet('tester2', '../assets/art/test-scott-2.png', 142, 136, 114);
+        game.load.spritesheet('ground', '../assets/art/big-platform.png');
+        game.load.spritesheet('hbox', '../assets/art/hbox.png', 25, 25);
+        game.load.spritesheet('platform1', '../assets/art/platform1.png', 50, 11);
+        game.load.spritesheet('battlestage1', '../assets/art/base-stage1.png', 321, 126);
+        game.load.spritesheet('barrier', '../assets/art/barrier.png', 108, 94, 6);
+        game.load.spritesheet('elecHit', '../assets/art/hit.png', 88, 54, 3);
+        game.load.spritesheet('pred', '../assets/art/particlered.png', 4, 4);
+        game.load.spritesheet('back', '../assets/art/background1.png', 500, 700, 34);
+>>>>>>> 5e6cbc78f35d9b53f97026b52324daa237ae1b14:app/public/client/states/state1.js
     },
     create: function () {
         // Starting game physics
@@ -949,6 +960,7 @@ demo.state1.prototype = {
 
         bfBackground = game.add.sprite(0, 0, 'back');
 
+        //
         scott = game.add.sprite(400, 100, 'tester');
         dummy = game.add.sprite(200, 100, 'tester2');
 
@@ -1199,7 +1211,6 @@ demo.state1.prototype = {
         function hit(sprit, obj) {
             let charObj = dude;
             let sprite = scott;
-
 
             if (sprite.animations.currentAnim.name != 'idle' && (['neutralKick', 'neutralPunch1', 'neutralPunch2',
 
