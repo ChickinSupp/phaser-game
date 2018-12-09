@@ -10,13 +10,6 @@ $(document).ready( function() {
         //Log the room id
         console.log(`My game room ID is: ${myRoom}`);
 
-        if(!isTaken) {
-            dude = new Character('scott', 10, 1900);
-            isTaken = true;
-        } else {
-            comp = new Character('dummy', 10, 1500);
-            isTaken = false
-        }
     });
 
 

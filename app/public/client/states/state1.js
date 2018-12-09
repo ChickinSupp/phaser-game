@@ -1,8 +1,8 @@
 let demo = window.demo || (window.demo = {});
 let manager;
 let emitter;
-let dude;
-let comp;
+let dude = new Character('scott', 10, 1900);
+let comp = new Character('dummy', 10, 1500);
 
 //contains all our booleans and stats for a character
 function Character(name, power, gravity) {
