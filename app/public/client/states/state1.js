@@ -2104,7 +2104,7 @@ demo.state1.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
         game.load.spritesheet('tester', '../assets/art/scott-final.png', 142, 184, 151);
-        game.load.spritesheet('tester2', '../assets/art/test-scott-2.png', 142, 136, 114);
+        game.load.spritesheet('tester2', '../assets/art/test-scott-2.png', 142, 184, 151);
         game.load.spritesheet('ground', '../assets/art/big-platform.png');
         game.load.spritesheet('hbox', '../assets/art/hbox.png', 25, 25);
         game.load.spritesheet('platform1', '../assets/art/platform1.png', 50, 11);
@@ -2410,7 +2410,7 @@ demo.state1.prototype = {
         //testing player collsinion box resize
 
 
-        dummy.body.setSize(60, 120, 20, 22);
+        dummy.body.setSize(60, 120, 20,60);
 
 
 
