@@ -15,161 +15,150 @@ let stage = '';
 let lives;
 let music;
 let flipFlop;
-
+// sound vars need for global use for player 1
 let airRec;
-
-
-
-
 let slash;
 let ejectBall;
 let ghostDodge;
-
-
-
 let sdodge;
-
 let barr;
-
 let natk1;
-
 let jumpSnd;
 
-let natk1C;
 
-let jumpSndC;
-
-
-let ghAirRecC;
 let ghAirRec;
 
-
-let ghRunAtkC;
 let ghRunAtk;
-
 let ghDownKick;
-let ghDownKickC;
-
-
 let ghAtk2;
-let ghAtk2C;
-
-let natk2C;
-
-let ghAtk4;
-
 let foxKicks;
-let ghUpKickC;
-
-let ghbackKickC;
-
 let ghAirNeu;
-
-let ghAirNeuC;
-
-let ghAirDodgeC;
-
 let ghWhip;
-
-let ghWhipC;
-
 let ghMeteor;
-let ghMeteorC;
-
-
-
 let stKick;
-
-let stKickC;
-
 let sldKick;
-
-let sldKickC;
-
 let stRunAtk;
-
-let stRunAtkC;
-
 let stSpecKick;
-
-let stSpecKickC;
-
-let stpunch5C;
-
 let stUpNeu;
-
-
 
 
 let shieldHit;
 
 let normalHit;
 
-
 let shadowHit;
 
 let ghostSpecialAtk;
 
-let grghostHit;
+
 
 let cpuB1;
 let cpuB2;
 
 
+//sound control for playing sounds at the right moments
+let bar = new soundCtrl('holdShield');
+
+let natk1C = new soundCtrl('neutralPunch1');
+
+let jumpSndC = new soundCtrl('startJump');
+
+let ghAirRecC = new soundCtrl('airRecovery');
+
+let ghRunAtkC = new soundCtrl('runAttack');
+
+let ghDownKickC = new soundCtrl('loopDwnKick');
+
+let ghAtk2C = new soundCtrl('neutralPunch2');
+
+let natk2C = new soundCtrl('neutralPunch3');
+
+let ghAtk4 = new soundCtrl('neutralPunch4');
+
+let ghUpKickC = new soundCtrl('upAir');
+
+let ghbackKickC = new soundCtrl('foxKick');
+
+let ghAirNeuC = new soundCtrl('airNeutral');
+
+let ghAirDodgeC = new soundCtrl('airDodge');
+
+let ghWhipC = new soundCtrl('neutralPunch5');
+
+let ghMeteorC = new soundCtrl('meteorSmash');
+
+let stKickC = new soundCtrl('neutralKick');
+
+let sldKickC = new soundCtrl('slideKick');
+
+
+let stRunAtkC = new soundCtrl('runAttack');
+
+
+let stSpecKickC = new soundCtrl('specialKick1');
+
+//hit effect renderers for player 1
+
+let nullHitEffect = new hitEffectCtrl(true);
+
+let normHit = new hitEffectCtrl(false);
+
+let grghostHit = new hitEffectCtrl(false);
+
+
+//FOR CPU
+
+//sound controls for CPU
+let CPUbar = new soundCtrl('holdShield');
+
+let CPUnatk1C = new soundCtrl('neutralPunch1');
+
+let CPUjumpSndC = new soundCtrl('startJump');
+
+let CPUghAirRecC = new soundCtrl('airRecovery');
+
+let CPUghRunAtkC = new soundCtrl('runAttack');
+
+let CPUghDownKickC = new soundCtrl('loopDwnKick');
+
+let CPUghAtk2C = new soundCtrl('neutralPunch2');
+
+let CPUnatk2C = new soundCtrl('neutralPunch3');
+
+let CPUghAtk4 = new soundCtrl('neutralPunch4');
+
+let CPUghUpKickC = new soundCtrl('upAir');
+
+let CPUghbackKickC = new soundCtrl('foxKick');
+
+let CPUghAirNeuC = new soundCtrl('airNeutral');
+
+let CPUghAirDodgeC = new soundCtrl('airDodge');
+
+let CPUghWhipC = new soundCtrl('neutralPunch5');
+
+let CPUghMeteorC = new soundCtrl('meteorSmash');
+
+let CPUstKickC = new soundCtrl('neutralKick');
+
+let CPUsldKickC = new soundCtrl('slideKick');
+
+
+let CPUstRunAtkC = new soundCtrl('runAttack');
+
+
+let CPUstSpecKickC = new soundCtrl('specialKick1');
+
+//hit effect renderers for CPU
+
+let CPUnullHitEffect = new hitEffectCtrl(true);
+
+let CPUnormHit = new hitEffectCtrl(false);
+
+let CPUgrghostHit = new hitEffectCtrl(false);
 
 
 
-let hbFxKickCtrl = new hitboxCtrl('foxKick', [67, 68]);
-
-
-
-
-
-bar = new soundCtrl('holdShield');
-
-natk1C = new soundCtrl('neutralPunch1');
-
-jumpSndC = new soundCtrl('startJump');
-
-ghAirRecC = new soundCtrl('airRecovery');
-
-ghRunAtkC = new soundCtrl('runAttack');
-
-ghDownKickC = new soundCtrl('loopDwnKick');
-
-ghAtk2C = new soundCtrl('neutralPunch2');
-
-natk2C = new soundCtrl('neutralPunch3');
-
-ghAtk4 = new soundCtrl('neutralPunch4');
-
-ghUpKickC = new soundCtrl('upAir');
-
-ghbackKickC = new soundCtrl('foxKick');
-
-ghAirNeuC = new soundCtrl('airNeutral');
-
-ghAirDodgeC = new soundCtrl('airDodge');
-
-ghWhipC = new soundCtrl('neutralPunch5');
-
-ghMeteorC = new soundCtrl('meteorSmash');
-
-stKickC = new soundCtrl('neutralKick');
-
-sldKickC = new soundCtrl('slideKick');
-
-
-stRunAtkC = new soundCtrl('runAttack');
-
-
-stSpecKickC = new soundCtrl('specialKick1');
-
-nullHitEffect = new hitEffectCtrl(true);
-
-normHit = new hitEffectCtrl(false);
-
-grghostHit = new hitEffectCtrl(false);
 
 
 
@@ -234,6 +223,7 @@ function Character(name, power, gravity, jumpResistance) {
     this.velocityStall = false;
     this.stallChecked = false;
     this.stopMotion = false;
+    this.flipFlop = false;
     this.setupRelations = function () {
         switch (this.name) {
             case 'ghostStock':
@@ -1575,8 +1565,82 @@ function Character(name, power, gravity, jumpResistance) {
             }
             sprite.body.drag.x = 500;
 
+        };
+        this.resetFilp = function () {
+            this.flipFlop = false;
+        };
+        this.enableSoundControls = function () {
+            bar.run(barr, scott).listen(scott);
+            jumpSndC.run(jumpSnd, scott).listen(scott);
+
+            natk1C.run(natk1, scott).listen(scott);
+
+            ghAirRecC.run(ghAirRec, scott).listen(scott);
+
+            ghRunAtkC.run(ghRunAtk, scott).listen(scott);
+
+            ghDownKickC.run(ghDownKick, scott).listen(scott);
+
+            ghAtk2C.run(ghAtk2, scott).listen(scott);
+
+            natk2C.run(natk1, scott).listen(scott);
+
+            ghUpKickC.run(foxKicks, scott).listen(scott);
+
+            ghbackKickC.run(ghAirNeu, scott).listen(scott);
+
+            ghAirNeuC.run(ghAirNeu, scott).listen(scott);
+
+            ghWhipC.run(ghWhip, scott).listen(scott);
+
+            ghMeteorC.run(ghMeteor, scott).listen(scott);
+
+            stKickC.run(stKick, scott).listen(scott);
+
+            sldKickC.run(sldKick, scott).listen(scott);
+
+            if (this.name == 'scott') {
+                stRunAtkC.run(stRunAtk, scott).listen(scott);
+
+                stSpecKickC.run(stSpecKick, scott).listen(scott);
+            }
+
+
+
+            //hbFxKickCtrl.run(scott, atkBox).listen(scott, atkBox);
         }
-    }
+
+    };
+    this.ghostLand = function (sprite) {
+        if (this.name == 'mghosty' && this.isGrounded && ['notloopJump'].includes(sprite.animations.currentAnim.name)) {
+            sprite.animations.play('endJump');
+        }else{
+            return;
+        }
+    };
+    this.ghSpecialListener = function(sprite, enemy, sound) {
+
+        let done = false;
+        if (this.name == 'mghosty' && sprite.animations.currentFrame.index == 189) {
+    
+            ghostSpecialAtk.x = enemy.x;
+            ghostSpecialAtk.y = sprite.y - 65;
+            ghostSpecialAtk.alpha = 1;
+    
+            ghostSpecialAtk.revive();
+    
+            
+            game.add.tween(ghostSpecialAtk).to({ alpha: 0 }, 800, "Linear", true);
+    
+            ghostSpecialAtk.animations.play('show');
+    
+    
+        } else {
+            return;
+        }
+    
+    };
+    
 }
 
 
@@ -1648,11 +1712,11 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
 
                     sprite.animations.play('runAttack');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
-                } else if ((game.input.keyboard.isDown(Phaser.Keyboard.UP) && !flipFlop)) {
+                } else if ((game.input.keyboard.isDown(Phaser.Keyboard.UP) && !charObj.flipFlop)) {
                     if (charObj.canAirRecover) {
                         charObj.isAirRecovering = true;
                         charObj.canAirRecover = false;
-                        flipFlop = true;
+                        charObj.flipFlop = true;
 
                     } else {
                         return;
@@ -1769,7 +1833,7 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
                 //stoping the 'idle anim if its currently playing
                 //sets charObj.isGrounded to false since the player is not longer on the floor
 
-                if (!charObj.onlyDoOnce && !flipFlop) {
+                if (!charObj.onlyDoOnce && !charObj.flipFlop) {
                     charObj.isJumping = true;
                     sprite.animations.stop('idle');
 
@@ -1780,7 +1844,7 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
 
                     charObj.onlyDoOnce = true;
 
-                    flipFlop = true;
+                    charObj.flipFlop = true;
 
                     //player.animations.play('jump');
                 } else {
@@ -2108,8 +2172,8 @@ const keys = {
     'x': Phaser.KeyCode.X
 };
 
-demo.state1 = function () { };
-demo.state1.prototype = {
+demo.game = function () { };
+demo.game.prototype = {
     preload: function () {
         //preloads spritesheets to be used in create
         game.load.spritesheet('tester', '../assets/art/scott-final.png', 142, 184, 151);
@@ -2219,24 +2283,23 @@ demo.state1.prototype = {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        //game.physics.arcade.gravity.y = 900;
+        music = game.add.audio('battle1');
+        //music.play();
+
         game.stage.backgroundColor = '#800080'
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
         bfBackground = game.add.sprite(0, 0, 'back');
 
-        //scott = game.add.sprite(400, 100, 'tester');
+
         dummy = game.add.sprite(200, 100, 'tester2');
 
-        //ghost = game.add.sprite(500, 100, 'ghosty');
+
         dude.createFighter();
 
         dude.addSFX();
 
 
-        music = game.add.audio('battle1');
-
-        //music.play();
 
         resizeToSprite(bfBackground, game, 0, 0);
 
@@ -2246,9 +2309,9 @@ demo.state1.prototype = {
 
         bfBackground.animations.play('on');
 
-    /*     cpuB1 = game.add.sprite
-
-        cpuB2 = game.add.asprite */
+        /*     cpuB1 = game.add.sprite
+    
+            cpuB2 = game.add.asprite */
 
 
 
@@ -2268,7 +2331,7 @@ demo.state1.prototype = {
             life = lives.create(45 + (i * 50), 700, lifename, i);
             life.name = 'life' + i;
         }
-        console.log(life);
+
 
 
         dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
@@ -2321,9 +2384,7 @@ demo.state1.prototype = {
 
 
         scndBox = hitboxes.create(0, 0, 'dbox');
-        //sets the size of the hitbox, without any offset
 
-        //dummyBox = hitboxes.create(0, 0, 'hbox');
 
         projectiles = game.add.group();
         projectiles.enableBody = true;
@@ -2351,9 +2412,9 @@ demo.state1.prototype = {
 
         let hitEffectName;
 
-        if(dude.name == 'mghosty'){
+        if (dude.name == 'mghosty') {
             hitEffectName = 'hardHit'
-        }else{
+        } else {
             hitEffectName = 'hardHit2'
         }
 
@@ -2365,15 +2426,13 @@ demo.state1.prototype = {
 
 
 
-
-
         shadowHit = hitEffects.create(0, 0, 'ballHit');
 
         shadowHit.animations.add('show', [0, 1, 2, 3, 4, 5], 20, false);
 
         shadowHit.animations.currentAnim.killOnComplete = true;
 
-        //elec.alpha = 1;
+
 
         shieldHitS = hitEffects.create(0, 0, 'shieldHit');
 
@@ -2383,10 +2442,10 @@ demo.state1.prototype = {
 
         shieldHitS.alpha = 0;
 
-        ghostSpecialAtk = hitEffects.create(0,0, 'spectre');
+        ghostSpecialAtk = hitEffects.create(0, 0, 'spectre');
 
 
-        ghostSpecialAtk.animations.add('show', [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],90, false);
+        ghostSpecialAtk.animations.add('show', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22], 90, false);
 
         ghostSpecialAtk.animations.currentAnim.killOnComplete = true;
         ghostSpecialAtk.enableBody = true;
@@ -2443,15 +2502,15 @@ demo.state1.prototype = {
 
         dummy.body.gravity.y = 2100;
 
-        //scott.body.drag.y = 500;
+
         dummy.body.drag.x = 400;
         dummy.body.drag.y = 0;
 
 
-        //testing player collsinion box resize
 
 
-        dummy.body.setSize(60, 120, 20,60);
+
+        dummy.body.setSize(60, 120, 20, 60);
 
 
 
@@ -2467,35 +2526,42 @@ demo.state1.prototype = {
 
     },
     update: function () {
+        //work around for repeating 'airRecovers'
+        game.physics.arcade.collide(scott, battlefield, function () {
+            dude.resetFilp();
+        });
 
-        game.physics.arcade.collide(scott, battlefield, resetFilp);
+        //dummy will collide with the stage
         game.physics.arcade.collide(dummy, [platform, platform1, platform2, platform3, battlefield]);
-
-        game.physics.arcade.overlap(dummy, projectile, proxyBulletCallback);
+        //dummy will be damaged by the projectile
+        game.physics.arcade.overlap(dummy, projectile, function () {
+            runBulletCollide(dude, comp, dummy, projectile);
+        });
 
         //hitbox on dummy, runs hit();
-        game.physics.arcade.overlap(dummy, atkBox, hit);
 
+        //dummy will be hit when player hits him
         game.physics.arcade.overlap(dummy, atkBox, function () {
-
-
+            hit(dude, scott, comp, dummy);
+            //elec hiteffect will play on dummy when hit
             normHit.run(normalHit, elec, atkBox, dummy, scott, dude);
 
 
         });
+        //if ghost,dummy will be hit when player'specialKick1 hits him
         game.physics.arcade.overlap(dummy, ghostSpecialAtk, function () {
-            hit();
+
+            hit(dude, scott, comp, dummy);
             grghostHit.run(normalHit, elec, dummy, dummy, scott, dude);
         });
 
 
-        //nullHitEffect.run(shieldHit, shieldHitS, atkBox, dummy);
 
-        //normHit.run(hit, elec, atkBox, dummy);
 
 
         //sound, sprite, atkBox, charObj
 
+        //testing for dummy hiting player
         game.physics.arcade.overlap(scott, scndBox, dummyhit);
 
 
@@ -2512,8 +2578,6 @@ demo.state1.prototype = {
         dude.jumpAnimLoop(scott);
         dude.downAerialMotion(scott, 'ghost');
         dude.downAerial(scott);
-
-
         dude.moveAttackBox(atkBox, scott);
         dude.moveRunAttack(scott, 'runAttack', 10);
         dude.moveRunAttack(scott, 'slideKick', 12);
@@ -2522,47 +2586,12 @@ demo.state1.prototype = {
         dude.resetAirDodge(scott);
         dude.showShield(shield, scott);
         dude.upRecovery(scott);
+        dude.ghostLand(scott);
+        dude.ghSpecialListener(scott,dummy);
 
         shootBullet(dude, scott, atkBox, projectile, -900, 0);
 
-        bar.run(barr, scott).listen(scott);
-        jumpSndC.run(jumpSnd, scott).listen(scott);
 
-        natk1C.run(natk1, scott).listen(scott);
-
-        ghAirRecC.run(ghAirRec, scott).listen(scott);
-
-        ghRunAtkC.run(ghRunAtk, scott).listen(scott);
-
-        ghDownKickC.run(ghDownKick, scott).listen(scott);
-
-        ghAtk2C.run(ghAtk2, scott).listen(scott);
-
-        natk2C.run(natk1, scott).listen(scott);
-
-        ghUpKickC.run(foxKicks, scott).listen(scott);
-
-        ghbackKickC.run(ghAirNeu, scott).listen(scott);
-
-        ghAirNeuC.run(ghAirNeu, scott).listen(scott);
-
-        ghWhipC.run(ghWhip, scott).listen(scott);
-
-        ghMeteorC.run(ghMeteor, scott).listen(scott);
-
-        stKickC.run(stKick, scott).listen(scott);
-
-        sldKickC.run(sldKick, scott).listen(scott);
-
-        if (dude.name == 'scott') {
-            stRunAtkC.run(stRunAtk, scott).listen(scott);
-
-            stSpecKickC.run(stSpecKick, scott).listen(scott);
-        }
-
-
-
-        hbFxKickCtrl.run(scott, atkBox).listen(scott, atkBox);
 
         hurt(scott, dummy, dude, comp);
 
@@ -2577,14 +2606,11 @@ demo.state1.prototype = {
 
         getLoser(comp, dummy);
 
-
-        ghostLand(dude, scott);
-
-        ghSpecialListener(dude, scott, dummy);
+        dude.enableSoundControls();
 
         /*************************TESTING DUMMY (2PLAYER )*********** */
 
-        updateGrounded(dummy, comp);
+        //updateGrounded(dummy, comp);
         //dummykeyListener(dummy, comp,true, 'u', 'i', 'o', 'p', 'l');
         /*    comp.runIdleControl(dummy);
            comp.jump(dummy, 15);
@@ -2614,6 +2640,7 @@ demo.state1.prototype = {
             if (sprite.body.touching.down) {
                 charObj.isGrounded = true;
                 charObj.stats.jumpH = 0;
+                charObj.resetFilp();
 
             } else {
                 charObj.isGrounded = false;
@@ -2629,14 +2656,8 @@ demo.state1.prototype = {
 
 
         //make tthis dymanic
-        function hit(sprit, obj, injObj) {
-            let charObj = dude;
-            let sprite = scott;
-            let inCharObj = comp;
-            let inSprite = dummy;
-
-
-
+        function hit(charObj, sprite, inCharObj, inSprite) {
+           
             if (game.physics.arcade.overlap(dummy, ghostSpecialAtk) || sprite.animations.currentAnim.name != 'idle' && (['foxKick', 'upAir', 'meteorSmash', 'neutralKick', 'neutralPunch1', 'neutralPunch2',
 
                 'neutralPunch3', 'neutralPunch4', 'specialKick1', 'runAttack', 'slideKick', 'loopDwnKick', 'upNeutral', 'airRecovery', 'airNeutral'].includes(sprite.animations.currentAnim.name))) {
@@ -2645,24 +2666,14 @@ demo.state1.prototype = {
                 charObj.hitbox.isAtkBoxActive = true;
 
                 alertIsHurt(sprite, inSprite, inCharObj);
-                /*                 inCharObj.getHitWith = sprite.animations.currentAnim.name;   
-                                inCharObj.isHurt = true; */
-                console.log("dummy's speed", dummy.body.speed);
-                //console.log('Dummy is hurt',  inCharObj.isHurt);
+         
 
             } else {
 
                 charObj.hitbox.isOverlapping = false;
                 charObj.hitbox.isAtkBoxActive = false;
-                //inCharObj.isHurt = false;
-                //inCharObj.stopMotion = false;
-
-
-
+               
             }
-
-
-
 
         }
         //sprite = opponent sprite
@@ -2705,13 +2716,6 @@ demo.state1.prototype = {
 };
 
 
-function proxyBulletCallback() {
-    runBulletCollide(dude, comp, dummy, projectile);
-}
-
-
-
-
 //********************GLOBAL FUNCTIONS************* */
 
 
@@ -2720,7 +2724,7 @@ function proxyBulletCallback() {
 // charObj = char obj for the sprite that is attacking
 // hurtCharObj = char obj for the sprite that is hurt
 
-function hurt(sprite, injSprite, charObj, hurtCharObj, bulletSprite, pushback, length, collisionType, hboxName) {
+function hurt(sprite, injSprite, charObj, hurtCharObj) {
     if (charObj.hitbox.isOverlapping && charObj.hitbox.isAtkBoxActive) {
         hurtCharObj.stats.damage += 0.93;
         console.log(hurtCharObj.stats.damage);
@@ -3038,15 +3042,15 @@ function getLaunchAmount(attacker, injured, charObj, injCharObj) {
 
 
             }
-        }        else if (attacker.animations.currentAnim.name == 'specialKick1' && charObj.name == 'mghosty') {
+        } else if (attacker.animations.currentAnim.name == 'specialKick1' && charObj.name == 'mghosty') {
             if (charObj.isLeft) {
-                
+
                 Yvector = -700 - injCharObj.stats.damage;
 
 
 
             } else {
-                
+
                 Yvector = -700 - injCharObj.stats.damage;
 
 
@@ -3129,11 +3133,6 @@ function hitParticle(charObj, hurtcharObj) {
 
 }
 
-function destroyEmitter() {
-
-    emitter.destroy();
-
-}
 
 function trajectoryBounce(injSprite, injcharObj) {
     if (60 < injcharObj.stats.damage < 100) {
@@ -3154,7 +3153,7 @@ function trajectoryBounce(injSprite, injcharObj) {
 let once = false;
 
 function getLoser(charObj, sprite) {
-    if (sprite.world.y > 2000 || sprite.world.y < -100 || sprite.world.x < -300 || sprite.world.x > 1500) {
+    if (sprite.world.y > 2000 || sprite.world.y < -200|| sprite.world.x < -300 || sprite.world.x > 1500) {
         if (!once) {
             alert(`${charObj.name} has lost a life`);
             once = true;
@@ -3232,10 +3231,7 @@ function hitEffectCtrl(isForShield) {
                 this.hitterAnim = attacker.animations.currentAnim.name;
 
                 this.hasPlayed = true;
-
-
             }
-
 
         } else {
 
@@ -3249,33 +3245,14 @@ function hitEffectCtrl(isForShield) {
                 sprite.animations.play('show');
                 this.hitterAnim = attacker.animations.currentAnim.name;
                 this.hasPlayed = true;
-
             }
 
-
         }
-
         if (sprite.animations.currentAnim.isFinished || !sprite.animations.currentAnim.isPlaying && this.hasPlayed && attacker.animations.currentAnim.name !== this.hitterAnim) {
             this.checkReset(sprite/* , attacker, atkCharObj */);
-
         }
-
-        /* if(!game.physics.arcade.overlap(sprite, atkBox)){
-            sprite.alpha = 0;
-        } */
     }
     this.checkReset = function (sprite, attacker, atkCharObj) {
-        /*  if (sprite.animations.currentAnim.isFinished) {
- 
- 
-             sprite.alpha = 0;
- 
-         } */
-        /*   if (attacker.animations.currentAnim.name !== this.hitterAnim) {
-              sprite.alpha = 0;
-  
-              this.hasPlayed = false;
-          } */
 
         sprite.alpha = 0;
         this.hitterAnim = false;
@@ -3287,39 +3264,6 @@ function hitEffectCtrl(isForShield) {
 
 }
 
-function hitboxCtrl(anim, frames, charObj) {
-
-    this.animName = anim;
-    this.frames = frames;
-    this.hasPlayed = false;
-    this.canReset = false;
-
-    //hitbox sprite
-    this.run = function (sprite, atckBox) {
-
-        if (!this.hasPlayed && (this.frames).includes(sprite.animations.currentFrame.index)) {
-            atckBox.alpha = 1;
-            console.log('rrrrr');
-
-            this.hasPlayed = true;
-        }
-        return this;
-    };
-    this.listen = function (sprite, atckBox) {
-        if (this.animName == sprite.animations.currentAnim.name && ![(this.frames).join()].includes(sprite.animations.currentFrame.index)) {
-
-            this.reset(atckBox);
-        }
-        return this;
-    };
-    this.reset = function (atckBox) {
-        atckBox.alpha = 0;
-        this.hasPlayed = false;
-
-        return this;
-    };
-
-}
 
 
 function removeStock(charObj, groupname) {
@@ -3351,48 +3295,16 @@ function resetStats(charObj) {
     charObj.stats.damage = 0;
 }
 
-function ghostLand(charObj, sprite) {
-    if (charObj.name == 'mghosty' && charObj.isGrounded && ['notloopJump'].includes(sprite.animations.currentAnim.name)) {
-        sprite.animations.play('endJump');
-    }
+
+function getDistance(x1, y1, x2, y2) {
+
+    var dx = x1 - x2;
+    var dy = y1 - y2;
+
+    return Math.sqrt(dx * dx + dy * dy);
+
 }
 
+console.log(game.physics.arcade.distanceToXY(scott, dummy.x, dummy.y));
+console.log(getDistance(scott.x, scott.y, dummy.x, dummy.y));
 
-
-function ghSpecialListener(charObj, sprite, enemy, sound){
-
-    let done = false;
-    if(charObj.name == 'mghosty' && sprite.animations.currentFrame.index == 189 ){
-       
-            ghostSpecialAtk.x = enemy.x;
-            ghostSpecialAtk.y = sprite.y- 65;
-            ghostSpecialAtk.alpha = 1;
-            
-            ghostSpecialAtk.revive();
-    
-            //game.add.tween(ghostSpecialAtk).to({y: -100}, 2400, "Linear", true);
-            game.add.tween(ghostSpecialAtk).to( { alpha: 0 }, 800, "Linear", true);
-            
-            ghostSpecialAtk.animations.play('show');
-            
-
-        }else{
-            return;
-        }
-
-
-        
-
-        //sound.play();
-        
-
-
-    }
-
-
-
-
-function resetFilp() {
-
-    flipFlop = false;
-}

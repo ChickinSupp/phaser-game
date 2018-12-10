@@ -15,6 +15,6 @@ Main.prototype = {
 };
 
 game.state.add("state0", demo.state0);
-game.state.add("state1", demo.state1);
+game.state.add("game", demo.game);
 game.state.add("online", demo.online);
 game.state.start("state0");

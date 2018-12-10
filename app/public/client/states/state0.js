@@ -136,7 +136,7 @@ demo.state0.prototype = {
 
 function up() {
     console.log('button up', arguments);
-    game.state.start('state1');
+    game.state.start('game');
 }
 
 function over() {
