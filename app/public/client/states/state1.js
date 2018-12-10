@@ -108,6 +108,13 @@ let normalHit;
 
 let shadowHit;
 
+let ghostSpecialAtk;
+
+let grghostHit;
+
+let cpuB1;
+let cpuB2;
+
 
 
 
@@ -161,6 +168,8 @@ stSpecKickC = new soundCtrl('specialKick1');
 nullHitEffect = new hitEffectCtrl(true);
 
 normHit = new hitEffectCtrl(false);
+
+grghostHit = new hitEffectCtrl(false);
 
 
 
@@ -2130,8 +2139,12 @@ demo.state1.prototype = {
 
         game.load.spritesheet('ballHit', '../assets/art/ghost_impact.png', 53, 58);
 
+        game.load.spritesheet('hardHit2', '../assets/art/hardHit2.png', 57, 57);
+
 
         game.load.spritesheet('dbox', '../assets/art/2pbox.png', 25, 25);
+        game.load.spritesheet('b1', '../assets/art/cpuBlock.png');
+        game.load.spritesheet('b2', '../assets/art/cpuBlock2.png');
 
 
         //soundControl.loadSFX();
@@ -2233,6 +2246,10 @@ demo.state1.prototype = {
 
         bfBackground.animations.play('on');
 
+    /*     cpuB1 = game.add.sprite
+
+        cpuB2 = game.add.asprite */
+
 
 
         lives = game.add.group();
@@ -2332,11 +2349,23 @@ demo.state1.prototype = {
 
         hitEffects = game.add.group();
 
-        elec = hitEffects.create(0, 0, 'hardHit');
+        let hitEffectName;
+
+        if(dude.name == 'mghosty'){
+            hitEffectName = 'hardHit'
+        }else{
+            hitEffectName = 'hardHit2'
+        }
+
+        elec = hitEffects.create(0, 0, hitEffectName);
 
         elec.animations.add('show', [0, 1, 2, 3, 4, 5], 20, false);
 
         elec.animations.currentAnim.killOnComplete = true;
+
+
+
+
 
         shadowHit = hitEffects.create(0, 0, 'ballHit');
 
@@ -2352,7 +2381,19 @@ demo.state1.prototype = {
 
         shieldHitS.animations.currentAnim.killOnComplete = true;
 
-        shieldHitS.play();
+        shieldHitS.alpha = 0;
+
+        ghostSpecialAtk = hitEffects.create(0,0, 'spectre');
+
+
+        ghostSpecialAtk.animations.add('show', [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],90, false);
+
+        ghostSpecialAtk.animations.currentAnim.killOnComplete = true;
+        ghostSpecialAtk.enableBody = true;
+
+        ghostSpecialAtk.alpha = 0;
+
+        //shieldHitS.play();
 
 
         //plays added animaiton
@@ -2376,7 +2417,7 @@ demo.state1.prototype = {
 
 
         //enables gravity on player but not on platform
-        game.physics.arcade.enable([scott, dummy, platform, platform2, platform3, battlefield, atkBox]);
+        game.physics.arcade.enable([scott, dummy, platform, platform2, platform3, battlefield, atkBox, ghostSpecialAtk]);
 
         dude.enablePhysics(scott);
 
@@ -2442,6 +2483,11 @@ demo.state1.prototype = {
 
 
         });
+        game.physics.arcade.overlap(dummy, ghostSpecialAtk, function () {
+            hit();
+            grghostHit.run(normalHit, elec, dummy, dummy, scott, dude);
+        });
+
 
         //nullHitEffect.run(shieldHit, shieldHitS, atkBox, dummy);
 
@@ -2534,6 +2580,8 @@ demo.state1.prototype = {
 
         ghostLand(dude, scott);
 
+        ghSpecialListener(dude, scott, dummy);
+
         /*************************TESTING DUMMY (2PLAYER )*********** */
 
         updateGrounded(dummy, comp);
@@ -2589,7 +2637,7 @@ demo.state1.prototype = {
 
 
 
-            if (sprite.animations.currentAnim.name != 'idle' && (['foxKick', 'upAir', 'meteorSmash', 'neutralKick', 'neutralPunch1', 'neutralPunch2',
+            if (game.physics.arcade.overlap(dummy, ghostSpecialAtk) || sprite.animations.currentAnim.name != 'idle' && (['foxKick', 'upAir', 'meteorSmash', 'neutralKick', 'neutralPunch1', 'neutralPunch2',
 
                 'neutralPunch3', 'neutralPunch4', 'specialKick1', 'runAttack', 'slideKick', 'loopDwnKick', 'upNeutral', 'airRecovery', 'airNeutral'].includes(sprite.animations.currentAnim.name))) {
 
@@ -2831,7 +2879,7 @@ function getLaunchAmount(attacker, injured, charObj, injCharObj) {
                 Yvector = -100 - injCharObj.stats.damage;
 
             }
-        } else if (attacker.animations.currentAnim.name == 'specialKick1') {
+        } else if (attacker.animations.currentAnim.name == 'specialKick1' && charObj.name !== 'mghosty') {
             if (charObj.isLeft) {
 
                 Xvector = -50 - injCharObj.stats.damage;
@@ -2987,6 +3035,19 @@ function getLaunchAmount(attacker, injured, charObj, injCharObj) {
             } else {
                 Xvector = -511 - injCharObj.stats.damage;
                 Yvector = -25 - injCharObj.stats.damage;
+
+
+            }
+        }        else if (attacker.animations.currentAnim.name == 'specialKick1' && charObj.name == 'mghosty') {
+            if (charObj.isLeft) {
+                
+                Yvector = -700 - injCharObj.stats.damage;
+
+
+
+            } else {
+                
+                Yvector = -700 - injCharObj.stats.damage;
 
 
             }
@@ -3298,6 +3359,36 @@ function ghostLand(charObj, sprite) {
 
 
 
+function ghSpecialListener(charObj, sprite, enemy, sound){
+
+    let done = false;
+    if(charObj.name == 'mghosty' && sprite.animations.currentFrame.index == 189 ){
+       
+            ghostSpecialAtk.x = enemy.x;
+            ghostSpecialAtk.y = sprite.y- 65;
+            ghostSpecialAtk.alpha = 1;
+            
+            ghostSpecialAtk.revive();
+    
+            //game.add.tween(ghostSpecialAtk).to({y: -100}, 2400, "Linear", true);
+            game.add.tween(ghostSpecialAtk).to( { alpha: 0 }, 800, "Linear", true);
+            
+            ghostSpecialAtk.animations.play('show');
+            
+
+        }else{
+            return;
+        }
+
+
+        
+
+        //sound.play();
+        
+
+
+    }
+
 
 
 
@@ -3305,4 +3396,3 @@ function resetFilp() {
 
     flipFlop = false;
 }
-
