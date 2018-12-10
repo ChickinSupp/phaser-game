@@ -15,6 +15,11 @@ const runSequence = require('run-sequence');
  * Config
  */
 
+//Travis CI
+gulp.task('travis', ['build'], function () {
+    process.exit(0);
+});
+
 const paths = {
     scripts: {
         src: './app/public/client/js/*.js',

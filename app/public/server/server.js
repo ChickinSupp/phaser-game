@@ -160,7 +160,7 @@ io.on('connect', function(socket) {
         rooms[currentRoom].started = false;
         rooms[currentRoom].players--;
         console.log(rooms);
-        //checkWait(socket);
+        socket.emit('close-chat');
     });
 });
 

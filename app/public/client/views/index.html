@@ -5,28 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rock+Salt" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="../assets/css/style.css">
     <title>Game Name</title>
 </head>
 <body>
-<div class="container">
-    <h1>Welcome to my game</h1>
-    <p>This is my game page.</p>
-    <div class="game"></div>
-
-    <div id="chat">
-        <h2>Chat</h2>
-        <div id="chat-window">
-            <div id="output"></div>
-            <div id="feedback"></div>
+<div class="wrapper">
+    <div class="header center">
+        <div class="row">
+            <div class="col-12">
+                <h1>Welcome to pixel smash</h1>
+                <h1>Your battle begins.....</h1>
+            </div>
         </div>
-
-        <input id="handle" type="text" placeholder="Handle" />
-        <input id="message" type="text" placeholder="Message" />
-        <button id="send">Send</button>
     </div>
+
+    <div class="smash">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-8">
+                <div id="game"></div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div id="chat" class="center">
+                    <h2>Chat</h2>
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="chat-window" >
+                                <div id="output"></div>
+                                <div id="feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-12 form-group">
+                            <input id="handle" type="text" placeholder="Handle" />
+                        </div>
+                        <div class="col-12 form-group">
+                            <input id="message" type="text" placeholder="Message" />
+                        </div>
+                        <div class="col-12">
+                            <button id="send" class="btn btn-warning">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
