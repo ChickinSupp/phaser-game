@@ -3,8 +3,8 @@ let demo = window.demo || (window.demo = {});
 // function creating background image
 function startMenu() {
     startMenu = game.add.image(0, 0, 'menu');
-    startMenu.width = 1000;
-    startMenu.height = 800;
+    startMenu.width = 12000;
+    startMenu.height = 1000;
 };
 
 // creating particles for background
@@ -77,6 +77,8 @@ function rankings() {
     rankings.fill = '#ffffff';
 };
 
+var button;
+
 demo.state0 = function () {};
 demo.state0.prototype = {
     preload: function () {
@@ -92,10 +94,9 @@ demo.state0.prototype = {
         multiPlayer();
         rankings();
 
+
     },
     
-    update: function () {
-        multiPlayer();
-    }
+    update: function () {}
 };
 
