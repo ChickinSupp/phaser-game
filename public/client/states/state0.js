@@ -70,6 +70,7 @@ function startGame() {
     start.fontWeight = 'bold';
     start.fontSize = 40;
     start.fill = '#ffffff';
+    game.state.start('state1');
 };
 
 function multiPlayer() {
@@ -138,6 +139,7 @@ function actionOnClick () {
 
 function up() {
     console.log('button up', arguments);
+    game.state.start('state2');
 }
 
 function over() {
