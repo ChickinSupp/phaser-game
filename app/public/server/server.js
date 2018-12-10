@@ -30,57 +30,131 @@ const server = app.listen(app.get('PORT'), () => {
 });
 
 const io = require('socket.io').listen(server);
-let players = [];
+let counter = 0;
+let rooms = {};
+let partialRoom = 0;
+let partialId = 0;
+let currentRoom;
+let activeIds = [];
 let waitList = [];
-let activeRooms = [];
-let gamers = [];
-let player1 = '';
-let player2 = '';
-let isPlayer1 = false;
 
-//*If a connection is made
-io.on('connection', (socket) => {
-    console.log(' A user connected');
-    console.log('His ID is ', socket.id);
-    players.push(socket.id.toString());
-    waitList.push(socket.id.toString());
+io.on('connect', function(socket) {
+    console.log('a user connected');
+    counter++;
 
-    console.log('All players: ', players);
-    console.log('Waitlist', waitList);
+    //connect new player to the room
+    socket.on('create-room', function(data){
+        //Implement player count
+        if (counter <= 2) {
+            if(!rooms[data.gameRoom] && partialRoom === 0) {
 
-    //Send the id and potential room to to client;
-    socket.emit('new-player', { id: socket.id, room: waitList[0] });
+                //Create gameroom with generated id and set started to false
+                console.log('Creating room... GameRoom:', data.gameRoom);
+                rooms[data.gameRoom] = {id: data.viewId};
+                rooms[data.gameRoom].started = false;
+                rooms[data.gameRoom].players = counter;
+                console.log(counter);
+                socket.room = data.gameRoom;
+                socket.join(data.viewId);
+                activeIds.push(data.viewId);
+                partialRoom = data.gameRoom;
+                partialId = data.viewId;
+                console.log('Successfully joined player 1 to ' + partialId );
+                socket.emit('success-create', partialRoom, partialId);
+                console.log("ROOM PLAYERS " + rooms[partialRoom].players);
+                console.log("ROOMS: ", rooms);
+                joiner(counter, partialRoom, partialId);
+            } else if (partialId !== 0 && rooms[partialRoom].players === 1){
+                socket.join(partialId);
+                console.log('Successfully joined player 2');
+                socket.emit('success-create', partialRoom, partialId);
+                rooms[partialRoom].players++;
+                console.log("ROOMS: ", rooms);
+                joiner(counter, partialRoom, partialId);
+            } else {
+                console.log('Too many players... LINE 70 server');
+            }
+        } else {
+            waitList.push(socket.id);
+            console.log('WAITLIST', waitList);
+            socket.emit('waiting');
+            //checkWait(socket);
+        }
 
-    //Create GameRooms
-    if (waitList.length === 2) {
-        socket.join(waitList[0], () => {
-            let rooms = Object.keys(socket.rooms);
-            activeRooms.push(waitList[0]);              //add the room to our list of active rooms
-            console.log(rooms);     // [ <socket.id>, 'room 237' ]
-            io.sockets.in(waitList[0]).emit('dope', 'THIS IS THE ROOMIEST ROOM') // broadcast to everyone in the room
-        });
-        waitList.length = 0;       //Clear Waitlist array for next opponents
-        socket.emit('two-players');
 
-    } else if (waitList.length === 1) {
-        console.log("Waiting for another player to join");
+        function joiner(counter, partialRoom, partialId) {
+            console.log('JOINER PARAMS: ', counter, partialRoom, partialId);
+            //Join a player to a room
+            if(counter <= 2 ) {
+                io.sockets.in(rooms[partialRoom].id)
+                    .emit('player-joined', rooms[partialRoom].players);
+
+                let playerId =  rooms[partialRoom].players;
+                console.log("PLAYERID FROM LINE 78: ", playerId);
+                socket.emit('success-join', playerId);
+            } else if (counter > 2){
+                socket.emit('fail-join');
+            }
+
+            //Start game
+            if (rooms[partialRoom].players === 2) {
+                io.sockets.in(rooms[partialRoom].id).emit('start-game', rooms[partialRoom].id);
+                console.log(rooms[partialRoom], 'from line 93');
+                currentRoom = partialRoom;
+            }
+            else {
+                console.log('Error: Inadequate players for start-game emit');
+            }
+        }
+
+    });
+
+     /*function checkWait(socket) {
+         if(waitList.length > -1){
+             for(let i = 0; i < waitList.length; i++) {
+                socket.join(waitList[0]);
+             }
+         }
+     }*/
+
+    //reset vars for other room
+    function resetTempRoom () {
+        partialRoom = 0;
+        partialId = 0;
     }
 
-    socket.on('got-one', (char) => {
-        if(!(gamers.length > 1 )) {
-            gamers.push(char);
-            console.log('ALL GAMERS: ' + gamers);
-        } else {
-            socket.emit('all-gamers', gamers);
+    //Updates game while being played
+    socket.on('game-update', function(data) {
+        if (rooms[socket.room]) {
+            io.sockets.in(rooms[socket.room].id).emit('game-update', data);
         }
     });
 
-    // Check for 'disconnect emit'
-    socket.on('disconnect', () => {
-        console.log('A player disconnected');
+    // Check for 'start-game' emit
+    socket.on('game-start', function(room, id) {
+        console.log(rooms[socket.room], currentRoom, 'line 118');
+        //wait for player 2
+        if (rooms[socket.room]) {
+            console.log('GameRoom:', room, 'ID: ', id);
+            rooms[room].started = true;
+            console.log("ROOMS: ", rooms, ' from game-start line 122ish..??');
+            resetTempRoom();
+        }
+
     });
 
+    // Check for 'disconnect emit'
+    socket.on('disconnect', function(){
+        console.log('user disconnected');
+        counter--;
+        rooms[currentRoom].started = false;
+        rooms[currentRoom].players--;
+        console.log(rooms);
+        //checkWait(socket);
+    });
 });
+
+
 
 module.exports = server;
 
