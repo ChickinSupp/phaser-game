@@ -57,10 +57,11 @@ function pixelSmash() {
 function startGame() {
     let start = game.add.text(300,300, 'START GAME');
     var button1;
-    button1 = game.add.button(250, 280, 'button1', null, this, 2, 1, 0);
-    // button1.alpha = 0;
-    button1.width = 100;
-    button1.height = 100;
+    // creating on click button for text
+    button1 = game.add.button(250, 300, 'button1', null, this, 2, 1, 0);
+    button1.alpha = 0;
+    button1.width = 320;
+    button1.height = 50;
     button1.onInputOver.add(over, this);
     button1.onInputOut.add(out, this);
     button1.onInputUp.add(up, this);
@@ -73,25 +74,41 @@ function startGame() {
 
 function multiPlayer() {
     let multiPlayer = game.add.text(350,360, 'ONLINE');
+    var button2;
     multiPlayer.font= 'PipeDream';
     multiPlayer.fontWeight = 'bold';
     multiPlayer.fontSize = 40;
     multiPlayer.fill = '#ffffff';
 
+    // creating on click button for text
+    button2 = game.add.button(280,360, 'button2', null, this, 2, 1, 0);
+    button2.alpha = 0;
+    button2.width = 250;
+    button2.height = 40;
+    button2.onInputOver.add(over, this);
+    button2.onInputOut.add(out, this);
+    button2.onInputUp.add(up, this)
+
 };
 
 function rankings() {
     let rankings = game.add.text(320,420, 'RANKINGS');
+    var button3;
+    // creating on click button for text
     rankings.font= 'PipeDream';
     rankings.fontWeight = 'bold';
     rankings.fontSize = 40;
     rankings.fill = '#ffffff';
-};
 
-var background;
-function actionOnClick () {
-    background.visible =! background.visible;
-}
+    button3 = game.add.button(290,420, 'button3', null, this, 2, 1, 0);
+    button3.alpha = 0;
+    button3.width = 250;
+    button3.height = 40;
+    button3.onInputOver.add(over, this);
+    button3.onInputOut.add(out, this);
+    button3.onInputUp.add(up, this)
+
+};
 
 demo.state0 = function () {};
 demo.state0.prototype = {
@@ -99,6 +116,8 @@ demo.state0.prototype = {
         game.load.image('menu-background', 'client/assets/art/start-state-background.png');
         game.load.spritesheet('particles', 'client/assets/art/startParticle.png');
         game.load.image('button1', 'client/assets/art/startGame.png');
+        game.load.image('button2', 'client/assets/art/online.png');
+        game.load.image('button3', 'client/assets/art/rankings.png');
     },
    
     create: function () {
@@ -109,20 +128,12 @@ demo.state0.prototype = {
         multiPlayer();
         rankings();
 
-        // button1 = game.add.button(180, 220, 'button1', null, this, 2, 1, 0);
-        // button1.alpha = 0;
-        // button1.onInputOver.add(over, this);
-        // button1.onInputOut.add(out, this);
-        // button1.onInputUp.add(up, this);
-
 },
     update: function () {}
 };
 
 function actionOnClick () {
-
     background.visible =! background.visible;
-
 }
 
 function up() {
