@@ -1,4 +1,6 @@
 let demo = window.demo || (window.demo = {});
+var character;
+
 
 // function creating background image
 function startMenu() {
@@ -91,11 +93,8 @@ demo.state0.prototype = {
         startGame();
         multiPlayer();
         rankings();
-
     },
     
-    update: function () {
-        multiPlayer();
-    }
+    update: function () {}
 };
 
