@@ -4,9 +4,9 @@ var character;
 
 // function creating background image
 function startMenu() {
-    startMenu = game.add.image(0, 0, 'menu');
-    startMenu.width = 1000;
-    startMenu.height = 800;
+    startMenu = game.add.image(0, 0, 'menu-background');
+    startMenu.width = 12000;
+    startMenu.height = 1000;
 };
 
 // creating particles for background
@@ -56,6 +56,15 @@ function pixelSmash() {
 
 function startGame() {
     let start = game.add.text(300,300, 'START GAME');
+    var button1;
+    button1 = game.add.button(250, 280, 'button1', null, this, 2, 1, 0);
+    // button1.alpha = 0;
+    button1.width = 100;
+    button1.height = 100;
+    button1.onInputOver.add(over, this);
+    button1.onInputOut.add(out, this);
+    button1.onInputUp.add(up, this);
+
     start.font= 'PipeDream';
     start.fontWeight = 'bold';
     start.fontSize = 40;
@@ -79,11 +88,17 @@ function rankings() {
     rankings.fill = '#ffffff';
 };
 
+var background;
+function actionOnClick () {
+    background.visible =! background.visible;
+}
+
 demo.state0 = function () {};
 demo.state0.prototype = {
     preload: function () {
-        game.load.image('menu', 'client/assets/art/start-state-background.png');
+        game.load.image('menu-background', 'client/assets/art/start-state-background.png');
         game.load.spritesheet('particles', 'client/assets/art/startParticle.png');
+        game.load.image('button1', 'client/assets/art/startGame.png');
     },
    
     create: function () {
@@ -93,8 +108,31 @@ demo.state0.prototype = {
         startGame();
         multiPlayer();
         rankings();
-    },
-    
+
+        // button1 = game.add.button(180, 220, 'button1', null, this, 2, 1, 0);
+        // button1.alpha = 0;
+        // button1.onInputOver.add(over, this);
+        // button1.onInputOut.add(out, this);
+        // button1.onInputUp.add(up, this);
+
+},
     update: function () {}
 };
 
+function actionOnClick () {
+
+    background.visible =! background.visible;
+
+}
+
+function up() {
+    console.log('button up', arguments);
+}
+
+function over() {
+    console.log('button over');
+}
+
+function out() {
+    console.log('button out');
+}
