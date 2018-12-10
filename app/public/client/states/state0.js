@@ -114,11 +114,11 @@ function rankings() {
 demo.state0 = function () {};
 demo.state0.prototype = {
     preload: function () {
-        game.load.image('menu-background', 'client/assets/art/start-state-background.png');
-        game.load.spritesheet('particles', 'client/assets/art/startParticle.png');
-        game.load.image('button1', 'client/assets/art/startGame.png');
-        game.load.image('button2', 'client/assets/art/online.png');
-        game.load.image('button3', 'client/assets/art/rankings.png');
+        game.load.image('menu-background', '../assets/art/start-state-background.png');
+        game.load.spritesheet('particles', '../assets/art/startParticle.png');
+        game.load.image('button1', '../assets/art/startGame.png');
+        game.load.image('button2', '../assets/art/online.png');
+        game.load.image('button3', '../assets/art/rankings.png');
     },
    
     create: function () {
@@ -139,7 +139,7 @@ function actionOnClick () {
 
 function up() {
     console.log('button up', arguments);
-    game.state.start('state2');
+    game.state.start('state1');
 }
 
 function over() {

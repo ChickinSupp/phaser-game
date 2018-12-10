@@ -1,4 +1,4 @@
-let demo = window.demo || (window.demo = {});
+demo = window.demo || (window.demo = {});
 
 //mghosty for ghost
 

@@ -7,12 +7,12 @@ Main.prototype = {
         game.load.script('state0', './state0.js')
     },
     create: function () {
-        game.state.add('state0', state1);
+        game.state.add('state0', state0);
         game.state.start('state0');
     }
 };
 
-game.state.add('state0', demo.state1);
+game.state.add('state0', demo.state0);
 game.state.start('state0');
 
 
