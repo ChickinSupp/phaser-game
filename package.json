@@ -24,6 +24,7 @@
     "express": "^4.16.4",
     "morgan": "^1.9.1",
     "mysql": "^2.16.0",
+    "nodemon": "^1.18.7",
     "path": "^0.12.7",
     "phaser-ce": "^2.11.1",
     "serve-favicon": "^2.5.0",
