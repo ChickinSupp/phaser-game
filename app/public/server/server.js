@@ -33,9 +33,13 @@ const io = require('socket.io').listen(server);
 let players = [];
 let waitList = [];
 let activeRooms = [];
+let gamers = [];
+let player1 = '';
+let player2 = '';
+let isPlayer1 = false;
 
-//If a connection is made
-io.on('connect', (socket) => {
+//*If a connection is made
+io.on('connection', (socket) => {
     console.log(' A user connected');
     console.log('His ID is ', socket.id);
     players.push(socket.id.toString());
@@ -51,27 +55,32 @@ io.on('connect', (socket) => {
     if (waitList.length === 2) {
         socket.join(waitList[0], () => {
             let rooms = Object.keys(socket.rooms);
+            activeRooms.push(waitList[0]);              //add the room to our list of active rooms
             console.log(rooms);     // [ <socket.id>, 'room 237' ]
-            io.to(waitList[0]).emit('new player has joined the room'); // broadcast to everyone in the room
+            io.sockets.in(waitList[0]).emit('dope', 'THIS IS THE ROOMIEST ROOM') // broadcast to everyone in the room
         });
         waitList.length = 0;       //Clear Waitlist array for next opponents
+        socket.emit('two-players');
 
     } else if (waitList.length === 1) {
         console.log("Waiting for another player to join");
     }
 
-    //Updates game while being played
-    socket.on('game-update', (data) => {
-
+    socket.on('got-one', (char) => {
+        if(!(gamers.length > 1 )) {
+            gamers.push(char);
+            console.log('ALL GAMERS: ' + gamers);
+        } else {
+            socket.emit('all-gamers', gamers);
+        }
     });
+
     // Check for 'disconnect emit'
     socket.on('disconnect', () => {
         console.log('A player disconnected');
     });
 
 });
-
-
 
 module.exports = server;
 
