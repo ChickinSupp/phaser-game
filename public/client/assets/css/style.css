@@ -4,7 +4,7 @@ body {
   padding: 50px;
   font-family: 25px "Press Start 2P", "Lucida Grande", Helvetica, Arial, sans-serif;
   display: flex;
-  
+  background: #000000;
 }
 
 a {
