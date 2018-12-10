@@ -1,5 +1,5 @@
 let demo = window.demo || (window.demo = {});
-var character;
+//var character;
 
 
 // function creating background image
@@ -70,7 +70,7 @@ function startGame() {
     start.fontWeight = 'bold';
     start.fontSize = 40;
     start.fill = '#ffffff';
-    game.state.start('state1');
+    //game.state.start('state1');
 };
 
 function multiPlayer() {
@@ -133,9 +133,6 @@ demo.state0.prototype = {
     update: function () {}
 };
 
-function actionOnClick () {
-    background.visible =! background.visible;
-}
 
 function up() {
     console.log('button up', arguments);
