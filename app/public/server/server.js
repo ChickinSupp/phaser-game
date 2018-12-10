@@ -43,7 +43,7 @@ io.on('connect', function(socket) {
     counter++;
 
     //connect new player to the room
-    socket.on('create-room', function(data){
+    socket.on('create-room', function(data) {
         //Implement player count
         if (counter <= 2) {
             if(!rooms[data.gameRoom] && partialRoom === 0) {
@@ -81,7 +81,6 @@ io.on('connect', function(socket) {
             //checkWait(socket);
         }
 
-
         function joiner(counter, partialRoom, partialId) {
             console.log('JOINER PARAMS: ', counter, partialRoom, partialId);
             //Join a player to a room
@@ -106,6 +105,17 @@ io.on('connect', function(socket) {
                 console.log('Error: Inadequate players for start-game emit');
             }
         }
+
+        // Handle chat event
+        socket.on('chat', function(data){
+            // console.log(data);
+            socket.broadcast.emit('chat', data);
+        });
+
+        // Handle typing event
+        socket.on('typing', function(data){
+            socket.broadcast.emit('typing', data);
+        });
 
     });
 
@@ -153,7 +163,6 @@ io.on('connect', function(socket) {
         //checkWait(socket);
     });
 });
-
 
 
 module.exports = server;

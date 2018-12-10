@@ -1,4 +1,5 @@
 $(document).ready( function() {
+    $('#chat').hide();
     let gamer = 0;
     let socket = io().connect('localhost:5000');
     let tempRoom = Math.floor(Math.random() * 500);
@@ -7,6 +8,35 @@ $(document).ready( function() {
 
     socket.emit('create-room', {gameRoom: tempRoom,  viewId: tempViewId});
 
+    // Query DOM
+    let message = document.getElementById('message'),
+        handle = document.getElementById('handle'),
+        btn = document.getElementById('send'),
+        output = document.getElementById('output');
+
+    // Emit events
+    btn.addEventListener('click', function(){
+        socket.emit('chat', {
+            message: message.value,
+            handle: handle.value
+        });
+        message.value = "";
+    });
+
+    message.addEventListener('keypress', function(){
+        socket.emit('typing', handle.value);
+    });
+
+    socket.on('typing', function(data){
+        feedback.innerHTML = '<p><em>' + data + ' is typing a message...</em></p>';
+    });
+
+    // Listen for events
+    socket.on('chat', function(data){
+        feedback.innerHTML = '';
+        output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
+    });
+
     socket.on('success-create', function (room, id) {
         console.log('NEW ROOM: ' + room);
         console.log('NEW ID: ' + id);
@@ -14,20 +44,29 @@ $(document).ready( function() {
         myId = id;
     });
 
+    //New player
     socket.on('player-joined', function (data) {
         console.log('Number of players: ' + data);
     });
 
+    //Too many players
     socket.on('fail-join', function () {
         console.log('FAILED TO JOIN ..too many players');
     });
 
+    //Ready after two players
     socket.on('start-game', function (data) {
+        $('#chat').show(1000);
         if (data === myId) {
             console.log('Ready to start game from: ', gamer, ' room', data );
             socket.emit('game-start', myRoom, myId);
         }
     });
+
+    /*
+    GET CHOSEN CHARACTERS FROM THE GAME
+     */
+
 
     socket.on('success-join', function (playerNum) {
         if (playerNum === 1) {
