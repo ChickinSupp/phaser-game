@@ -65,6 +65,7 @@ demo.state1.prototype = {
         game.load.image('background', '../assets/art/start-state-background.png');
         game.load.spritesheet('tester', '../assets/art/scott-final.png', 142, 184, 151);
         game.load.spritesheet('ghosty', '../assets/art/MarshUmbra.png', 160, 160, 190);
+        game.load.audio('charMusic', '../assets/music/Ready.ogg');
     },
     create: function () {
         characterMenu = game.add.image(0, 0, 'background');
@@ -73,6 +74,8 @@ demo.state1.prototype = {
         selectCharacterText();
         scottPilgrim();
         ghosty();
+
+        playMusic();
     },
     update: function () {},
 }
@@ -89,3 +92,11 @@ function over() {
 function out() {
     console.log('button out');
 };
+
+function playMusic(){
+    let charMusic = game.add.audio('charMusic');
+
+    charMusic.play();
+    charMusic.loopFull();
+
+}
