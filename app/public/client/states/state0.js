@@ -7,7 +7,7 @@ function startMenu() {
     startMenu = game.add.image(0, 0, 'menu-background');
     startMenu.width = 1000;
     startMenu.height = 700;
-};
+}
 
 // Creating particles for background
 function particleEmitter() {
@@ -151,10 +151,14 @@ function out() {
 
 function playGame(){
     game.sound.stopAll();
-    game.state.start('state1');
+    socket.emit('gaming');
 }
 
 function goOnline(){
     game.sound.stopAll();
     game.state.start('online');
 }
+
+socket.on('clicked-menu', function () {
+    game.state.start('state1');
+});

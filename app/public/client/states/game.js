@@ -7,21 +7,17 @@ demo = window.demo || (window.demo = {});
     comp for dummy/foreign player
      */
 let dude, comp;
-
-socket.on('your-player', function (data) {
-    if (data) {
-        comp = new Character(data.name, 10, 100, 800);
-    } else {
-        console.log('Err: NO DATA. Redirecting to main menu');
-    }
-});
-
 //Get player
-const getPlayer  = (player) => {
-    if (player === 'mghosty') {
+const getPlayer  = (data) => {
+    if (data === 'mghosty') {
         dude = new Character('mghosty', 10, 100, 800);
-    } else if(player === 'scott') {
+    } else if(data=== 'scott') {
         dude = new Character('scott', 10, 100, 800);
+    }
+    if (data=== 'mghosty') {
+        comp = new Character('mghosty', 10, 100, 800);
+    } else if(data === 'scott') {
+        comp = new Character('scott', 10, 100, 800);
     }
 };
 

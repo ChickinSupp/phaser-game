@@ -2,7 +2,7 @@
 demo = window.demo || (window.demo = {});
 //let socket = io();
 let isScottClicked = false;
-let isGhostClicked = false;
+let dumbCounter = 0;
 
 function characterMenu() {
     characterMenu = game.add.image(0, 0, 'background');
@@ -97,9 +97,9 @@ function scottClicked () {
 
 //Ghost has been selected;
 function ghostClicked () {
-    isGhostClicked = true;
+    isScottClicked = false;
     console.log("Character is ghost");
-    up('mghosty',isGhostClicked);
+    up('mghosty',isScottClicked);
 }
 
 function over() {
@@ -116,3 +116,23 @@ function playMusic() {
     charMusic.play();
     charMusic.loopFull();
 }
+
+socket.on('local-player', function (data) {
+    dumbCounter++;
+    let playa1 = "";
+    let playa2 = "";
+
+    //if 2 calls to this are made
+    if(dumbCounter === 1 ) {
+       playa1 = data;
+    } else if (dumbCounter === 2 ) {
+        playa2 = data;
+    }
+    socket.emit('lobby-full', {playa1: playa1, playa2: playa2});
+
+});
+
+socket.on('we-gucci', function (data) {
+    getPlayer(data);
+    game.sate.start('game');
+});

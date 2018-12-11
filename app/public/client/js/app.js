@@ -15,7 +15,7 @@ $(document).ready( function() {
         output = document.getElementById('output');
 
     // Emit events
-    btn.addEventListener('click', function(){
+    btn.addEventListener('click', function() {
         socket.emit('chat', {
             message: message.value,
             handle: handle.value
@@ -67,33 +67,6 @@ $(document).ready( function() {
         if (data === myId) {
             console.log('Ready to start game from: ', gamer, ' room', data );
             socket.emit('game-start', myRoom, myId);
-        }
-    });
-
-    /*
-    GET CHOSEN CHARACTERS FROM THE GAME
-    When players are selected
-     */
-
-    socket.on('my-player', function (data) {
-        let myPlayer, hisPlayer;
-        let playerCounter = 0;
-        playerCounter++;
-
-        if (playerCounter <= 2) {
-            if (data.bol ===true) {
-                myPlayer = data.name;
-                console.log(" My Selection = ", playerCounter,  data.name);
-            } else {
-                hisPlayer = data.name;
-                console.log(" His Selection ", playerCounter, ' = ', data.name);
-            }
-        }
-
-        if (playerCounter === 2 ) {
-            socket.broadcast.emit('your-player', { name: hisPlayer });
-            game.state.start('game');
-            getPlayer(myPlayer);
         }
     });
 

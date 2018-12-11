@@ -114,7 +114,7 @@ io.on('connect', function(socket) {
         // Handle chat event
         socket.on('chat', function(data){
             // console.log(data);
-            socket.emit('newchat', data);
+            io.sockets.in(rooms[socket.room].id).emit('newchat', data);
         });
 
         // Handle typing event
@@ -148,6 +148,10 @@ io.on('connect', function(socket) {
         partialId = 0;
     }
 
+    socket.on('gaming', function () {
+        io.sockets.in(rooms[socket.room].id).emit('clicked-menu');
+    });
+
     //Updates game while being played
     socket.on('game-update', function(data) {
         if (rooms[socket.room]) {
@@ -158,6 +162,7 @@ io.on('connect', function(socket) {
     // Check for 'start-game' emit ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     socket.on('game-start', function(room, id) {
         console.log('CURRENT ROOM: ', currentRoom, 'line 148');
+        counter--;
         //wait for player 2
         if (rooms[socket.room]) {
             console.log(rooms[socket.room], 'Rooms[socket.room]');
@@ -178,6 +183,20 @@ io.on('connect', function(socket) {
             console.log(rooms);
         }
     });
+
+    /*
+   GET CHOSEN CHARACTERS FROM THE GAME
+   When players are selected
+    */
+    socket.on('my-player', function (data) {
+        let myPlayer = data.name;
+        io.sockets.in(rooms[socket.room].id).emit('local-player', myPlayer);
+    });
+
+    socket.on('lobby-full', function (data) {
+        io.sockets.in(rooms[socket.room].id).emit('we-gucci', data);
+    })
+
 });
 
 module.exports = server;
