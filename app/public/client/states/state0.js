@@ -1,16 +1,11 @@
 // State 0 start menu
 let demo = window.demo || (window.demo = {});
 
-let mainBGM;
-
-let select;
-
-
 // function creating background image
 function startMenu() {
     startMenu = game.add.image(0, 0, 'menu-background');
-    startMenu.width = 1200;
-    startMenu.height = 1000;
+    startMenu.width = 1000;
+    startMenu.height = 700;
 };
 
 // creating particles for background
@@ -32,7 +27,7 @@ function particleEmitter() {
 function pixelSmash() {
     var text = null;
     var textReflect = null;
-    text = game.add.text(600,100, " PIXEL SMASH ");
+    text = game.add.text(500,100, " PIXEL SMASH ");
     //  Centers the text
     text.anchor.set(0.5);
     text.align = 'center';
@@ -41,7 +36,7 @@ function pixelSmash() {
     text.fontWeight = 'bold';
     text.fontSize = 120;
     text.fill = '#ffffff';
-    textReflect = game.add.text(600,100 + 100, " PIXEL SMASH ");
+    textReflect = game.add.text(500,100 + 100, " PIXEL SMASH ");
     //  Centers the text
     textReflect.anchor.set(0.5);
     textReflect.align = 'center';
@@ -59,16 +54,16 @@ function pixelSmash() {
 };
 
 function startGame() {
-    let start = game.add.text(450,380, 'START GAME');
+    let start = game.add.text(350,380, 'START GAME');
     var button1;
     // creating on click button for text
-    button1 = game.add.button(450, 380, 'button1', null, this, 2, 1, 0);
+    button1 = game.add.button(350, 380, 'button1', null, this, 2, 1, 0);
     button1.alpha = 0;
     button1.width = 320;
     button1.height = 50;
     button1.onInputOver.add(over, this);
     button1.onInputOut.add(out, this);
-    button1.onInputUp.add(playGame, this);
+    button1.onInputUp.add(up, this);
 
     start.font= 'PipeDream';
     start.fontWeight = 'bold';
@@ -77,7 +72,7 @@ function startGame() {
 };
 
 function multiPlayer() {
-    let multiPlayer = game.add.text(500,500, 'ONLINE');
+    let multiPlayer = game.add.text(400,500, 'ONLINE');
     var button2;
     multiPlayer.font= 'PipeDream';
     multiPlayer.fontWeight = 'bold';
@@ -85,18 +80,18 @@ function multiPlayer() {
     multiPlayer.fill = '#ffffff';
 
     // creating on click button for text
-    button2 = game.add.button(500,500, 'button2', null, this, 2, 1, 0);
+    button2 = game.add.button(400,500, 'button2', null, this, 2, 1, 0);
     button2.alpha = 0;
     button2.width = 250;
     button2.height = 40;
     button2.onInputOver.add(over, this);
     button2.onInputOut.add(out, this);
-    button2.onInputUp.add(goOnline, this)
+    button2.onInputUp.add(up, this)
 
 };
 
 function rankings() {
-    let rankings = game.add.text(470,620, 'RANKINGS');
+    let rankings = game.add.text(370,620, 'RANKINGS');
     var button3;
     // creating on click button for text
     rankings.font= 'PipeDream';
@@ -104,7 +99,7 @@ function rankings() {
     rankings.fontSize = 40;
     rankings.fill = '#ffffff';
 
-    button3 = game.add.button(470,620, 'button3', null, this, 2, 1, 0);
+    button3 = game.add.button(370,620, 'button3', null, this, 2, 1, 0);
     button3.alpha = 0;
     button3.width = 250;
     button3.height = 40;
