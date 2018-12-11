@@ -158,6 +158,3 @@ function goOnline(){
     game.sound.stopAll();
     game.state.start('online');
 }
-
-
-
