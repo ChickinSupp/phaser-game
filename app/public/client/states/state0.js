@@ -1,5 +1,6 @@
 // State 0 start menu
 let demo = window.demo || (window.demo = {});
+//let socket = io();
 
 // Creating background image
 function startMenu() {
@@ -21,7 +22,7 @@ function particleEmitter() {
     emitter.minRotation = 0;
     emitter.maxRotation = 0;
     emitter.start(false, 1600, 5, 0);
-};
+}
 
 // Creating the Pixel smash logo with reflection
 function pixelSmash() {
@@ -79,7 +80,7 @@ function multiPlayer() {
     multiPlayer.fontSize = 40;
     multiPlayer.fill = '#ffffff';
 
-    // Creating on click button for text
+    // creating on click button for text
     button2 = game.add.button(400,500, 'button2', null, this, 2, 1, 0);
     button2.alpha = 0;
     button2.width = 250;
@@ -106,7 +107,6 @@ function rankings() {
     button3.onInputOver.add(over, this);
     button3.onInputOut.add(out, this);
     button3.onInputUp.add(up, this)
-
 };
 
 demo.state0 = function () {};

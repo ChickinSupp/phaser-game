@@ -1,5 +1,8 @@
 // State 1 character selection
 demo = window.demo || (window.demo = {});
+//let socket = io();
+let isScottClicked = false;
+let isGhostClicked = false;
 
 function characterMenu() {
     characterMenu = game.add.image(0, 0, 'background');
@@ -45,7 +48,7 @@ function scottPilgrim() {
 
     scott.onInputOver.add(over, this);
     scott.onInputOut.add(out, this);
-    scott.onInputUp.add(up, this)
+    scott.onInputUp.add(scottClicked, this);
 };
 
 function ghosty() {
@@ -56,7 +59,7 @@ function ghosty() {
 
     ghost.onInputOver.add(over, this);
     ghost.onInputOut.add(out, this);
-    ghost.onInputUp.add(up, this)
+    ghost.onInputUp.add(ghostClicked, this)
 }
 
 demo.state1 = function () {};
@@ -77,12 +80,26 @@ demo.state1.prototype = {
 
         playMusic();
     },
-    update: function () {},
+    update: function () { }
 }
 
-function up() {
-    console.log('button up', arguments);
-    game.state.start('state1');
+function up (character, bol) {
+    console.log('button up', character);
+    socket.emit('my-player', { name: character, bol: bol });
+}
+
+//Scott has been selected;
+function scottClicked () {
+    isScottClicked = true;
+    console.log("Character is scott");
+    up('scott', isScottClicked);
+}
+
+//Ghost has been selected;
+function ghostClicked () {
+    isGhostClicked = true;
+    console.log("Character is ghost");
+    up('mghosty',isGhostClicked);
 }
 
 function over() {
@@ -91,9 +108,9 @@ function over() {
 
 function out() {
     console.log('button out');
-};
+}
 
-function playMusic(){
+function playMusic() {
     let charMusic = game.add.audio('charMusic');
 
     charMusic.play();
