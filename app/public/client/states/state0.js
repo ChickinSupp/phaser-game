@@ -1,5 +1,6 @@
 // State 0 start menu
 let demo = window.demo || (window.demo = {});
+//let socket = io();
 
 // Creating background image
 function startMenu() {
@@ -21,7 +22,7 @@ function particleEmitter() {
     emitter.minRotation = 0;
     emitter.maxRotation = 0;
     emitter.start(false, 1600, 5, 0);
-};
+}
 
 // Creating the Pixel smash logo with reflection
 function pixelSmash() {
@@ -106,7 +107,6 @@ function rankings() {
     button3.onInputOver.add(over, this);
     button3.onInputOut.add(out, this);
     button3.onInputUp.add(up, this)
-
 };
 
 demo.state0 = function () {};

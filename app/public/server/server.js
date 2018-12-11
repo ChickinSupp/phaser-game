@@ -42,6 +42,7 @@ let waitList = [];
 io.on('connect', function(socket) {
     console.log('a user connected');
     counter++;
+    console.log("INITIAL COUNTER: ", counter);
 
     //connect new player to the room
     socket.on('create-room', function(data) {
@@ -79,6 +80,7 @@ io.on('connect', function(socket) {
             console.log('Too many players... LINE 73 INDEX = ', waitList.indexOf(socket));
             if(!counter % 2 === 0) {
                 matchMake(waitList.indexOf(socket));
+                counter = 0;
             }
         }
 
@@ -122,6 +124,7 @@ io.on('connect', function(socket) {
 
     });
 
+    //Checking for available rooms
     function matchMake (index) {
         for (let i in rooms) {
             console.log(rooms[i], 'Is a room man');
@@ -129,7 +132,11 @@ io.on('connect', function(socket) {
                 console.log('Found empty room. Joining..');
                 waitList[index].join(rooms[i].id);
                 waitList[index].room = rooms[i];
-                console.log(rooms[i], "WAITLISTING");
+                rooms[i].started = true;
+                rooms[i].players++;
+                console.log(rooms[i], "MATCHMAKING DONE :) ");
+                waitList.pop();
+                console.log('waitlist: ' + waitList);
                 break;
             }
         }
@@ -148,11 +155,12 @@ io.on('connect', function(socket) {
         }
     });
 
-    // Check for 'start-game' emit
+    // Check for 'start-game' emit ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     socket.on('game-start', function(room, id) {
         console.log('CURRENT ROOM: ', currentRoom, 'line 148');
         //wait for player 2
         if (rooms[socket.room]) {
+            console.log(rooms[socket.room], 'Rooms[socket.room]');
             console.log('GameRoom:', room, 'ID: ', id);
             rooms[room].started = true;
             console.log("ROOMS: ", rooms, ' from game-start line 153ish..??');
@@ -163,11 +171,12 @@ io.on('connect', function(socket) {
     // Check for 'disconnect emit'
     socket.on('disconnect', function() {
         console.log('user disconnected');
-        console.log(rooms[socket.room].id, "Someone in here disconnected");
-        rooms[socket.room].players--;
-        rooms[socket.room].started = false;
-        counter--;
-        console.log(rooms);
+        if(rooms[socket.room]) {
+            console.log(rooms[socket.room].id, "Someone in here disconnected");
+            rooms[socket.room].players--;
+            rooms[socket.room].started = false;
+            console.log(rooms);
+        }
     });
 });
 
