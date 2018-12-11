@@ -1,5 +1,5 @@
 $(document).ready( function() {
-    //$('#chat').hide();
+    $('#chat').hide();
     let gamer = 0;
     let socket = io().connect('localhost:5000');
     let tempRoom = Math.floor(Math.random() * 500);
