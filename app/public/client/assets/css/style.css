@@ -1,3 +1,25 @@
+<<<<<<< HEAD
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+
+body {
+  padding: 50px;
+  font-family: 25px "Press Start 2P", "Lucida Grande", Helvetica, Arial, sans-serif;
+  display: flex;
+  background: #000000;
+}
+
+a {
+  color: #00B7FF;
+}
+
+canvas {
+  margin: 0 auto;
+}
+
+/* .game{
+    height: calc(100vh - 80vw);
+} */
+=======
 html body {
     background: url(../art/htmlback.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
@@ -39,3 +61,4 @@ canvas {
 #chat {
 
 }
+>>>>>>> 868975a71b705626064d5723e8b344d2c3ed57fb

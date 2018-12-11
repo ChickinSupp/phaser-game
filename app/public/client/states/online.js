@@ -1,9 +1,6 @@
 demo = window.demo || (window.demo = {});
 
-
 let bgm;
-
-
 let bg;
 
 demo.online = function () { };

@@ -44,7 +44,6 @@ function pixelSmash() {
     textReflect.font = 'PipeDream';
     textReflect.fontWeight = 'bold';
     textReflect.fontSize = 120;
-
     var grd = textReflect.context.createLinearGradient(1, 1, 1, text.canvas.height);
     //  Add in 2 color stops
     grd.addColorStop(0, 'rgba(255,255,255,0)');
