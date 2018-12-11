@@ -1,4 +1,5 @@
 var game = new Phaser.Game(
+
   1000,
   700,
   Phaser.AUTO,
@@ -30,4 +31,3 @@ game.state.add('game', demo.game);
 game.state.add('state1', demo.state1);
 game.state.add('cpuFight', demo.cpuFight);
 game.state.start('state0');
-

@@ -1,7 +1,7 @@
 $(document).ready( function() {
     $('#chat').hide();
     let gamer = 0;
-    let socket = io().connect('localhost:5000');
+    //let socket = io().connect('localhost:5000');
     let tempRoom = Math.floor(Math.random() * 500);
     let tempViewId = Math.floor((Math.random() * 100) + 100);
     let myRoom, myId;
@@ -43,6 +43,7 @@ $(document).ready( function() {
         $('#chat').hide();
     });
 
+    //Successful room creation 1 & 2
     socket.on('success-create', function (room, id) {
         console.log('NEW ROOM: ' + room);
         console.log('NEW ID: ' + id);
@@ -71,7 +72,30 @@ $(document).ready( function() {
 
     /*
     GET CHOSEN CHARACTERS FROM THE GAME
+    When players are selected
      */
+
+    socket.on('my-player', function (data) {
+        let myPlayer, hisPlayer;
+        let playerCounter = 0;
+        playerCounter++;
+
+        if (playerCounter <= 2) {
+            if (data.bol ===true) {
+                myPlayer = data.name;
+                console.log(" My Selection = ", playerCounter,  data.name);
+            } else {
+                hisPlayer = data.name;
+                console.log(" His Selection ", playerCounter, ' = ', data.name);
+            }
+        }
+
+        if (playerCounter === 2 ) {
+            socket.broadcast.emit('your-player', { name: hisPlayer });
+            game.state.start('game');
+            getPlayer(myPlayer);
+        }
+    });
 
     socket.on('success-join', function (playerNum) {
         if (playerNum === 1) {

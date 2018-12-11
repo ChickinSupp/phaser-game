@@ -1,16 +1,17 @@
 // State 0 start menu
 let demo = window.demo || (window.demo = {});
+//let socket = io();
 
-// function creating background image
+// Creating background image
 function startMenu() {
     startMenu = game.add.image(0, 0, 'menu-background');
     startMenu.width = 1000;
     startMenu.height = 700;
 };
 
-// creating particles for background
+// Creating particles for background
 function particleEmitter() {
-    var emitter = game.add.emitter(game.world.centerX, 0, 400);
+    let emitter = game.add.emitter(game.world.centerX, 0, 400);
 
     emitter.width = game.world.width;
     emitter.makeParticles('particles');
@@ -21,9 +22,9 @@ function particleEmitter() {
     emitter.minRotation = 0;
     emitter.maxRotation = 0;
     emitter.start(false, 1600, 5, 0);
-};
+}
 
-// creating the Pixel smash logo with reflection
+// Creating the Pixel smash logo with reflection
 function pixelSmash() {
     var text = null;
     var textReflect = null;
@@ -63,7 +64,7 @@ function startGame() {
     button1.height = 50;
     button1.onInputOver.add(over, this);
     button1.onInputOut.add(out, this);
-    button1.onInputUp.add(up, this);
+    button1.onInputUp.add(playGame, this);
 
     start.font= 'PipeDream';
     start.fontWeight = 'bold';
@@ -86,14 +87,14 @@ function multiPlayer() {
     button2.height = 40;
     button2.onInputOver.add(over, this);
     button2.onInputOut.add(out, this);
-    button2.onInputUp.add(up, this)
+    button2.onInputUp.add(goOnline, this)
 
 };
 
 function rankings() {
     let rankings = game.add.text(370,620, 'RANKINGS');
     var button3;
-    // creating on click button for text
+    // Creating on click button for text
     rankings.font= 'PipeDream';
     rankings.fontWeight = 'bold';
     rankings.fontSize = 40;
@@ -106,7 +107,6 @@ function rankings() {
     button3.onInputOver.add(over, this);
     button3.onInputOut.add(out, this);
     button3.onInputUp.add(up, this)
-
 };
 
 demo.state0 = function () {};
@@ -117,6 +117,7 @@ demo.state0.prototype = {
         game.load.image('button1', '../assets/art/startGame.png');
         game.load.image('button2', '../assets/art/online.png');
         game.load.image('button3', '../assets/art/rankings.png');
+        game.load.audio('bgm', '../assets/music/ThemeofPixelSmash(demo).ogg');
     },
 
     create: function () {
@@ -127,14 +128,17 @@ demo.state0.prototype = {
         multiPlayer();
         rankings();
 
+        mainBGM = game.add.audio('bgm');
+        mainBGM.play();
     },
     update: function () {}
 };
 
 
 function up() {
+    
     console.log('button up', arguments);
-    game.state.start('state1');
+    game.sound.stopAll();
 }
 
 function over() {
@@ -143,4 +147,14 @@ function over() {
 
 function out() {
     console.log('button out');
+}
+
+function playGame(){
+    game.sound.stopAll();
+    game.state.start('state1');
+}
+
+function goOnline(){
+    game.sound.stopAll();
+    game.state.start('online');
 }

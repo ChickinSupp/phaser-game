@@ -22,7 +22,7 @@ gulp.task('travis', ['build'], function () {
 
 const paths = {
     scripts: {
-        src: './app/public/client/js/*.js',
+        src: './app/public/client/**/*.js',
         dest: './dist/scripts/'
     },
     views: './app/views/*.html',
