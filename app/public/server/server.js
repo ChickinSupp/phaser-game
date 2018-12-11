@@ -114,7 +114,7 @@ io.on('connect', function(socket) {
         // Handle chat event
         socket.on('chat', function(data){
             // console.log(data);
-            socket.broadcast.emit('chat', data);
+            socket.emit('chat', data);
         });
 
         // Handle typing event
