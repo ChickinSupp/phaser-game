@@ -10,7 +10,7 @@ function characterMenu() {
 function selectCharacterText() {
     var text = null;
     var textReflect = null;
-    text = game.add.text(600,100, "SELECT CHARACTER");
+    text = game.add.text(500,100, "SELECT CHARACTER");
     //  Centers the text
     text.anchor.set(0.5);
     text.align = 'center';
@@ -19,7 +19,7 @@ function selectCharacterText() {
     text.fontWeight = 'bold';
     text.fontSize = 80;
     text.fill = '#ffffff';
-    textReflect = game.add.text(600,100 + 100, "SELECT CHARACTER");
+    textReflect = game.add.text(500,100 + 100, "SELECT CHARACTER");
     //  Centers the text
     textReflect.anchor.set(0.5);
     textReflect.align = 'center';
@@ -98,5 +98,4 @@ function playMusic(){
 
     charMusic.play();
     charMusic.loopFull();
-
 }

@@ -1,14 +1,14 @@
 // State 0 start menu
 let demo = window.demo || (window.demo = {});
 
-// function creating background image
+// Creating background image
 function startMenu() {
     startMenu = game.add.image(0, 0, 'menu-background');
-    startMenu.width = 1200;
-    startMenu.height = 1000;
+    startMenu.width = 1000;
+    startMenu.height = 700;
 };
 
-// creating particles for background
+// Creating particles for background
 function particleEmitter() {
     let emitter = game.add.emitter(game.world.centerX, 0, 400);
 
@@ -23,11 +23,11 @@ function particleEmitter() {
     emitter.start(false, 1600, 5, 0);
 };
 
-// creating the Pixel smash logo with reflection
+// Creating the Pixel smash logo with reflection
 function pixelSmash() {
     var text = null;
     var textReflect = null;
-    text = game.add.text(600,100, " PIXEL SMASH ");
+    text = game.add.text(500,100, " PIXEL SMASH ");
     //  Centers the text
     text.anchor.set(0.5);
     text.align = 'center';
@@ -36,7 +36,7 @@ function pixelSmash() {
     text.fontWeight = 'bold';
     text.fontSize = 120;
     text.fill = '#ffffff';
-    textReflect = game.add.text(600,100 + 100, " PIXEL SMASH ");
+    textReflect = game.add.text(500,100 + 100, " PIXEL SMASH ");
     //  Centers the text
     textReflect.anchor.set(0.5);
     textReflect.align = 'center';
@@ -54,16 +54,16 @@ function pixelSmash() {
 };
 
 function startGame() {
-    let start = game.add.text(450,380, 'START GAME');
+    let start = game.add.text(350,380, 'START GAME');
     var button1;
     // creating on click button for text
-    button1 = game.add.button(450, 380, 'button1', null, this, 2, 1, 0);
+    button1 = game.add.button(350, 380, 'button1', null, this, 2, 1, 0);
     button1.alpha = 0;
     button1.width = 320;
     button1.height = 50;
     button1.onInputOver.add(over, this);
     button1.onInputOut.add(out, this);
-    button1.onInputUp.add(up, this);
+    button1.onInputUp.add(playGame, this);
 
     start.font= 'PipeDream';
     start.fontWeight = 'bold';
@@ -72,34 +72,34 @@ function startGame() {
 };
 
 function multiPlayer() {
-    let multiPlayer = game.add.text(500,500, 'ONLINE');
+    let multiPlayer = game.add.text(400,500, 'ONLINE');
     var button2;
     multiPlayer.font= 'PipeDream';
     multiPlayer.fontWeight = 'bold';
     multiPlayer.fontSize = 40;
     multiPlayer.fill = '#ffffff';
 
-    // creating on click button for text
-    button2 = game.add.button(500,500, 'button2', null, this, 2, 1, 0);
+    // Creating on click button for text
+    button2 = game.add.button(400,500, 'button2', null, this, 2, 1, 0);
     button2.alpha = 0;
     button2.width = 250;
     button2.height = 40;
     button2.onInputOver.add(over, this);
     button2.onInputOut.add(out, this);
-    button2.onInputUp.add(up, this)
+    button2.onInputUp.add(goOnline, this)
 
 };
 
 function rankings() {
-    let rankings = game.add.text(470,620, 'RANKINGS');
+    let rankings = game.add.text(370,620, 'RANKINGS');
     var button3;
-    // creating on click button for text
+    // Creating on click button for text
     rankings.font= 'PipeDream';
     rankings.fontWeight = 'bold';
     rankings.fontSize = 40;
     rankings.fill = '#ffffff';
 
-    button3 = game.add.button(470,620, 'button3', null, this, 2, 1, 0);
+    button3 = game.add.button(370,620, 'button3', null, this, 2, 1, 0);
     button3.alpha = 0;
     button3.width = 250;
     button3.height = 40;
@@ -117,6 +117,7 @@ demo.state0.prototype = {
         game.load.image('button1', '../assets/art/startGame.png');
         game.load.image('button2', '../assets/art/online.png');
         game.load.image('button3', '../assets/art/rankings.png');
+        game.load.audio('bgm', '../assets/music/ThemeofPixelSmash(demo).ogg');
     },
 
     create: function () {
@@ -127,14 +128,17 @@ demo.state0.prototype = {
         multiPlayer();
         rankings();
 
+        mainBGM = game.add.audio('bgm');
+        mainBGM.play();
     },
     update: function () {}
 };
 
 
 function up() {
+    
     console.log('button up', arguments);
-    game.state.start('state1');
+    game.sound.stopAll();
 }
 
 function over() {
@@ -143,4 +147,14 @@ function over() {
 
 function out() {
     console.log('button out');
+}
+
+function playGame(){
+    game.sound.stopAll();
+    game.state.start('state1');
+}
+
+function goOnline(){
+    game.sound.stopAll();
+    game.state.start('online');
 }

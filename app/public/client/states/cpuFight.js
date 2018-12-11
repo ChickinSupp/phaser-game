@@ -3827,6 +3827,7 @@ demo.cpuFight.prototype = {
 
         game.load.audio('explosion', '../assets/sfx/expl.wav');
         game.load.audio('battle1', '../assets/music/Ambush.mp3');
+        game.load.audio('battle2', '../assets/music/Dive into Battle.ogg');
         //sound, sprite, atkBox, charObj
 
 
@@ -3839,8 +3840,8 @@ demo.cpuFight.prototype = {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        music = game.add.audio('battle1');
-        //music.play();
+        music = game.add.audio('battle2');
+        music.play();
 
         game.stage.backgroundColor = '#800080';
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -3868,9 +3869,9 @@ demo.cpuFight.prototype = {
 
         bfBackground.animations.play('on');
 
-        cpuB1 = game.add.sprite(20, 600, 'b1')
+        cpuB1 = game.add.sprite(0, 600, 'b1')
     
-            cpuB2 = game.add.sprite(600,600, 'b2');
+            cpuB2 = game.add.sprite(850,600, 'b2');
 
 
 
@@ -4140,12 +4141,18 @@ demo.cpuFight.prototype = {
         updateGrounded(dummy, comp);
         CPUListener(dummy,comp);
         comp.enableSoundControls();
-
-        //updateGrounded(dummy, comp);
+        comp.jump(dummy, 15);
+        comp.moveRunAttack(dummy, 'runAttack', 10);
+        comp.moveRunAttack(dummy, 'slideKick', 12);
+        comp.jumpAnimLoop(dummy);
+        comp.glideDownJump(dummy, 1000, comp.stats.gravity);
+        comp.moveDodge(dummy);
+        comp.upRecovery(dummy);
+        updateGrounded(dummy, comp);
         //dummykeyListener(dummy, comp,true, 'u', 'i', 'o', 'p', 'l');
         /*    comp.runIdleControl(dummy);
-           comp.jump(dummy, 15);
-           comp.glideDownJump(dummy, 1000, dude.stats.gravity);
+           
+           
            comp.jumpAnimLoop(dummy);
            comp.downAerialMotion(dummy, 'low');
            comp.downAerial(dummy);
@@ -4840,51 +4847,51 @@ function getDistance (x1, y1, x2, y2) {
 function fallingSense(charObj, sprite, blockSprite1, blockSprite2){
     let distB1 = getDistance(sprite.x, sprite.y, blockSprite1.x, blockSprite1.y );
     let distB2 = getDistance(sprite.x, sprite.y, blockSprite2.x, blockSprite2.y );
-    if(distB1 < 400){
-        if(charObj.isGrounded){
-            charObj.actions.runRight = true;
-            charObj.actions.evade = true;
-            resetSense(['runRight', 'evade']);
 
-
-            
-        }else{
-            charObj.actions.holdUp = true;
-            charObj.actions.doSpecial = true;
-            charObj.actions.runRight = true;
-
-            resetSense(['holdUp', 'doSpecial', 'runRight' ]);
-
-
-
-            /* setTimeout(function(action){
-                CPU.actions[action] = false;
-            }, 300);
- */
-
-        }
-
-    }else if (distB2 < 400){
+    
+    if (distB2 < 450){
         if(charObj.isGrounded){
             charObj.actions.runLeft = true;
             charObj.actions.evade = true;
 
-            resetSense(['runLeft','evade']);
-            
         }else{
             charObj.actions.holdUp = true;
             charObj.actions.doSpecial = true;
             charObj.actions.runLeft = true;
 
-            resetSense(['holdUp','doSpecial', 'runLeft' ]);
 
 
         }
     
     }else{
+        charObj.actions.runLeft = false;
+        charObj.actions.doSpecial = false;
+        charObj.actions.evade = false
+
         return;
     }
 
+    if (distB1 < 450){
+        if(charObj.isGrounded){
+            charObj.actions.runRight = true;
+            charObj.actions.evade = true;
+
+        }else{
+            charObj.actions.holdUp = true;
+            charObj.actions.doSpecial = true;
+            charObj.actions.runRight = true;
+
+
+
+        }
+    
+    }else{
+        charObj.actions.doSpecial = false;
+        charObj.actions.runLeft = false;
+        charObj.actions.evade = false
+
+        return;
+    }
 
 }
 

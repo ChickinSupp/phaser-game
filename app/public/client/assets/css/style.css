@@ -19,9 +19,18 @@ body {
     text-align: center;
 }
 
-h1, h5 {
+.h1-text{
     font-family: 'Rock Salt', cursive;
-    font-size: 80px;
+    font-size: 40px;
+    position: absolute;
+    left: 1000px;
+}
+
+.h5-text{
+    font-family: 'Rock Salt', cursive;
+    font-size: 40px;
+    position: absolute;
+    left: 1000px;
 }
 
 .header {
@@ -34,6 +43,8 @@ h1, h5 {
 
 canvas {
     margin: 0 auto;
+    position: relative;
+    bottom: 10px;
 }
 
 #chat {
