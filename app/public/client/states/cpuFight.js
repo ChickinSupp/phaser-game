@@ -4142,6 +4142,8 @@ demo.cpuFight.prototype = {
         CPUListener(dummy,comp);
         comp.enableSoundControls();
         comp.jump(dummy, 15);
+        comp.moveRunAttack(dummy, 'runAttack', 10);
+        comp.moveRunAttack(dummy, 'slideKick', 12);
         comp.jumpAnimLoop(dummy);
         comp.glideDownJump(dummy, 1000, comp.stats.gravity);
         comp.moveDodge(dummy);
@@ -4843,11 +4845,11 @@ function getDistance (x1, y1, x2, y2) {
 
 
 function fallingSense(charObj, sprite, blockSprite1, blockSprite2){
-    //let distB1 = getDistance(sprite.x, sprite.y, blockSprite1.x, blockSprite1.y );
+    let distB1 = getDistance(sprite.x, sprite.y, blockSprite1.x, blockSprite1.y );
     let distB2 = getDistance(sprite.x, sprite.y, blockSprite2.x, blockSprite2.y );
 
     
-    if (distB2 < 500){
+    if (distB2 < 450){
         if(charObj.isGrounded){
             charObj.actions.runLeft = true;
             charObj.actions.evade = true;
@@ -4863,11 +4865,33 @@ function fallingSense(charObj, sprite, blockSprite1, blockSprite2){
     
     }else{
         charObj.actions.runLeft = false;
+        charObj.actions.doSpecial = false;
         charObj.actions.evade = false
 
         return;
     }
 
+    if (distB1 < 450){
+        if(charObj.isGrounded){
+            charObj.actions.runRight = true;
+            charObj.actions.evade = true;
+
+        }else{
+            charObj.actions.holdUp = true;
+            charObj.actions.doSpecial = true;
+            charObj.actions.runRight = true;
+
+
+
+        }
+    
+    }else{
+        charObj.actions.doSpecial = false;
+        charObj.actions.runLeft = false;
+        charObj.actions.evade = false
+
+        return;
+    }
 
 }
 

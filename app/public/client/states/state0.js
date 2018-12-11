@@ -63,7 +63,7 @@ function startGame() {
     button1.height = 50;
     button1.onInputOver.add(over, this);
     button1.onInputOut.add(out, this);
-    button1.onInputUp.add(up, this);
+    button1.onInputUp.add(playGame, this);
 
     start.font= 'PipeDream';
     start.fontWeight = 'bold';
@@ -86,7 +86,7 @@ function multiPlayer() {
     button2.height = 40;
     button2.onInputOver.add(over, this);
     button2.onInputOut.add(out, this);
-    button2.onInputUp.add(up, this)
+    button2.onInputUp.add(goOnline, this)
 
 };
 
