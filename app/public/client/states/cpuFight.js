@@ -10,6 +10,11 @@ comp = new Ai('scott', 10, 1700, 1500);
 
 //let comp = new Character('dummy', 10, 120);
 
+let attempts = 0;
+
+
+let hits = 0;
+
 manager;
 emitter;
 projectile;
@@ -182,7 +187,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
         this.decision = '';
     this.lives = {
         left: 3
-    }
+    };
     this.stats = {
         damage: 0,
         lives: 3,
@@ -383,7 +388,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
     this.jump = function (sprite, maxHeight) {
 
 
-        if (!this.isAirDodging && this.actions.jump && this.stats.jumpH < 30) {
+        if (!this.isAirDodging && this.decision == 'jump' && this.stats.jumpH < 30) {
             this.stats.jumpH++;
             sprite.y -= 15;
         } else {
@@ -1884,7 +1889,7 @@ function Character(name, power, gravity, jumpResistance) {
                 if (this.isDodging && (['startJump', 'loopJump', 'dodge', 'block', 'moveDodge'].includes(sprite.animations.currentAnim.name))) {
                     sprite.animations.stop('idle');
                     //spriteCombo = [];
-                    console.log('dddaaaaaad');
+                    
                     this.keyPressed = '';
                 } else if ((!this.isDodging || !this.isAirDodging) && !game.input.keyboard.isDown(Phaser.Keyboard.Z) && !game.input.keyboard.isDown(Phaser.Keyboard.X) && this.completedJump || (!game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && sprite.animations.currentAnim.name == 'run' || !game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && sprite.animations.currentAnim.name == 'run')) {
                     this.onlyDoOnce = false;
@@ -1905,7 +1910,7 @@ function Character(name, power, gravity, jumpResistance) {
 
                     this.combo = [];
                     this.canAirRecover = true;
-                    console.log('restared');
+                    
                     this.keyPressed = '';
                     this.timedBonusAnim = '';
                     this.stallChecked = false;
@@ -1926,10 +1931,10 @@ function Character(name, power, gravity, jumpResistance) {
 
                         if (sprite.animations.currentAnim.name == 'airNeutral') {
                             sprite.x += 13;
-                            //sprite.body.velocity.x = 200;
+                            
                         } else {
                             sprite.x += 8;
-                            //sprite.body.velocity.x = 400;
+                            
                         }
 
                         //console.log('sssa');
@@ -1957,7 +1962,7 @@ function Character(name, power, gravity, jumpResistance) {
                             sprite.x -= 8;
                             //sprite.body.velocity.x = -400;
                         }
-                        //console.log(' running left');
+                       
 
                         if ((!['jump', 'startJump', 'loopJump', 'endJump', 'dodge', 'block', 'moveDodge', 'loopDwnKick', 'airDodge'].includes(sprite.animations.currentAnim.name)) && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && this.isGrounded !== false && this.startedJump == false)) {
                             sprite.animations.play('run');
@@ -2550,8 +2555,7 @@ function Character(name, power, gravity, jumpResistance) {
                 sprite.animations.play('airDodge');
                 game.add.tween(sprite).to({ x: '-80' }, 500, Phaser.Easing.Cubic.Out, true);
                 this.doTimeout(this.toggleSpriteMotion, 500, scott);
-                //sprite.body.velocity.setTo(-125, 0);
-                //game.add.tween(sprite).onComplete.add(toggleSpriteMotion, this);
+             
                 this.isAirDodging = false;
                 this.airDodgeDirect = '';
                 console.log('asasassssss');
@@ -2559,8 +2563,7 @@ function Character(name, power, gravity, jumpResistance) {
                 sprite.animations.play('airDodge');
                 game.add.tween(sprite).to({ x: '80' }, 500, Phaser.Easing.Cubic.Out, true);
                 this.doTimeout(this.toggleSpriteMotion, 500, scott);
-                //game.add.tween(sprite).onComplete.add(toggleSpriteMotion, this);
-                //sprite.body.velocity.setTo(125, 0);
+               
                 this.isAirDodging = false;
                 this.airDodgeDirect = '';
                 console.log('asdsdsdsaaadffff');
@@ -3156,6 +3159,7 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
 
     game.input.keyboard.onPressCallback = function (e) {
         console.log("key pressed", e);
+        attempts++;
         switch (e) {
             //standard kick
             case kick:
@@ -3830,7 +3834,7 @@ demo.cpuFight.prototype = {
         game.load.audio('explosion', '../assets/sfx/expl.wav');
         game.load.audio('battle1', '../assets/music/Ambush.mp3');
         game.load.audio('battle2', '../assets/music/Friendly Competition.ogg');
-        //sound, sprite, atkBox, charObj
+      
 
 
 
@@ -4080,6 +4084,10 @@ demo.cpuFight.prototype = {
             dude.resetFilp();
         });
 
+        game.physics.arcade.collide(dummy, battlefield, function () {
+            comp.resetFilp();
+        });
+
         //dummy will collide with the stage
         game.physics.arcade.collide(dummy, [/* platform, platform1, platform2, platform3, */ battlefield]);
         //dummy will be damaged by the projectile
@@ -4091,6 +4099,7 @@ demo.cpuFight.prototype = {
 
         //dummy will be hit when player hits him
         game.physics.arcade.overlap(dummy, atkBox, function () {
+            hits++;
             hit(dude, scott, comp, dummy);
             //elec hiteffect will play on dummy when hit
             normHit.run(normalHit, elec, atkBox, dummy, scott, dude);
@@ -4174,21 +4183,25 @@ demo.cpuFight.prototype = {
         attackSense(comp, dummy, dude, scott);
         moveSense(comp, dummy, dude, scott);
         //fallingSense(comp, dummy, cpuB1,cpuB2);
-        updateGrounded(dummy, comp);
+        CPUupdateGrounded(dummy, comp);
         CPUListener(dummy, comp);
         comp.enableSoundControls();
         comp.jump(dummy, 15);
+        comp.glideDownJump(dummy, 1000, comp.stats.gravity);
+        comp.jumpAnimLoop(dummy);
         comp.downAerialMotion(dummy, 'med');
         comp.downAerial(dummy);
+        comp.moveAttackBox(scndBox, dummy)
         comp.moveRunAttack(dummy, 'runAttack', 10);
         comp.moveRunAttack(dummy, 'slideKick', 12);
-        comp.jumpAnimLoop(dummy);
-        comp.glideDownJump(dummy, 1000, comp.stats.gravity);
+   
+        
+        comp.resetAirDodge(dummy);
         comp.moveDodge(dummy);
         comp.upRecovery(dummy);
         comp.airDodged(dummy);
 
-        comp.moveAttackBox(scndBox, dummy)
+       
         //updateGrounded(dummy, comp);
 
         //dummykeyListener(dummy, comp,true, 'u', 'i', 'o', 'p', 'l');
@@ -4217,6 +4230,19 @@ demo.cpuFight.prototype = {
 
 
         function updateGrounded(sprite, charObj) {
+            if (sprite.body.touching.down) {
+                charObj.isGrounded = true;
+                charObj.stats.jumpH = 0;
+                charObj.resetFilp();
+
+            } else {
+                charObj.isGrounded = false;
+            }
+
+
+        }
+
+        function CPUupdateGrounded(sprite, charObj) {
             if (sprite.body.touching.down) {
                 charObj.isGrounded = true;
                 charObj.stats.jumpH = 0;
@@ -4883,35 +4909,39 @@ function attackSense(CPUobj, sprite, enemyObj, enemy) {
 
     atkdist = getDistance(cpuX, cpuY, enemy.x, enemy.y);
 
-    if ((3 < atkdist < 5) && enemyObj.isGrounded) {
-        if (CPUobj.actions.holdUp == true) {
-            CPUobj.actions.holdUp = false;
+
+    if (enemyObj.isGrounded) {
+
+        if (3 < atkdist < 5) {
+            if (CPUobj.actions.holdUp == true) {
+                CPUobj.actions.holdUp = false;
+            }
+            CPUobj.decision = 'punch';
+            if(CPUobj.combo[0] == 'neutralPunch5'){
+                CPUobj.decision = 'special';
+                CPUobj.decision = 'jump';
+            }
+
+        } else if (atkdist < 3 && enemyObj.isGrounded) {
+            CPUobj.decision = 'punch';
         }
-        CPUobj.decision = 'kick';
+    } else if (!enemyObj.isGrounded) {
+        if ((20 < atkdist < 200)) {
+            if (CPUobj.decision == 'kick') {
+                CPUobj.decision = '';
+            }
 
+            CPUobj.actions.runRight = false;
+            CPUobj.actions.runLeft = false;
 
-
-    } else if ((20 < atkdist < 80) && !enemyObj.isGrounded) {
-        if (CPUobj.decision == 'kick') {
-            CPUobj.decision = '';
+            CPUobj.actions.holdUp = true;
+            CPUobj.decision = 'special';
         }
 
-        CPUobj.actions.runRight = false;
-        CPUobj.actions.runLeft = false;
-
-        CPUobj.actions.holdUp = true;
-        CPUobj.decision = 'special';
-
-
-
-
-    } else if (!CPUobj.isGrounded && atkdist < 20) {
-        CPUobj.decision = 'punch';
     } else if (!CPUobj.isGrounded && atkdist > 20 && enemyObj.isGrounded) {
         CPUobj.decision = 'jump';
         CPUobj.decision = 'kick';
-    } else if (atkdist < 3 && enemyObj.isGrounded) {
-        CPUobj.decision = 'punch';
+
 
     }
 
@@ -4942,47 +4972,55 @@ function moveSense(CPUobj, sprite, enemyObj, enemy) {
 
 
 
-    if (distB1 < 130) {
+    if (!(distB1 < 130) && !(distB2 < 130)) {
+        if (dist > 20) {
+
+            if (direct < 0 && enemyObj.isGrounded) {
+                CPUobj.actions.runRight = false;
+                CPUobj.actions.runLeft = true;
+                CPUobj.decision = 'special';
+            } else if (direct > 0) {
+                CPUobj.actions.runLeft = false;
+                CPUobj.actions.runRight = true;
+                CPUobj.decision = 'special';
+            }
+
+
+        }
+
+        else if (dist < 20 && !enemyObj.isGrounded) {
+            CPUobj.actions.runRight = false;
+            CPUobj.actions.runLeft = false;
+            /* if (CPUobj.decision == 'special') {
+                CPUobj.decision = '';
+            } */
+
+        }
+
+        else {
+            return;
+        }
+
+
+    } else if (distB1 < 130 && CPUobj.isGrounded) {
+
         CPUobj.decision = '';
         CPUobj.actions.runRight = true;
-
-
-
-    } else if (distB2 < 130) {
+    } else if (distB2 < 130 && CPUobj.isGrounded) {
         CPUobj.decision = '';
         CPUobj.actions.runLeft = true;
-
-    }
-
-
-    else if (dist > 20) {
-
-        if (direct < 0 && enemyObj.isGrounded) {
-            CPUobj.actions.runRight = false;
-            CPUobj.actions.runLeft = true;
-            CPUobj.decision = 'special';
-        } else if (direct > 0) {
-            CPUobj.actions.runLeft = false;
-            CPUobj.actions.runRight = true;
-            CPUobj.decision = 'special';
-        }
-
-
-    }
-
-    else if (dist < 20 && !enemyObj.isGrounded) {
-        CPUobj.actions.runRight = false;
-        CPUobj.actions.runLeft = false;
-        if (CPUobj.decision == 'special') {
-            CPUobj.decision = '';
-        }
-
-    }
-
-    else {
-        return;
+    } else if (distB1 < 130 && !CPUobj.isGrounded) {
+        CPUobj.actions.runRight = true;
+        comp.actions.holdUp = true;
+        comp.decision = 'special';
+    } else if (distB2 < 130 && !CPUobj.isGrounded) {
+        CPUobj.actions.runLeft = true;
+        comp.actions.holdUp = true;
+        comp.decision = 'special';
     }
 }
+
+
 
 
 function fallingSense(charObj, sprite, blockSprite1, blockSprite2) {
