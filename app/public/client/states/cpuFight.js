@@ -6,51 +6,51 @@ demo = window.demo || (window.demo = {});
 
 dude = new Character('mghosty', 10, 1300, 1500);
 
-comp = new Ai('scott', 10, 1300, 1500);
+comp = new Ai('scott', 10, 1700, 1500);
 
 //let comp = new Character('dummy', 10, 120);
 
- manager;
- emitter;
- projectile;
- stage = '';
- lives;
+manager;
+emitter;
+projectile;
+stage = '';
+lives;
 music;
- flipFlop;
+flipFlop;
 // sound vars need for global use for player 1
- airRec;
- slash;
- ejectBall;
- ghostDodge;
- sdodge;
- barr;
- natk1;
+airRec;
+slash;
+ejectBall;
+ghostDodge;
+sdodge;
+barr;
+natk1;
 jumpSnd;
 
 
- ghAirRec;
+ghAirRec;
 
- ghRunAtk;
- ghDownKick;
- ghAtk2;
- foxKicks;
- ghAirNeu;
- ghWhip;
- ghMeteor;
- stKick;
- sldKick;
- stRunAtk;
- stSpecKick;
- stUpNeu;
+ghRunAtk;
+ghDownKick;
+ghAtk2;
+foxKicks;
+ghAirNeu;
+ghWhip;
+ghMeteor;
+stKick;
+sldKick;
+stRunAtk;
+stSpecKick;
+stUpNeu;
 
 
- shieldHit;
+shieldHit;
 
- normalHit;
+normalHit;
 
- shadowHit;
+shadowHit;
 
- ghostSpecialAtk;
+ghostSpecialAtk;
 
 
 
@@ -58,106 +58,108 @@ cpuB1;
 cpuB2;
 
 
+let cpuHit;
+
 //sound control for playing sounds at the right moments
- bar = new soundCtrl('holdShield');
+bar = new soundCtrl('holdShield');
 
- natk1C = new soundCtrl('neutralPunch1');
+natk1C = new soundCtrl('neutralPunch1');
 
- jumpSndC = new soundCtrl('startJump');
+jumpSndC = new soundCtrl('startJump');
 
- ghAirRecC = new soundCtrl('airRecovery');
+ghAirRecC = new soundCtrl('airRecovery');
 
- ghRunAtkC = new soundCtrl('runAttack');
+ghRunAtkC = new soundCtrl('runAttack');
 
- ghDownKickC = new soundCtrl('loopDwnKick');
+ghDownKickC = new soundCtrl('loopDwnKick');
 
- ghAtk2C = new soundCtrl('neutralPunch2');
+ghAtk2C = new soundCtrl('neutralPunch2');
 
- natk2C = new soundCtrl('neutralPunch3');
+natk2C = new soundCtrl('neutralPunch3');
 
- ghAtk4 = new soundCtrl('neutralPunch4');
+ghAtk4 = new soundCtrl('neutralPunch4');
 
- ghUpKickC = new soundCtrl('upAir');
+ghUpKickC = new soundCtrl('upAir');
 
- ghbackKickC = new soundCtrl('foxKick');
+ghbackKickC = new soundCtrl('foxKick');
 
- ghAirNeuC = new soundCtrl('airNeutral');
+ghAirNeuC = new soundCtrl('airNeutral');
 
- ghAirDodgeC = new soundCtrl('airDodge');
+ghAirDodgeC = new soundCtrl('airDodge');
 
- ghWhipC = new soundCtrl('neutralPunch5');
+ghWhipC = new soundCtrl('neutralPunch5');
 
- ghMeteorC = new soundCtrl('meteorSmash');
+ghMeteorC = new soundCtrl('meteorSmash');
 
- stKickC = new soundCtrl('neutralKick');
+stKickC = new soundCtrl('neutralKick');
 
- sldKickC = new soundCtrl('slideKick');
-
-
- stRunAtkC = new soundCtrl('runAttack');
+sldKickC = new soundCtrl('slideKick');
 
 
- stSpecKickC = new soundCtrl('specialKick1');
+stRunAtkC = new soundCtrl('runAttack');
+
+
+stSpecKickC = new soundCtrl('specialKick1');
 
 //hit effect renderers for player 1
 
- nullHitEffect = new hitEffectCtrl(true);
+nullHitEffect = new hitEffectCtrl(true);
 
- normHit = new hitEffectCtrl(false);
+normHit = new hitEffectCtrl(false);
 
- grghostHit = new hitEffectCtrl(false);
+grghostHit = new hitEffectCtrl(false);
 
 
 //FOR CPU
 
 //sound controls for CPU
- CPUbar = new soundCtrl('holdShield');
+CPUbar = new soundCtrl('holdShield');
 
 CPUnatk1C = new soundCtrl('neutralPunch1');
 
- CPUjumpSndC = new soundCtrl('startJump');
+CPUjumpSndC = new soundCtrl('startJump');
 
- CPUghAirRecC = new soundCtrl('airRecovery');
+CPUghAirRecC = new soundCtrl('airRecovery');
 
- CPUghRunAtkC = new soundCtrl('runAttack');
+CPUghRunAtkC = new soundCtrl('runAttack');
 
- CPUghDownKickC = new soundCtrl('loopDwnKick');
+CPUghDownKickC = new soundCtrl('loopDwnKick');
 
- CPUghAtk2C = new soundCtrl('neutralPunch2');
+CPUghAtk2C = new soundCtrl('neutralPunch2');
 
- CPUnatk2C = new soundCtrl('neutralPunch3');
+CPUnatk2C = new soundCtrl('neutralPunch3');
 
- CPUghAtk4 = new soundCtrl('neutralPunch4');
+CPUghAtk4 = new soundCtrl('neutralPunch4');
 
 CPUghUpKickC = new soundCtrl('upAir');
 
- CPUghbackKickC = new soundCtrl('foxKick');
+CPUghbackKickC = new soundCtrl('foxKick');
 
- CPUghAirNeuC = new soundCtrl('airNeutral');
+CPUghAirNeuC = new soundCtrl('airNeutral');
 
- CPUghAirDodgeC = new soundCtrl('airDodge');
+CPUghAirDodgeC = new soundCtrl('airDodge');
 
- CPUghWhipC = new soundCtrl('neutralPunch5');
+CPUghWhipC = new soundCtrl('neutralPunch5');
 
- CPUghMeteorC = new soundCtrl('meteorSmash');
+CPUghMeteorC = new soundCtrl('meteorSmash');
 
- CPUstKickC = new soundCtrl('neutralKick');
+CPUstKickC = new soundCtrl('neutralKick');
 
- CPUsldKickC = new soundCtrl('slideKick');
-
-
- CPUstRunAtkC = new soundCtrl('runAttack');
+CPUsldKickC = new soundCtrl('slideKick');
 
 
- CPUstSpecKickC = new soundCtrl('specialKick1');
+CPUstRunAtkC = new soundCtrl('runAttack');
+
+
+CPUstSpecKickC = new soundCtrl('specialKick1');
 
 //hit effect renderers for CPU
 
- CPUnullHitEffect = new hitEffectCtrl(true);
+CPUnullHitEffect = new hitEffectCtrl(true);
 
- CPUnormHit = new hitEffectCtrl(false);
+CPUnormHit = new hitEffectCtrl(false);
 
- CPUgrghostHit = new hitEffectCtrl(false);
+CPUgrghostHit = new hitEffectCtrl(false);
 
 
 
@@ -167,17 +169,17 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
     this.getHitWith = '';
     this.isHurt = false;
     this.actions = {
-        runRight : false,
-        runLeft : false,
-        jump : false,
-        kick : false,
-        punch : false,
-        holdUp : false,
-        evade : false,
-        doSpecial : false,
+        runRight: false,
+        runLeft: false,
+        jump: false,
+        kick: false,
+        punch: false,
+        holdUp: false,
+        evade: false,
+        doSpecial: false,
 
     },
-    this.decision = '';
+        this.decision = '';
     this.lives = {
         left: 3
     }
@@ -232,8 +234,8 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
     this.stallChecked = false;
     this.stopMotion = false;
 
-    this.CPUbrain = function (){
-    
+    this.CPUbrain = function () {
+
 
     }
 
@@ -401,20 +403,20 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                 } else if ((!this.isDodging || !this.isAirDodging) && !this.actions.evade && !this.actions.jump && this.completedJump || (!this.actions.runRight && sprite.animations.currentAnim.name == 'run' || !this.actions.runLeft && sprite.animations.currentAnim.name == 'run')) {
                     this.onlyDoOnce = false;
                     this.canPlayerJump = true;
-    
+
                     if (!this.isGrounded && !(['knockback', 'pushback1', 'pushback2', 'pushback3'].includes(sprite.animations.currentAnim.name))) {
                         sprite.animations.play('notloopJump');
                     } else if (this.isGrounded) {
                         //sprite.animations.stop('notloopJump');
                         if (['notloopjump', 'loopJump'].includes(sprite.animations.currentAnim.name)/* && sprite.animations.currentAnim.name == 'notloopjump' */ && sprite.animations.currentAnim.isFinished) {
-    
-    
+
+
                             sprite.animations.play('endJump');
                         }
-    
+
                         sprite.animations.play('idle');
                     }
-    
+
                     this.combo = [];
                     this.canAirRecover = true;
                     console.log('restared');
@@ -427,15 +429,15 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                 if (this.actions.runRight && ((!['s', 'a'].includes(this.keyPressed)) && sprite.animations.currentAnim.name !== 'runAttack' && (!this.isAirDodging && !this.shield.shieldActive))) {
                     if (sprite.animations.currentAnim.name !== 'knockback') {
                         //testing for ghost's foxKick
-    
-    
-    
+
+
+
                         sprite.scale.setTo(1, 1);
                         this.isLeft = false;
-    
-    
-    
-    
+
+
+
+
                         if (sprite.animations.currentAnim.name == 'airNeutral') {
                             sprite.x += 13;
                             //sprite.body.velocity.x = 200;
@@ -443,7 +445,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                             sprite.x += 8;
                             //sprite.body.velocity.x = 400;
                         }
-    
+
                         //console.log('sssa');
                         if ((!['jump', 'startJump', 'loopJump', 'endJump', 'dodge', 'block', 'moveDodge', 'loopDwnKick', 'airDodge'].includes(sprite.animations.currentAnim.name)) && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && this.isGrounded !== false && this.startedJump == false)) {
                             sprite.animations.play('run');
@@ -451,17 +453,17 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                     } else {
                         return;
                     }
-    
-    
-    
-    
+
+
+
+
                 } else if (this.actions.runLeft && ((!['s', 'a'].includes(this.keyPressed)) && sprite.animations.currentAnim.name !== 'runAttack' && (!this.isAirDodging && !this.shield.shieldActive))) {
                     if (sprite.animations.currentAnim.name !== 'knockback') {
-    
+
                         sprite.scale.setTo(-1, 1);
                         this.isLeft = true;
-    
-    
+
+
                         if (sprite.animations.currentAnim.name == 'airNeutral') {
                             sprite.x -= 13;
                             //sprite.body.velocity.x = -200;
@@ -470,27 +472,27 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                             //sprite.body.velocity.x = -400;
                         }
                         //console.log(' running left');
-    
+
                         if ((!['jump', 'startJump', 'loopJump', 'endJump', 'dodge', 'block', 'moveDodge', 'loopDwnKick', 'airDodge'].includes(sprite.animations.currentAnim.name)) && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && this.isGrounded !== false && this.startedJump == false)) {
                             sprite.animations.play('run');
                         }
-    
-    
+
+
                     } else {
                         return;
                     }
-    
-    
-    
+
+
+
                 } else if ((!this.actions.runRight) || (!this.actions.runRight) || this.keyPressed || this.actions.evade || this.actions.punch || this.actions.special || game.input.keyboard.isDown(keys.w) || this.actions.special || this.startedJump) {
                     sprite.animations.stop('run');
-    
-    
+
+
                 }
             }
-    
-    
-    
+
+
+
         } else {
             return;
         }
@@ -1133,7 +1135,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
         setTimeout(function () {
             func(param1);
-            console.log('yeeee');
+
         }, time);
 
     };
@@ -1206,24 +1208,24 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                     this.stopMotion = false;
                     this.getHitWith = '';
 
-                    console.log('stop motion?', this.stopMotion);
+
                     this.isHurt = false;
-                    console.log('hurt sprite can now move again');
+
                 }, 1000);
 
 
             } else if (100 < sprite.body.speed < 200 && ['airRecovery', 'upNeutral', 'airNeutral'].includes(this.getHitWith) && !this.stallChecked) {
                 this.stopMotion = true;
-                console.log('got hit with', this.getHitWith);
+
                 this.stallChecked = true;
 
 
                 setTimeout(function () {
                     this.stopMotion = false;
                     this.getHitWith = '';
-                    console.log('stop motion?', this.stopMotion);
+
                     this.isHurt = false;
-                    console.log('hurt sprite can now move again');
+
                 }, 1200);
 
             } else if (200 < sprite.body.speed < 300 && ['airRecovery', 'upNeutral', 'airNeutral'].includes(this.getHitWith) && !this.stallChecked) {
@@ -1469,7 +1471,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                 dummy.animations.add('block', [79, 80, 81, 82, 83, 84, 85], 14, false);
                 dummy.animations.add('lowKick', [86, 87, 88, 89, 90, 91], 14, false);
                 dummy.animations.add('dodge', [92, 93, 94, 95], 14, false);
-                dummy.animations.add('knockback', [96, 97, 98, 99, 100], 14, false);
+                dummy.animations.add('knockback', [96, 97, 98, 99, 100], 10, false);
 
                 dummy.animations.add('startDwnKick', [100, 101, 102], 12, false);
                 dummy.animations.add('loopDwnKick', [103, 104, 105], 12, true);
@@ -1490,9 +1492,9 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
                 dummy.animations.add('airNeutral', [142, 143, 144, 145, 146, 147], 18, false);
 
-                dummy.animations.add('pushback1', [148], 10, false);
-                dummy.animations.add('pushback2', [149], 10, false);
-                dummy.animations.add('pushback3', [150], 10, false);
+                dummy.animations.add('pushback1', [148], 3, false);
+                dummy.animations.add('pushback2', [149], 3, false);
+                dummy.animations.add('pushback3', [150], 3, false);
 
                 dummy.animations.play('idle');
                 break;
@@ -1501,9 +1503,9 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
                 break;
             case 'mghosty':
-            dummy = game.add.sprite(400, 100, 'ghosty');
-            dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8], 12, true);
-            dummy.animations.add('run', [9, 10, 11, 12, 13], 14, false);
+                dummy = game.add.sprite(400, 100, 'ghosty');
+                dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8], 12, true);
+                dummy.animations.add('run', [9, 10, 11, 12, 13], 14, false);
                 //player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
                 dummy.animations.add('startJump', [33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48], 20, false);
                 dummy.animations.add('loopJump', [49, 50, 51, 52, 53, 54], 15, true);
@@ -1627,33 +1629,33 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
     this.ghostLand = function (sprite) {
         if (this.name == 'mghosty' && this.isGrounded && ['notloopJump'].includes(sprite.animations.currentAnim.name)) {
             sprite.animations.play('endJump');
-        }else{
-            return;
-        }
-    };
-    this.ghSpecialListener = function(sprite, enemy, sound) {
-
-        let done = false;
-        if (this.name == 'mghosty' && sprite.animations.currentFrame.index == 189) {
-    
-            ghostSpecialAtk.x = enemy.x;
-            ghostSpecialAtk.y = sprite.y - 65;
-            ghostSpecialAtk.alpha = 1;
-    
-            ghostSpecialAtk.revive();
-    
-            
-            game.add.tween(ghostSpecialAtk).to({ alpha: 0 }, 800, "Linear", true);
-    
-            ghostSpecialAtk.animations.play('show');
-    
-    
         } else {
             return;
         }
-    
     };
-    
+    this.ghSpecialListener = function (sprite, enemy, sound) {
+
+        let done = false;
+        if (this.name == 'mghosty' && sprite.animations.currentFrame.index == 189) {
+
+            ghostSpecialAtk.x = enemy.x;
+            ghostSpecialAtk.y = sprite.y - 65;
+            ghostSpecialAtk.alpha = 1;
+
+            ghostSpecialAtk.revive();
+
+
+            game.add.tween(ghostSpecialAtk).to({ alpha: 0 }, 800, "Linear", true);
+
+            ghostSpecialAtk.animations.play('show');
+
+
+        } else {
+            return;
+        }
+
+    };
+
 }
 
 
@@ -1819,9 +1821,9 @@ function Character(name, power, gravity, jumpResistance) {
         } else if (intensity.toLowerCase() == 'ghost') {
             if (sprite.animations.currentAnim.name == 'loopDwnKick') {
                 if (this.isLeft) {
-                    sprite.x -= 7;
+                    sprite.x -= 9;
                 } else {
-                    sprite.x += 7;
+                    sprite.x += 9;
                 }
 
                 //sprite.y += 5;
@@ -3113,33 +3115,33 @@ function Character(name, power, gravity, jumpResistance) {
     this.ghostLand = function (sprite) {
         if (this.name == 'mghosty' && this.isGrounded && ['notloopJump'].includes(sprite.animations.currentAnim.name)) {
             sprite.animations.play('endJump');
-        }else{
-            return;
-        }
-    };
-    this.ghSpecialListener = function(sprite, enemy, sound) {
-
-        let done = false;
-        if (this.name == 'mghosty' && sprite.animations.currentFrame.index == 189) {
-    
-            ghostSpecialAtk.x = enemy.x;
-            ghostSpecialAtk.y = sprite.y - 65;
-            ghostSpecialAtk.alpha = 1;
-    
-            ghostSpecialAtk.revive();
-    
-            
-            game.add.tween(ghostSpecialAtk).to({ alpha: 0 }, 800, "Linear", true);
-    
-            ghostSpecialAtk.animations.play('show');
-    
-    
         } else {
             return;
         }
-    
     };
-    
+    this.ghSpecialListener = function (sprite, enemy, sound) {
+
+        let done = false;
+        if (this.name == 'mghosty' && sprite.animations.currentFrame.index == 189) {
+
+            ghostSpecialAtk.x = enemy.x;
+            ghostSpecialAtk.y = sprite.y - 65;
+            ghostSpecialAtk.alpha = 1;
+
+            ghostSpecialAtk.revive();
+
+
+            game.add.tween(ghostSpecialAtk).to({ alpha: 0 }, 800, "Linear", true);
+
+            ghostSpecialAtk.animations.play('show');
+
+
+        } else {
+            return;
+        }
+
+    };
+
 }
 
 
@@ -3453,7 +3455,7 @@ function CPUListener(sprite, charObj) {
                 //if the player is running either to the left or right side, and if the current animation is not already 'slidekick'
                 //then play the 'slideKick' animation
                 //would not want to play the same animation if its already playing....
-            } else if (( charObj.actions.runRight || charObj.actions.runLeft) && sprite.animations.currentAnim.name != 'slideKick' && sprite.animations.currentAnim.name == 'run' && charObj.name !== 'mghosty') {
+            } else if ((charObj.actions.runRight || charObj.actions.runLeft) && sprite.animations.currentAnim.name != 'slideKick' && sprite.animations.currentAnim.name == 'run' && charObj.name !== 'mghosty') {
 
                 charObj.keyPressed = 's';
                 sprite.animations.play('slideKick');
@@ -3478,7 +3480,7 @@ function CPUListener(sprite, charObj) {
                     return;
                 }
                 //forward attack OR attack while running
-            } else if ((charObj.actions.runRight|| charObj.actions.runLeft) && sprite.animations.currentAnim.name != 'runAttack' && sprite.animations.currentAnim.name == 'run') {
+            } else if ((charObj.actions.runRight || charObj.actions.runLeft) && sprite.animations.currentAnim.name != 'runAttack' && sprite.animations.currentAnim.name == 'run') {
                 charObj.keyPressed = 'd';
 
                 sprite.animations.play('runAttack');
@@ -3518,7 +3520,7 @@ function CPUListener(sprite, charObj) {
                 sprite.animations.play('haduken');
                 ejectBall.play();
                 charObj.combo[0] = (sprite.animations.currentAnim.name);
-            } else if (charObj.name == 'mghosty' && !charObj.isGrounded && !charObj.actions.holdUp && !charObj.actions.holdDown ) {
+            } else if (charObj.name == 'mghosty' && !charObj.isGrounded && !charObj.actions.holdUp && !charObj.actions.holdDown) {
                 charObj.keyPressed = 'd';
                 sprite.animations.play('foxKick');
                 charObj.combo[0] = (sprite.animations.currentAnim.name);
@@ -3566,20 +3568,20 @@ function CPUListener(sprite, charObj) {
                 } else {
                     return;
                 }
-            } else if (sprite.animations.currentAnim.name != 'idle' && !charObj.isGrounded && charObj.actions.holdUp  && charObj.name == 'mghosty') {
+            } else if (sprite.animations.currentAnim.name != 'idle' && !charObj.isGrounded && charObj.actions.holdUp && charObj.name == 'mghosty') {
 
                 sprite.animations.play('upAir');
                 charObj.combo[0] = (sprite.animations.currentAnim.name);
                 console.log(charObj.combo);
             }
-            else if (charObj.name == 'mghosty' && !charObj.isGrounded && charObj.actions.holdDown)  {
+            else if (charObj.name == 'mghosty' && !charObj.isGrounded && charObj.actions.holdDown) {
 
                 sprite.animations.play('meteorSmash');
                 charObj.combo[0] = (sprite.animations.currentAnim.name);
             }
 
 
-            else if (sprite.animations.currentAnim.name != 'idle' && !charObj.isGrounded && !charObj.actions.holdUp ) {
+            else if (sprite.animations.currentAnim.name != 'idle' && !charObj.isGrounded && !charObj.actions.holdUp) {
 
                 sprite.animations.play('airNeutral');
                 charObj.combo[0] = (sprite.animations.currentAnim.name);
@@ -3635,7 +3637,7 @@ function CPUListener(sprite, charObj) {
                 sprite.animations.stop('idle');
                 sprite.animations.play('dodge');
 
-            } else if (!charObj.isAirDodging && charObj.isGrounded && (charObj.actions.runRight  || charObj.actions.runLeft )) {
+            } else if (!charObj.isAirDodging && charObj.isGrounded && (charObj.actions.runRight || charObj.actions.runLeft)) {
                 charObj.isDodging = true;
 
                 if (charObj.name == 'mghosty') {
@@ -3827,7 +3829,7 @@ demo.cpuFight.prototype = {
 
         game.load.audio('explosion', '../assets/sfx/expl.wav');
         game.load.audio('battle1', '../assets/music/Ambush.mp3');
-        game.load.audio('battle2', '../assets/music/Dive into Battle.ogg');
+        game.load.audio('battle2', '../assets/music/Friendly Competition.ogg');
         //sound, sprite, atkBox, charObj
 
 
@@ -3856,6 +3858,7 @@ demo.cpuFight.prototype = {
 
         comp.createFighter();
         dude.addSFX();
+        comp.addSFX();
 
 
 
@@ -3869,9 +3872,9 @@ demo.cpuFight.prototype = {
 
         bfBackground.animations.play('on');
 
-        cpuB1 = game.add.sprite(0, 600, 'b1')
-    
-            cpuB2 = game.add.sprite(850,600, 'b2');
+        cpuB1 = game.add.sprite(50, 600, 'b1')
+
+        cpuB2 = game.add.sprite(800, 600, 'b2');
 
 
 
@@ -3894,7 +3897,7 @@ demo.cpuFight.prototype = {
 
 
 
-     
+
 
         //creates hitbox when player attacks
         //gets attack animname passed in playerCombo
@@ -3948,6 +3951,25 @@ demo.cpuFight.prototype = {
         elec.animations.add('show', [0, 1, 2, 3, 4, 5], 20, false);
 
         elec.animations.currentAnim.killOnComplete = true;
+
+
+        let cpuHitEffect;
+
+        if (comp.name == 'mghosty') {
+            cpuHitEffect = 'hardHit'
+        } else {
+            cpuHitEffect = 'hardHit2'
+        }
+
+
+
+        cpuHit = hitEffects.create(0, 0, cpuHitEffect);
+
+        cpuHit.animations.add('show', [0, 1, 2, 3, 4, 5], 20, false);
+
+        cpuHit.animations.currentAnim.killOnComplete = true;
+
+
 
 
 
@@ -4082,6 +4104,12 @@ demo.cpuFight.prototype = {
             grghostHit.run(normalHit, elec, dummy, dummy, scott, dude);
         });
 
+        game.physics.arcade.overlap(dummy, [cpuB1, cpuB2], function () {
+
+            escape();
+        });
+
+
 
 
 
@@ -4089,7 +4117,11 @@ demo.cpuFight.prototype = {
         //sound, sprite, atkBox, charObj
 
         //testing for dummy hiting player
-        game.physics.arcade.overlap(scott, scndBox, dummyhit);
+        game.physics.arcade.overlap(scott, scndBox, function () {
+            hit(comp, dummy, dude, scott);
+            CPUnormHit.run(normalHit, cpuHit, scndBox, scott, dummy, comp);
+
+        });
 
 
 
@@ -4114,7 +4146,7 @@ demo.cpuFight.prototype = {
         dude.showShield(shield, scott);
         dude.upRecovery(scott);
         dude.ghostLand(scott);
-        dude.ghSpecialListener(scott,dummy);
+        dude.ghSpecialListener(scott, dummy);
 
         shootBullet(dude, scott, atkBox, projectile, -900, 0);
 
@@ -4122,11 +4154,13 @@ demo.cpuFight.prototype = {
 
         hurt(scott, dummy, dude, comp);
 
+        hurt(dummy, scott, comp, dude);
+
 
 
         resizeToSprite(shield, scott, 0, 0);
 
-        trajectoryBounce(dummy, comp);
+        //trajectoryBounce(dummy, comp);
 
 
         getLoser(dude, scott);
@@ -4137,18 +4171,26 @@ demo.cpuFight.prototype = {
 
         /*************************TESTING DUMMY (2PLAYER )*********** */
         comp.runIdleControl(dummy);
-        fallingSense(comp, dummy, cpuB1,cpuB2);
+        attackSense(comp, dummy, dude, scott);
+        moveSense(comp, dummy, dude, scott);
+        //fallingSense(comp, dummy, cpuB1,cpuB2);
         updateGrounded(dummy, comp);
-        CPUListener(dummy,comp);
+        CPUListener(dummy, comp);
         comp.enableSoundControls();
         comp.jump(dummy, 15);
+        comp.downAerialMotion(dummy, 'med');
+        comp.downAerial(dummy);
         comp.moveRunAttack(dummy, 'runAttack', 10);
         comp.moveRunAttack(dummy, 'slideKick', 12);
         comp.jumpAnimLoop(dummy);
         comp.glideDownJump(dummy, 1000, comp.stats.gravity);
         comp.moveDodge(dummy);
         comp.upRecovery(dummy);
-        updateGrounded(dummy, comp);
+        comp.airDodged(dummy);
+
+        comp.moveAttackBox(scndBox, dummy)
+        //updateGrounded(dummy, comp);
+
         //dummykeyListener(dummy, comp,true, 'u', 'i', 'o', 'p', 'l');
         /*    comp.runIdleControl(dummy);
            
@@ -4195,7 +4237,7 @@ demo.cpuFight.prototype = {
 
         //make tthis dymanic
         function hit(charObj, sprite, inCharObj, inSprite) {
-           
+
             if (game.physics.arcade.overlap(dummy, ghostSpecialAtk) || sprite.animations.currentAnim.name != 'idle' && (['foxKick', 'upAir', 'meteorSmash', 'neutralKick', 'neutralPunch1', 'neutralPunch2',
 
                 'neutralPunch3', 'neutralPunch4', 'specialKick1', 'runAttack', 'slideKick', 'loopDwnKick', 'upNeutral', 'airRecovery', 'airNeutral'].includes(sprite.animations.currentAnim.name))) {
@@ -4204,13 +4246,13 @@ demo.cpuFight.prototype = {
                 charObj.hitbox.isAtkBoxActive = true;
 
                 alertIsHurt(sprite, inSprite, inCharObj);
-         
+
 
             } else {
 
                 charObj.hitbox.isOverlapping = false;
                 charObj.hitbox.isAtkBoxActive = false;
-               
+
             }
 
         }
@@ -4228,25 +4270,7 @@ demo.cpuFight.prototype = {
             }
         }
 
-        function dummyhit(sprit, obj) {
-            let charObj = comp;
-            let sprite = dummy;
 
-
-            if (sprite.animations.currentAnim.name != 'idle' && (['foxKick', 'upAir', 'meteorSmash', 'neutralKick', 'neutralPunch1', 'neutralPunch2',
-
-                'neutralPunch3', 'neutralPunch4', 'specialKick1', 'runAttack', 'slideKick', 'loopDwnKick', 'upNeutral', 'airRecovery', 'airNeutral'].includes(sprite.animations.currentAnim.name))) {
-                charObj.hitbox.isOverlapping = true;
-                charObj.hitbox.isAtkBoxActive = true;
-            } else {
-                charObj.hitbox.isOverlapping = false;
-                charObj.hitbox.isAtkBoxActive = false;
-            }
-
-
-
-
-        }
 
     }
 
@@ -4672,7 +4696,7 @@ function hitParticle(charObj, hurtcharObj) {
 }
 
 
-function trajectoryBounce(injSprite, injcharObj) {
+/* function trajectoryBounce(injSprite, injcharObj) {
     if (60 < injcharObj.stats.damage < 100) {
         injSprite.body.bounce.set(0.3);
     } else if (100 < injcharObj.stats.damage < 300) {
@@ -4682,7 +4706,7 @@ function trajectoryBounce(injSprite, injcharObj) {
         return;
     }
 }
-
+ */
 
 
 
@@ -4691,7 +4715,7 @@ function trajectoryBounce(injSprite, injcharObj) {
 once = false;
 
 function getLoser(charObj, sprite) {
-    if (sprite.world.y > 2000 || sprite.world.y < -200|| sprite.world.x < -300 || sprite.world.x > 1500) {
+    if (sprite.world.y > 2000 || sprite.world.y < -200 || sprite.world.x < -300 || sprite.world.x > 1500) {
         if (!once) {
             alert(`${charObj.name} has lost a life`);
             once = true;
@@ -4834,7 +4858,7 @@ function resetStats(charObj) {
 }
 
 
-function getDistance (x1, y1, x2, y2) {
+function getDistance(x1, y1, x2, y2) {
 
     var dx = x1 - x2;
     var dy = y1 - y2;
@@ -4843,40 +4867,157 @@ function getDistance (x1, y1, x2, y2) {
 
 }
 
+function getNeg(x1, x2) {
+    let dx = x1 - x2;
 
-function fallingSense(charObj, sprite, blockSprite1, blockSprite2){
-    let distB1 = getDistance(sprite.x, sprite.y, blockSprite1.x, blockSprite1.y );
-    let distB2 = getDistance(sprite.x, sprite.y, blockSprite2.x, blockSprite2.y );
+    return dx;
+}
+let atkdist;
 
-    
-    if (distB2 < 450){
-        if(charObj.isGrounded){
+let dist;
+
+function attackSense(CPUobj, sprite, enemyObj, enemy) {
+
+    let cpuX = sprite.x;
+    let cpuY = sprite.y;
+
+    atkdist = getDistance(cpuX, cpuY, enemy.x, enemy.y);
+
+    if ((3 < atkdist < 5) && enemyObj.isGrounded) {
+        if (CPUobj.actions.holdUp == true) {
+            CPUobj.actions.holdUp = false;
+        }
+        CPUobj.decision = 'kick';
+
+
+
+    } else if ((20 < atkdist < 80) && !enemyObj.isGrounded) {
+        if (CPUobj.decision == 'kick') {
+            CPUobj.decision = '';
+        }
+
+        CPUobj.actions.runRight = false;
+        CPUobj.actions.runLeft = false;
+
+        CPUobj.actions.holdUp = true;
+        CPUobj.decision = 'special';
+
+
+
+
+    } else if (!CPUobj.isGrounded && atkdist < 20) {
+        CPUobj.decision = 'punch';
+    } else if (!CPUobj.isGrounded && atkdist > 20 && enemyObj.isGrounded) {
+        CPUobj.decision = 'jump';
+        CPUobj.decision = 'kick';
+    } else if (atkdist < 3 && enemyObj.isGrounded) {
+        CPUobj.decision = 'punch';
+
+    }
+
+
+}
+
+function escape() {
+    if (game.physics.arcade.overlap(dummy, cpuB1)) {
+        comp.actions.runRight = true;
+        comp.actions.holdUp = true;
+        comp.decision = 'special';
+    } else if (game.physics.arcade.overlap(dummy, cpuB2)) {
+        comp.actions.runLeft = true;
+        comp.actions.holdUp = true;
+        comp.decision = 'special';
+    }
+}
+
+function moveSense(CPUobj, sprite, enemyObj, enemy) {
+    let cpuX = sprite.x;
+    let cpuY = sprite.y;
+    let distB1 = getDistance(sprite.x, sprite.y, cpuB1.x, cpuB1.y);
+    let distB2 = getDistance(sprite.x, sprite.y, cpuB2.x, cpuB2.y);
+
+    dist = getDistance(cpuX, cpuY, enemy.x, enemy.y);
+
+    direct = getNeg(scott.x, dummy.x);
+
+
+
+    if (distB1 < 130) {
+        CPUobj.decision = '';
+        CPUobj.actions.runRight = true;
+
+
+
+    } else if (distB2 < 130) {
+        CPUobj.decision = '';
+        CPUobj.actions.runLeft = true;
+
+    }
+
+
+    else if (dist > 20) {
+
+        if (direct < 0 && enemyObj.isGrounded) {
+            CPUobj.actions.runRight = false;
+            CPUobj.actions.runLeft = true;
+            CPUobj.decision = 'special';
+        } else if (direct > 0) {
+            CPUobj.actions.runLeft = false;
+            CPUobj.actions.runRight = true;
+            CPUobj.decision = 'special';
+        }
+
+
+    }
+
+    else if (dist < 20 && !enemyObj.isGrounded) {
+        CPUobj.actions.runRight = false;
+        CPUobj.actions.runLeft = false;
+        if (CPUobj.decision == 'special') {
+            CPUobj.decision = '';
+        }
+
+    }
+
+    else {
+        return;
+    }
+}
+
+
+function fallingSense(charObj, sprite, blockSprite1, blockSprite2) {
+    let distB1 = getDistance(sprite.x, sprite.y, blockSprite1.x, blockSprite1.y);
+    let distB2 = getDistance(sprite.x, sprite.y, blockSprite2.x, blockSprite2.y);
+
+
+    if (distB2 < 450) {
+        if (charObj.isGrounded) {
             charObj.actions.runLeft = true;
             charObj.actions.evade = true;
 
-        }else{
+        } else {
             charObj.actions.holdUp = true;
             charObj.actions.doSpecial = true;
             charObj.actions.runLeft = true;
 
 
-
         }
-    
-    }else{
+
+    } else {
         charObj.actions.runLeft = false;
         charObj.actions.doSpecial = false;
         charObj.actions.evade = false
+        charObj.actions.holdUp = false;
 
-        return;
+
     }
 
-    if (distB1 < 450){
-        if(charObj.isGrounded){
+    if (distB1 < 450) {
+        if (charObj.isGrounded) {
             charObj.actions.runRight = true;
             charObj.actions.evade = true;
 
-        }else{
+        } else {
             charObj.actions.holdUp = true;
             charObj.actions.doSpecial = true;
             charObj.actions.runRight = true;
@@ -4884,8 +5025,8 @@ function fallingSense(charObj, sprite, blockSprite1, blockSprite2){
 
 
         }
-    
-    }else{
+
+    } else {
         charObj.actions.doSpecial = false;
         charObj.actions.runLeft = false;
         charObj.actions.evade = false
@@ -4895,12 +5036,12 @@ function fallingSense(charObj, sprite, blockSprite1, blockSprite2){
 
 }
 
-function resetSense(arr){
+function resetSense(arr) {
     let senses = arr;
 
-    for(i = 0 ; i < senses.length; i++){
+    for (i = 0; i < senses.length; i++) {
 
-        setTimeout(function(){
+        setTimeout(function () {
             comp.actions[senses[i]] = false;
         }, 300);
 
