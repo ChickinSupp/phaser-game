@@ -10,7 +10,7 @@ function startMenu() {
 
 // creating particles for background
 function particleEmitter() {
-    var emitter = game.add.emitter(game.world.centerX, 0, 400);
+    let emitter = game.add.emitter(game.world.centerX, 0, 400);
 
     emitter.width = game.world.width;
     emitter.makeParticles('particles');
