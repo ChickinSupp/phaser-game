@@ -16,11 +16,13 @@ socket.on('local-player', function (data) {
 let dude, comp;
 //Get player
 const getPlayer  = (data) => {
-     if ((data.name === 'mghosty') && (data.bol = false)) {
+     if ((data.name === 'mghosty' ) && (!data.bol)) {
+         console.log(data.name , "From game js top");
         dude = new Character('mghosty', 10, 100, 800);
      } else
-    if((data.name === 'scott') && (data.bol = true)) {
+    if((data.name === 'scott') && (data.bol)) {
         dude = new Character('scott', 10, 100, 800);
+        console.log(data.name , "From game js top");
     }
     console.log(dude);
     socket.emit('character', dude);
