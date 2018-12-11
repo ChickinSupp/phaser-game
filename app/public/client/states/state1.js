@@ -4,6 +4,7 @@ demo = window.demo || (window.demo = {});
 let dude, comp;
 // scott for scott
 
+
 //Get player
 const getPlayer  = (player1, player2) => {
     if (player1 === 'dude') {

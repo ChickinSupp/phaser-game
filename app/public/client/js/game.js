@@ -8,7 +8,7 @@ function Character(name, power, gravity, jumpResistance) {
     this.isHurt = false;
     this.lives = {
         left: 3
-    }
+    };
     this.stats = {
         damage: 0,
         lives: 3,

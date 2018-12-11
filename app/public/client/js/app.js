@@ -73,7 +73,6 @@ $(document).ready( function() {
     GET CHOSEN CHARACTERS FROM THE GAME
      */
 
-
     socket.on('success-join', function (playerNum) {
         if (playerNum === 1) {
             console.log("dude:", playerNum);
@@ -83,8 +82,6 @@ $(document).ready( function() {
             gamer = playerNum;
         }
     });
-
-
 });
 
 
