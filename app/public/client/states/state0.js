@@ -1,6 +1,11 @@
 // State 0 start menu
 let demo = window.demo || (window.demo = {});
 
+let mainBGM;
+
+let select;
+
+
 // function creating background image
 function startMenu() {
     startMenu = game.add.image(0, 0, 'menu-background');
@@ -63,7 +68,7 @@ function startGame() {
     button1.height = 50;
     button1.onInputOver.add(over, this);
     button1.onInputOut.add(out, this);
-    button1.onInputUp.add(up, this);
+    button1.onInputUp.add(playGame, this);
 
     start.font= 'PipeDream';
     start.fontWeight = 'bold';
@@ -86,7 +91,7 @@ function multiPlayer() {
     button2.height = 40;
     button2.onInputOver.add(over, this);
     button2.onInputOut.add(out, this);
-    button2.onInputUp.add(up, this)
+    button2.onInputUp.add(goOnline, this)
 
 };
 
@@ -117,6 +122,8 @@ demo.state0.prototype = {
         game.load.image('button1', '../assets/art/startGame.png');
         game.load.image('button2', '../assets/art/online.png');
         game.load.image('button3', '../assets/art/rankings.png');
+
+        game.load.audio('bgm', '../assets/music/ThemeofPixelSmash(demo).ogg');
     },
 
     create: function () {
@@ -127,14 +134,25 @@ demo.state0.prototype = {
         multiPlayer();
         rankings();
 
+        mainBGM = game.add.audio('bgm');
+
+        mainBGM.play();
+        
+
     },
-    update: function () {}
+    update: function () {
+       
+    }
 };
 
 
 function up() {
+    
     console.log('button up', arguments);
-    game.state.start('state1');
+    game.sound.stopAll();
+    //game.state.start('state1');
+
+  
 }
 
 function over() {
@@ -144,3 +162,16 @@ function over() {
 function out() {
     console.log('button out');
 }
+
+function playGame(){
+    game.sound.stopAll();
+    game.state.start('state1');
+}
+
+function goOnline(){
+    game.sound.stopAll();
+    game.state.start('online');
+}
+
+
+
