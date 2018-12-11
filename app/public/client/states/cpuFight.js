@@ -5,10 +5,10 @@ demo = window.demo || (window.demo = {});
 // scott for scott
 
 
-player = new Character('mghosty', 10, 1300, 1500);
+player = new Character('mghosty', 10, 1000, 1900);
 
 
-comp = new Ai('scott', 10, 1700, 1500);
+comp = new Ai('scott', 10, 1300, 1500);
 
 
 /* let comp = new Character('dummy', 10, 120); */
@@ -17,6 +17,10 @@ let attempts = 0;
 let hits = 0;
 
 let hitRatio = 0;
+
+let cpulife;
+
+let CPUlives;
 
 hitRatio = (hits/attempts) * 100;
 
@@ -1459,7 +1463,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
         console.log(name);
         switch (name) {
             case 'scott':
-                dummy = game.add.sprite(400, 100, 'tester');
+                dummy = game.add.sprite(400, 400, 'tester');
                 dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
                 dummy.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 14, false);
 
@@ -1514,7 +1518,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
                 break;
             case 'mghosty':
-                dummy = game.add.sprite(400, 100, 'ghosty');
+                dummy = game.add.sprite(400, 400, 'ghosty');
                 dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8], 12, true);
                 dummy.animations.add('run', [9, 10, 11, 12, 13], 14, false);
                 //player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
@@ -3896,6 +3900,7 @@ demo.cpuFight.prototype = {
 
 
         lives = game.add.group();
+        CPUlives = game.add.group();
 
         let lifename;
 
@@ -3908,9 +3913,25 @@ demo.cpuFight.prototype = {
         for (var i = 0; i < 3; i++) {
             //  This creates a new Phaser.Sprite instance within the group
             //  It will be randomly placed within the world and use the 'baddie' image to display
-            life = lives.create(45 + (i * 50), 700, lifename, i);
+            life = lives.create(45 + (i * 50), 100, lifename, i);
             life.name = 'life' + i;
         }
+
+        let CPUlifename;
+
+        if(comp.name == 'mghosty'){
+            CPUlifename = 'ghostStock';
+        } else {
+            CPUlifename = 'scottStock';
+        }
+        
+        for (var i = 0; i < 3; i++) {
+            //  This creates a new Phaser.Sprite instance within the group
+            //  It will be randomly placed within the world and use the 'baddie' image to display
+            cpulife = CPUlives.create(800 + (i * 50), 100, CPUlifename, i);
+            cpulife.name = 'life' + i;
+        }
+
 
 
 
@@ -4175,9 +4196,9 @@ demo.cpuFight.prototype = {
         //trajectoryBounce(dummy, comp);
 
 
-        getLoser(player, scott);
+        getLoser(player, scott, lives );
 
-        getLoser(comp, dummy);
+        getLoser(comp, dummy, CPUlives );
 
         player.enableSoundControls();
 
@@ -4743,16 +4764,16 @@ function hitParticle(charObj, hurtcharObj) {
 
 once = false;
 
-function getLoser(charObj, sprite) {
+function getLoser(charObj, sprite, lifegroup) {
     if (sprite.world.y > 2000 || sprite.world.y < -200 || sprite.world.x < -300 || sprite.world.x > 1500) {
         if (!once) {
-            alert(`${charObj.name} has lost a life`);
+            //alert(`${charObj.name} has lost a life`);
             once = true;
         }
         //alert(`${charObj.name} has lost a life`);
         sprite.x = 500;
         sprite.y = 100;
-        removeStock(charObj, lives);
+        removeStock(charObj, lifegroup);
         resetStats(charObj);
         setTimeout(function () {
             once = false;
@@ -4873,7 +4894,9 @@ function removeStock(charObj, groupname) {
 
 
     } else {
-        alert(`${charObj.name} has lost the battle!`);
+        //alert(`${charObj.name} has lost the battle!`);
+        game.sound.stopAll();
+        game.state.start('state0');
     }
 
 

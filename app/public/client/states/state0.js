@@ -5,6 +5,8 @@ let demo = window.demo || (window.demo = {});
 let mainBGM;
 
 
+
+
 // Creating background image
 function startMenu() {
     startMenu = game.add.image(0, 0, 'menu-background');

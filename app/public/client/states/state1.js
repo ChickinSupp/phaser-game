@@ -4,6 +4,8 @@ demo = window.demo || (window.demo = {});
 let isScottClicked = false;
 let isGhostClicked = false;
 
+let fighter;
+
 function characterMenu() {
     characterMenu = game.add.image(0, 0, 'background');
     characterMenu.width = 1200;
@@ -48,7 +50,7 @@ function scottPilgrim() {
 
     scott.onInputOver.add(over, this);
     scott.onInputOut.add(out, this);
-    scott.onInputUp.add(scottClicked, this);
+    scott.onInputUp.add(chooseScott, this);
 };
 
 function ghosty() {
@@ -59,7 +61,7 @@ function ghosty() {
 
     ghost.onInputOver.add(over, this);
     ghost.onInputOut.add(out, this);
-    ghost.onInputUp.add(ghostClicked, this)
+    ghost.onInputUp.add(chooseGhost, this)
 }
 
 demo.state1 = function () {};
@@ -93,6 +95,18 @@ function scottClicked () {
     isScottClicked = true;
     console.log("Character is scott");
     up('scott', isScottClicked);
+}
+
+function chooseScott(){
+    fighter = 'scott';
+    game.sound.stopAll();
+    game.state.start('cpuFight');
+}
+
+function chooseGhost(){
+    fighter = 'mghosty';
+    game.sound.stopAll();
+    game.state.start('cpuFight');
 }
 
 //Ghost has been selected;
