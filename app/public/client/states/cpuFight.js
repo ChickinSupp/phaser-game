@@ -3021,7 +3021,7 @@ function Character(name, power, gravity, jumpResistance) {
                 scott.animations.add('neutralPunch5', [123, 124, 125, 126, 127, 128, 129, 130, 131, 132], 25, false);
                 //scott.animations.add('neutralKick', [45, 46, 47, 48, 49, 50, 51], 14, false);
 
-                scott.animations.add('specialKick1', [32, 33, 34, 35, 36, 37, 38, 39, 189, 39, 38, 37, 36, 35, 34, 33, 32], 14, false);
+                scott.animations.add('specialKick1', [32, 33, 34, 35, 36, 37, 38, 39, 189, 39, 38, 37, 36, 35, 34, 33, 32], 35, false);
 
                 scott.animations.add('runAttack', [139, 140, 141, 142, 143, 144, 145, 146], 16, false);
                 //scott.animations.add('block', [79, 80, 81, 82, 83, 84, 85], 14, false);
@@ -4896,7 +4896,7 @@ function removeStock(charObj, groupname) {
     } else {
         //alert(`${charObj.name} has lost the battle!`);
         game.sound.stopAll();
-        game.state.start('state0');
+        game.state.start('online');
     }
 
 
