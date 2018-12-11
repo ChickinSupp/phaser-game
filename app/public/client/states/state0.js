@@ -1,14 +1,14 @@
 // State 0 start menu
 let demo = window.demo || (window.demo = {});
 
-// function creating background image
+// Creating background image
 function startMenu() {
     startMenu = game.add.image(0, 0, 'menu-background');
     startMenu.width = 1000;
     startMenu.height = 700;
 };
 
-// creating particles for background
+// Creating particles for background
 function particleEmitter() {
     var emitter = game.add.emitter(game.world.centerX, 0, 400);
 
@@ -23,7 +23,7 @@ function particleEmitter() {
     emitter.start(false, 1600, 5, 0);
 };
 
-// creating the Pixel smash logo with reflection
+// Creating the Pixel smash logo with reflection
 function pixelSmash() {
     var text = null;
     var textReflect = null;
@@ -79,7 +79,7 @@ function multiPlayer() {
     multiPlayer.fontSize = 40;
     multiPlayer.fill = '#ffffff';
 
-    // creating on click button for text
+    // Creating on click button for text
     button2 = game.add.button(400,500, 'button2', null, this, 2, 1, 0);
     button2.alpha = 0;
     button2.width = 250;
@@ -93,7 +93,7 @@ function multiPlayer() {
 function rankings() {
     let rankings = game.add.text(370,620, 'RANKINGS');
     var button3;
-    // creating on click button for text
+    // Creating on click button for text
     rankings.font= 'PipeDream';
     rankings.fontWeight = 'bold';
     rankings.fontSize = 40;
@@ -117,7 +117,6 @@ demo.state0.prototype = {
         game.load.image('button1', '../assets/art/startGame.png');
         game.load.image('button2', '../assets/art/online.png');
         game.load.image('button3', '../assets/art/rankings.png');
-
         game.load.audio('bgm', '../assets/music/ThemeofPixelSmash(demo).ogg');
     },
 
@@ -130,14 +129,9 @@ demo.state0.prototype = {
         rankings();
 
         mainBGM = game.add.audio('bgm');
-
         mainBGM.play();
-        
-
     },
-    update: function () {
-       
-    }
+    update: function () {}
 };
 
 
@@ -145,9 +139,6 @@ function up() {
     
     console.log('button up', arguments);
     game.sound.stopAll();
-    //game.state.start('state1');
-
-  
 }
 
 function over() {

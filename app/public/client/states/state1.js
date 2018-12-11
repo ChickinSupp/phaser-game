@@ -98,5 +98,4 @@ function playMusic(){
 
     charMusic.play();
     charMusic.loopFull();
-
 }
