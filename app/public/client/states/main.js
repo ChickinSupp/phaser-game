@@ -8,14 +8,26 @@ var game = new Phaser.Game(
 function Main() {}
 
 Main.prototype = {
-  preload: function() {},
-  create: function() {
- 
-  }
+    preload: function () {
+        game.load.script('state0', './state0.js');
+        game.load.script('state1', './state1.js');
+        game.load.script('online', './online.js');
+        game.load.script('cpuFight', './cpuFight.js');
+    },
+    create: function () {
+        game.state.add('state0', state0);
+        game.state.add('state1', state1);
+        game.state.add('online', online);
+        game.state.add('cpuFight', cpuFight);
+    }
 };
 
-game.state.add("state0", demo.state0);
-game.state.add("game", demo.game);
-game.state.add("online", demo.online);
-game.state.add("cpuFight", demo.cpuFight);
-game.state.start("state0");
+game.state.add('state0', demo.state0);
+game.state.add('online', demo.online);
+game.state.add('state1', demo.state1);
+game.state.add('cpuFight', cpuFight);
+game.state.start('state0');
+
+
+
+
