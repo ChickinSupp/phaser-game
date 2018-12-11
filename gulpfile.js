@@ -51,8 +51,9 @@ _________________________________*/
 
 //DUMP DIST FOLDER
 gulp.task('clean', function() {
-    gulp.src('./dist/*')
-        .pipe(clean({force: true}));
+    del(['./dist/*']).then (paths => {
+        console.log('Deleted files and folders:\n', paths.join('\n'));
+    });
 });
 
 //LINT
