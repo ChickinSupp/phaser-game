@@ -96,7 +96,7 @@ gulp.task('minify-js', function() {
 });
 
 //COPY SERVER FILES
-gulp.task('cp-Servfiles', function () {
+gulp.task('cp-Servefiles', function () {
     gulp.src('./src/server/**/*')
         .pipe(gulp.dest('./dist/server/'));
 });
