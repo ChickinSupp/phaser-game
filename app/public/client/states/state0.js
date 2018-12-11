@@ -80,7 +80,7 @@ function multiPlayer() {
     multiPlayer.fontSize = 40;
     multiPlayer.fill = '#ffffff';
 
-    // Creating on click button for text
+    // creating on click button for text
     button2 = game.add.button(400,500, 'button2', null, this, 2, 1, 0);
     button2.alpha = 0;
     button2.width = 250;
