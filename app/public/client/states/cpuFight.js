@@ -4,16 +4,22 @@ demo = window.demo || (window.demo = {});
 
 // scott for scott
 
-dude = new Character('mghosty', 10, 1300, 1500);
+
+player = new Character('mghosty', 10, 1300, 1500);
+
 
 comp = new Ai('scott', 10, 1700, 1500);
 
-//let comp = new Character('dummy', 10, 120);
+
+/* let comp = new Character('dummy', 10, 120); */
 
 let attempts = 0;
-
-
 let hits = 0;
+
+let hitRatio = 0;
+
+hitRatio = (hits/attempts) * 100;
+
 
 manager;
 emitter;
@@ -1668,7 +1674,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
 
 
-console.log(dude);
+console.log(player);
 
 //contains all our booleans and stats for a character
 function Character(name, power, gravity, jumpResistance) {
@@ -3070,9 +3076,6 @@ function Character(name, power, gravity, jumpResistance) {
             sprite.body.drag.x = 500;
 
         };
-        this.resetFilp = function () {
-            this.flipFlop = false;
-        };
         this.enableSoundControls = function () {
             bar.run(barr, scott).listen(scott);
             jumpSndC.run(jumpSnd, scott).listen(scott);
@@ -3143,6 +3146,9 @@ function Character(name, power, gravity, jumpResistance) {
             return;
         }
 
+    };
+    this.resetFilp = function () {
+        this.flipFlop = false;
     };
 
 }
@@ -3854,21 +3860,24 @@ demo.cpuFight.prototype = {
 
         bfBackground = game.add.sprite(0, 0, 'back');
 
+        bfBackground.width =1000;
+        bfBackground.height =700;
+
 
         //dummy = game.add.sprite(200, 100, 'tester2');
 
 
-        dude.createFighter();
+        player.createFighter();
 
         comp.createFighter();
-        dude.addSFX();
+        player.addSFX();
         comp.addSFX();
 
 
 
 
 
-        resizeToSprite(bfBackground, game, 0, 0);
+        
 
         bfBackground.animations.add('on', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
             , 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33], 30, true);
@@ -3880,13 +3889,17 @@ demo.cpuFight.prototype = {
 
         cpuB2 = game.add.sprite(800, 600, 'b2');
 
+        cpuB1.alpha = 0;
+
+        cpuB2.alpha = 0;
+
 
 
         lives = game.add.group();
 
         let lifename;
 
-        if (dude.name == 'mghosty') {
+        if (player.name == 'mghosty') {
             lifename = 'ghostStock';
         } else {
             lifename = 'scottStock';
@@ -3944,7 +3957,7 @@ demo.cpuFight.prototype = {
 
         let hitEffectName;
 
-        if (dude.name == 'mghosty') {
+        if (player.name == 'mghosty') {
             hitEffectName = 'hardHit'
         } else {
             hitEffectName = 'hardHit2'
@@ -4020,24 +4033,18 @@ demo.cpuFight.prototype = {
 
 
         // Creating platform
-        platform = game.add.sprite(400, 200, 'platform1');
-        platform2 = game.add.sprite(500, 300, 'platform1');
-        platform3 = game.add.sprite(800, 200, 'platform1');
+      
         battlefield = game.add.sprite(200, 500, 'battlestage1');
 
 
         //enables gravity on player but not on platform
-        game.physics.arcade.enable([scott, dummy, platform, platform2, platform3, battlefield, atkBox, ghostSpecialAtk]);
+        game.physics.arcade.enable([scott, dummy, battlefield, atkBox, ghostSpecialAtk]);
 
-        dude.enablePhysics(scott);
+        player.enablePhysics(scott);
         comp.enablePhysics(dummy);
 
 
 
-
-        platform.enableBody = true;
-        platform2.enableBody = true;
-        platform3.enableBody = true;
         battlefield.enableBody = true;
         battlefield.scale.setTo(2, 2);
         battlefield.body.setSize(321, 126, 0, 25);
@@ -4067,21 +4074,17 @@ demo.cpuFight.prototype = {
 
 
 
-
-        platform.body.immovable = true;
-        platform2.body.immovable = true;
-        platform3.body.immovable = true;
         battlefield.body.immovable = true;
 
         console.log(atkBox);
         console.log(scott);
-        console.log(dude.isGrounded);
+        console.log(player.isGrounded);
 
     },
     update: function () {
         //work around for repeating 'airRecovers'
         game.physics.arcade.collide(scott, battlefield, function () {
-            dude.resetFilp();
+            player.resetFilp();
         });
 
         game.physics.arcade.collide(dummy, battlefield, function () {
@@ -4092,7 +4095,7 @@ demo.cpuFight.prototype = {
         game.physics.arcade.collide(dummy, [/* platform, platform1, platform2, platform3, */ battlefield]);
         //dummy will be damaged by the projectile
         game.physics.arcade.overlap(dummy, projectile, function () {
-            runBulletCollide(dude, comp, dummy, projectile);
+            runBulletCollide(player, comp, dummy, projectile);
         });
 
         //hitbox on dummy, runs hit();
@@ -4100,17 +4103,17 @@ demo.cpuFight.prototype = {
         //dummy will be hit when player hits him
         game.physics.arcade.overlap(dummy, atkBox, function () {
             hits++;
-            hit(dude, scott, comp, dummy);
+            hit(player, scott, comp, dummy);
             //elec hiteffect will play on dummy when hit
-            normHit.run(normalHit, elec, atkBox, dummy, scott, dude);
+            normHit.run(normalHit, elec, atkBox, dummy, scott, player);
 
 
         });
         //if ghost,dummy will be hit when player'specialKick1 hits him
         game.physics.arcade.overlap(dummy, ghostSpecialAtk, function () {
 
-            hit(dude, scott, comp, dummy);
-            grghostHit.run(normalHit, elec, dummy, dummy, scott, dude);
+            hit(player, scott, comp, dummy);
+            grghostHit.run(normalHit, elec, dummy, dummy, scott, player);
         });
 
         game.physics.arcade.overlap(dummy, [cpuB1, cpuB2], function () {
@@ -4127,7 +4130,7 @@ demo.cpuFight.prototype = {
 
         //testing for dummy hiting player
         game.physics.arcade.overlap(scott, scndBox, function () {
-            hit(comp, dummy, dude, scott);
+            hit(comp, dummy, player, scott);
             CPUnormHit.run(normalHit, cpuHit, scndBox, scott, dummy, comp);
 
         });
@@ -4136,34 +4139,34 @@ demo.cpuFight.prototype = {
 
         //EVERYTHING WE NEED TO HAVE SCOTT ACTIVE***************************
         //game.debug.body(scott);
-        updateGrounded(scott, dude);
+        updateGrounded(scott, player);
 
-        keyListener(scott, dude, true, 's', 'd', 'a', 'x', 'z');
-        dude.setupRelations();
-        dude.runIdleControl(scott);
-        dude.jump(scott, 15);
-        dude.glideDownJump(scott);
-        dude.jumpAnimLoop(scott);
-        dude.downAerialMotion(scott, 'ghost');
-        dude.downAerial(scott);
-        dude.moveAttackBox(atkBox, scott);
-        dude.moveRunAttack(scott, 'runAttack', 10);
-        dude.moveRunAttack(scott, 'slideKick', 12);
-        dude.moveDodge(scott);
-        dude.airDodged(scott);
-        dude.resetAirDodge(scott);
-        dude.showShield(shield, scott);
-        dude.upRecovery(scott);
-        dude.ghostLand(scott);
-        dude.ghSpecialListener(scott, dummy);
+        keyListener(scott, player, true, 's', 'd', 'a', 'x', 'z');
+        player.setupRelations();
+        player.runIdleControl(scott);
+        player.jump(scott, 15);
+        player.glideDownJump(scott);
+        player.jumpAnimLoop(scott);
+        player.downAerialMotion(scott, 'ghost');
+        player.downAerial(scott);
+        player.moveAttackBox(atkBox, scott);
+        player.moveRunAttack(scott, 'runAttack', 10);
+        player.moveRunAttack(scott, 'slideKick', 12);
+        player.moveDodge(scott);
+        player.airDodged(scott);
+        player.resetAirDodge(scott);
+        player.showShield(shield, scott);
+        player.upRecovery(scott);
+        player.ghostLand(scott);
+        player.ghSpecialListener(scott, dummy);
 
-        shootBullet(dude, scott, atkBox, projectile, -900, 0);
+        shootBullet(player, scott, atkBox, projectile, -900, 0);
 
 
 
-        hurt(scott, dummy, dude, comp);
+        hurt(scott, dummy, player, comp);
 
-        hurt(dummy, scott, comp, dude);
+        hurt(dummy, scott, comp, player);
 
 
 
@@ -4172,16 +4175,16 @@ demo.cpuFight.prototype = {
         //trajectoryBounce(dummy, comp);
 
 
-        getLoser(dude, scott);
+        getLoser(player, scott);
 
         getLoser(comp, dummy);
 
-        dude.enableSoundControls();
+        player.enableSoundControls();
 
         /*************************TESTING DUMMY (2PLAYER )*********** */
         comp.runIdleControl(dummy);
-        attackSense(comp, dummy, dude, scott);
-        moveSense(comp, dummy, dude, scott);
+        attackSense(comp, dummy, player, scott);
+        moveSense(comp, dummy, player, scott);
         //fallingSense(comp, dummy, cpuB1,cpuB2);
         CPUupdateGrounded(dummy, comp);
         CPUListener(dummy, comp);
