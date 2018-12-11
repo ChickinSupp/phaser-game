@@ -189,13 +189,25 @@ io.on('connect', function(socket) {
    When players are selected
     */
     socket.on('my-player', function (data) {
-        let myPlayer = data.name;
+        let myPlayer = data;
+        console.log(myPlayer);
         io.sockets.in(rooms[socket.room].id).emit('local-player', myPlayer);
     });
 
-    socket.on('lobby-full', function (data) {
-        io.sockets.in(rooms[socket.room].id).emit('we-gucci', data);
+    socket.on('character', function (dude) {
+        io.sockets.in(rooms[socket.room].id).emit('dude', dude);
+        io.sockets.in(rooms[socket.room].id).emit('we-gucci');
     })
+
+
+
+    /*=socket.on('lobby-full', function () {
+        io.sockets.in(rooms[socket.room].id).emit('we-gucci');
+    });
+
+    socket.on('fight', function () {
+        io.sockets.in(rooms[socket.room].id).emit('create-players');
+    });*/
 
 });
 

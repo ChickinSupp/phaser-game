@@ -117,22 +117,6 @@ function playMusic() {
     charMusic.loopFull();
 }
 
-socket.on('local-player', function (data) {
-    dumbCounter++;
-    let playa1 = "";
-    let playa2 = "";
-
-    //if 2 calls to this are made
-    if(dumbCounter === 1 ) {
-       playa1 = data;
-    } else if (dumbCounter === 2 ) {
-        playa2 = data;
-    }
-    socket.emit('lobby-full', {playa1: playa1, playa2: playa2});
-
-});
-
-socket.on('we-gucci', function (data) {
-    getPlayer(data);
-    game.sate.start('game');
+socket.on('we-gucci', function () {
+    game.state.start('game');
 });

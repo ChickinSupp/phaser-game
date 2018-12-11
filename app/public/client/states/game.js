@@ -1,5 +1,12 @@
 demo = window.demo || (window.demo = {});
+//let players = [];
 //let socket = io();
+
+
+socket.on('local-player', function (data) {
+    console.log(data);
+    getPlayer(data);
+});
 
     /*
     mghosty for ghost
@@ -9,17 +16,22 @@ demo = window.demo || (window.demo = {});
 let dude, comp;
 //Get player
 const getPlayer  = (data) => {
-    if (data === 'mghosty') {
+     if ((data.name === 'mghosty') && (data.bol = false)) {
         dude = new Character('mghosty', 10, 100, 800);
-    } else if(data=== 'scott') {
+     } else
+    if((data.name === 'scott') && (data.bol = true)) {
         dude = new Character('scott', 10, 100, 800);
     }
-    if (data=== 'mghosty') {
-        comp = new Character('mghosty', 10, 100, 800);
+    console.log(dude);
+    socket.emit('character', dude);
+    /*if (data=== 'mghosty') {r
+        comp = Character('mghosty', 10, 100, 800);
     } else if(data === 'scott') {
         comp = new Character('scott', 10, 100, 800);
-    }
+    }*/
 };
+
+comp = new Character('scott', 10, 100, 800);
 
 let manager;
 let emitter;
@@ -1494,10 +1506,7 @@ function Character(name, power, gravity, jumpResistance) {
 
                 scott.animations.play('idle');
                 break;
-            case 'deku':
 
-
-                break;
             case 'mghosty':
                 scott = game.add.sprite(400, 100, 'ghosty');
                 scott.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8], 12, true);
@@ -2305,6 +2314,8 @@ demo.game.prototype = {
 
         dummy = game.add.sprite(200, 100, 'tester2');
 
+        dummy.alpha = 0;
+
 
         dude.createFighter();
 
@@ -2345,7 +2356,7 @@ demo.game.prototype = {
 
 
 
-        dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
+        /*dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
         dummy.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 12, false);
         //player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
         dummy.animations.add('startJump', [17, 18, 19, 20, 21, 22, 23, 24], 18, false);
@@ -2379,7 +2390,7 @@ demo.game.prototype = {
         dummy.animations.add('notloopJump', [24, 25], 12, false);
         dummy.animations.add('pushback1', [148], 10, false);
         dummy.animations.add('pushback2', [149], 10, false);
-        dummy.animations.add('pushback3', [150], 10, false);
+        dummy.animations.add('pushback3', [150], 10, false);*/
 
 
         //creates hitbox when player attacks
@@ -2469,7 +2480,7 @@ demo.game.prototype = {
         //plays added animaiton
 
 
-        dummy.animations.play('idle');
+        //dummy.animations.play('idle');
 
         //opens up info on current anim
         console.log(scott.animations.currentAnim);
@@ -2604,18 +2615,18 @@ demo.game.prototype = {
 
 
 
-        hurt(scott, dummy, dude, comp);
+        //hurt(scott, dummy, dude, comp);
 
 
 
         resizeToSprite(shield, scott, 0, 0);
 
-        trajectoryBounce(dummy, comp);
+        //trajectoryBounce(dummy, comp);
 
 
         getLoser(dude, scott);
 
-        getLoser(comp, dummy);
+        //getLoser(comp, dummy);
 
         dude.enableSoundControls();
 
