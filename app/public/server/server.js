@@ -30,6 +30,7 @@ const server = app.listen(app.get('PORT'), () => {
 });
 
 const io = require('socket.io').listen(server);
+let isNewRoom = true;
 let counter = 0;
 let rooms = {};
 let partialRoom = 0;
@@ -47,12 +48,12 @@ io.on('connect', function(socket) {
         //Implement player count
         if (counter <= 2) {
             if(!rooms[data.gameRoom] && partialRoom === 0) {
-
+                isNewRoom = true;
                 //Create gameroom with generated id and set started to false
                 console.log('Creating room... GameRoom:', data.gameRoom);
                 rooms[data.gameRoom] = {id: data.viewId};
                 rooms[data.gameRoom].started = false;
-                rooms[data.gameRoom].players = counter;
+                rooms[data.gameRoom].players = 1;
                 console.log(counter);
                 socket.room = data.gameRoom;
                 socket.join(data.viewId);
@@ -64,10 +65,12 @@ io.on('connect', function(socket) {
                 console.log("ROOMS: ", rooms);
                 joiner(counter, partialRoom, partialId);
             } else if (partialId !== 0 && rooms[partialRoom].players === 1) {
+                isNewRoom = false;
+                socket.room = partialRoom;
                 socket.join(partialId);
-                console.log('Successfully joined player 2');
+                console.log('Successfully joined player 2 to ', partialId);
                 socket.emit('success-create', partialRoom, partialId);
-                rooms[partialRoom].players++;
+                rooms[partialRoom].players = 2;
                 console.log("ROOMS: ", rooms);
                 joiner(counter, partialRoom, partialId);
             }
@@ -125,6 +128,8 @@ io.on('connect', function(socket) {
             if(rooms[i].started === false) {
                 console.log('Found empty room. Joining..');
                 waitList[index].join(rooms[i].id);
+                waitList[index].room = rooms[i];
+                console.log(rooms[i], "WAITLISTING");
                 break;
             }
         }
@@ -145,7 +150,7 @@ io.on('connect', function(socket) {
 
     // Check for 'start-game' emit
     socket.on('game-start', function(room, id) {
-        console.log(rooms[socket.room], currentRoom, 'line 148');
+        console.log('CURRENT ROOM: ', currentRoom, 'line 148');
         //wait for player 2
         if (rooms[socket.room]) {
             console.log('GameRoom:', room, 'ID: ', id);
@@ -158,12 +163,11 @@ io.on('connect', function(socket) {
     // Check for 'disconnect emit'
     socket.on('disconnect', function() {
         console.log('user disconnected');
-        console.log(socket.room.id, "Someone in here disconnected");
+        console.log(rooms[socket.room].id, "Someone in here disconnected");
         rooms[socket.room].players--;
         rooms[socket.room].started = false;
         counter--;
         console.log(rooms);
-        socket.emit('close-chat');
     });
 });
 
