@@ -2947,7 +2947,7 @@ function Character(name, power, gravity, jumpResistance) {
         console.log(name);
         switch (name) {
             case 'scott':
-                scott = game.add.sprite(400, 100, 'tester');
+                scott = game.add.sprite(400, 400, 'tester');
                 scott.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
                 scott.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 14, false);
 
@@ -3002,7 +3002,7 @@ function Character(name, power, gravity, jumpResistance) {
 
                 break;
             case 'mghosty':
-                scott = game.add.sprite(400, 100, 'ghosty');
+                scott = game.add.sprite(400, 400, 'ghosty');
                 scott.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8], 12, true);
                 scott.animations.add('run', [9, 10, 11, 12, 13], 14, false);
                 //player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
