@@ -281,7 +281,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
             if (!this.isAirAttack && !this.isAirDodging && this.canPlayerJump && !(['airDodge', 'airRecovery', 'airNeutral', 'upAir', 'foxKick', 'meteorSmash'].includes(sprite.animations.currentAnim.name))) {
                 if ((this.isGrounded && this.startedJump) || (this.isGrounded && this.startedJump && this.combo[0] == 'jump')) {
-                    console.log('ending jump');
+                    
                     sprite.animations.play('endJump');
                     this.startedJump = false;
 
@@ -4045,12 +4045,7 @@ demo.cpuFight.prototype = {
 
         dummy.animations.play('idle');
 
-        //opens up info on current anim
-        console.log(scott.animations.currentAnim);
-        //gets name for current anim
-        console.log(scott.animations.currentAnim.name);
-        //returns if current anim is finished
-        console.log(scott.animations.currentAnim.isFinished);
+      
 
 
         // Creating platform
@@ -4097,9 +4092,6 @@ demo.cpuFight.prototype = {
 
         battlefield.body.immovable = true;
 
-        console.log(atkBox);
-        console.log(scott);
-        console.log(player.isGrounded);
 
     },
     update: function () {
@@ -4409,13 +4401,13 @@ function runBulletCollide(charObj, injCharObj, injSprite, bulletSprite) {
         charObj.isBulletFired = false;
         projectile = projectiles.create(0, 0, 'shBall');
         projectile.alpha = 0;
-        console.log('beep')
+       
 
 
     } else {
         Xvector = 120 + injCharObj.stats.damage;
         Yvector = -40 - injCharObj.stats.damage;
-        console.log('boop');
+     
         injSprite.animations.play('knockback')
         injSprite.body.velocity.setTo(Xvector, Yvector);
         renderEffect(shadowHit, bulletSprite, charObj, 100);
