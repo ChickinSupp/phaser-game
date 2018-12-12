@@ -122,7 +122,7 @@ demo.state0.prototype = {
         game.load.image('button1', '../assets/art/startGame.png');
         game.load.image('button2', '../assets/art/online.png');
         game.load.image('button3', '../assets/art/rankings.png');
-        game.load.audio('bgm', '../assets/music/ThemeofPixelSmash(demo).ogg');
+        game.load.audio('bgm', '../assets/music/ThemeofPixelSmash.ogg');
     },
 
     create: function () {
