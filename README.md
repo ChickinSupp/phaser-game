@@ -34,7 +34,7 @@ A fun HTML5 multiplayer game that lets players battle it out. This utilizes the 
 
 **Controls**
 
-⦁   a = 'punch'.
+⦁   a = 'punch'
 ⦁   s = 'kick'
 ⦁   d = 'special'
 ⦁   x = 'jump'
