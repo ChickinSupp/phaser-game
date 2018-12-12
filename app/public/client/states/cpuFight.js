@@ -3180,15 +3180,14 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
                     sprite.animations.play('neutralKick');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
                     charObj.keyPressed = 's';
-                    console.log(charObj.combo);
-                    console.log(charObj.keyPressed);
+                   
 
 
                     //if he is jumping, then will set isPlayerAirAttack to true
                     //charObj will allow downAerial() to run and the initiate the DownAirKick animation
                 } else if (charObj.isJumping) {
                     charObj.isAirAttack = true;
-                    console.log(charObj.isAirAttack);
+                    
 
 
                     //if the player is running either to the left or right side, and if the current animation is not already 'slidekick'
@@ -3214,7 +3213,7 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
                         sprite.animations.play('specialKick1');
                         charObj.combo[0] = (sprite.animations.currentAnim.name);
 
-                        console.log(charObj.combo);
+                       
                     } else {
                         return;
                     }
@@ -3276,7 +3275,7 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
                         charObj.keyPressed = 'a';
                         sprite.animations.play('neutralPunch2');
                         charObj.combo[0] = (sprite.animations.currentAnim.name);
-                        console.log(charObj.combo);
+                       
                     } else {
                         return;
                     }
@@ -3285,7 +3284,7 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
                         charObj.keyPressed = 'a';
                         sprite.animations.play('neutralPunch3');
                         charObj.combo[0] = (sprite.animations.currentAnim.name);
-                        console.log(charObj.combo);
+                      
                     } else {
                         return;
                     }
@@ -3295,7 +3294,7 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
 
                         sprite.animations.play('neutralPunch4');
                         charObj.combo[0] = (sprite.animations.currentAnim.name);
-                        console.log(charObj.combo);
+                      
                     } else {
                         return;
                     }
@@ -3303,7 +3302,7 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
                     if (sprite.animations.currentAnim.name === 'neutralPunch4' || sprite.animations.currentAnim.isFinished) {
                         sprite.animations.play('neutralPunch5');
                         charObj.combo[0] = (sprite.animations.currentAnim.name);
-                        console.log(charObj.combo);
+                      
                     } else {
                         return;
                     }
@@ -3311,7 +3310,7 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
 
                     sprite.animations.play('upAir');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
-                    console.log(charObj.combo);
+               
                 }
                 else if (charObj.name == 'mghosty' && !charObj.isGrounded && game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
 
@@ -3324,7 +3323,7 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
 
                     sprite.animations.play('airNeutral');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
-                    console.log(charObj.combo);
+                 
                 }
 
                 else {
@@ -3332,9 +3331,9 @@ function keyListener(sprite, charObj, isCustom, kick, special, std, jump, evade)
                         charObj.keyPressed = 'a';
                         sprite.animations.play('neutralPunch1');
                         charObj.combo[0] = (sprite.animations.currentAnim.name);
-                        console.log(charObj.combo);
+                   
                     } else {
-                        console.log('not ready');
+                   
                     }
                 }
 
@@ -3452,15 +3451,13 @@ function CPUListener(sprite, charObj) {
                 sprite.animations.play('neutralKick');
                 charObj.combo[0] = (sprite.animations.currentAnim.name);
                 charObj.keyPressed = 's';
-                console.log(charObj.combo);
-                console.log(charObj.keyPressed);
-
+        
 
                 //if he is jumping, then will set isPlayerAirAttack to true
                 //charObj will allow downAerial() to run and the initiate the DownAirKick animation
             } else if (charObj.isJumping) {
                 charObj.isAirAttack = true;
-                console.log(charObj.isAirAttack);
+          
 
 
                 //if the player is running either to the left or right side, and if the current animation is not already 'slidekick'
@@ -3486,7 +3483,7 @@ function CPUListener(sprite, charObj) {
                     sprite.animations.play('specialKick1');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
 
-                    console.log(charObj.combo);
+                 
                 } else {
                     return;
                 }
@@ -3548,7 +3545,7 @@ function CPUListener(sprite, charObj) {
                     charObj.keyPressed = 'a';
                     sprite.animations.play('neutralPunch2');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
-                    console.log(charObj.combo);
+                  
                 } else {
                     return;
                 }
@@ -3557,7 +3554,7 @@ function CPUListener(sprite, charObj) {
                     charObj.keyPressed = 'a';
                     sprite.animations.play('neutralPunch3');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
-                    console.log(charObj.combo);
+                
                 } else {
                     return;
                 }
@@ -3567,7 +3564,7 @@ function CPUListener(sprite, charObj) {
 
                     sprite.animations.play('neutralPunch4');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
-                    console.log(charObj.combo);
+                   
                 } else {
                     return;
                 }
@@ -3575,7 +3572,7 @@ function CPUListener(sprite, charObj) {
                 if (sprite.animations.currentAnim.name === 'neutralPunch4' || sprite.animations.currentAnim.isFinished) {
                     sprite.animations.play('neutralPunch5');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
-                    console.log(charObj.combo);
+                  
                 } else {
                     return;
                 }
@@ -3583,7 +3580,7 @@ function CPUListener(sprite, charObj) {
 
                 sprite.animations.play('upAir');
                 charObj.combo[0] = (sprite.animations.currentAnim.name);
-                console.log(charObj.combo);
+            
             }
             else if (charObj.name == 'mghosty' && !charObj.isGrounded && charObj.actions.holdDown) {
 
@@ -3596,7 +3593,7 @@ function CPUListener(sprite, charObj) {
 
                 sprite.animations.play('airNeutral');
                 charObj.combo[0] = (sprite.animations.currentAnim.name);
-                console.log(charObj.combo);
+          
             }
 
             else {
@@ -3604,7 +3601,7 @@ function CPUListener(sprite, charObj) {
                     charObj.keyPressed = 'a';
                     sprite.animations.play('neutralPunch1');
                     charObj.combo[0] = (sprite.animations.currentAnim.name);
-                    console.log(charObj.combo);
+                  
                 } else {
                     console.log('not ready');
                 }
@@ -3624,7 +3621,7 @@ function CPUListener(sprite, charObj) {
                 charObj.isGrounded = false;
                 charObj.combo[0] = 'jump';
                 //charObj.keyPressed = '';
-                console.log("ddddd");
+              
 
                 charObj.onlyDoOnce = true;
 
