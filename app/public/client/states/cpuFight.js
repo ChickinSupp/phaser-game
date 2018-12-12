@@ -2660,7 +2660,7 @@ demo.cpuFight.prototype = {
         
         //comp.resetAirDodge(dummy);
         comp.moveDodge(dummy);
-        comp.upRecovery(dummy);
+        //comp.upRecovery(dummy);
         
         //END***************************************
 

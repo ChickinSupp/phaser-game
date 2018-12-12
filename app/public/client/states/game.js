@@ -1125,7 +1125,7 @@ function Character(name, power, gravity, jumpResistance) {
     };
     this.toggleSpriteMotion = function (sprite) {
 
-        sprite.body.gravity.y > 0 ? sprite.body.gravity.y = 0 : sprite.body.gravity.y = this.stats.gravity;
+        sprite.body.gravity.y > 0 ? sprite.body.gravity.y = 0 : sprite.body.gravity.y = 1000;
         sprite.body.moves ? sprite.body.moves = false : sprite.body.moves = true;
         this.stopMotion ? this.stopMotion = true : this.stopMotion = false;
 
