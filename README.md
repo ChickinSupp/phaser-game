@@ -49,6 +49,10 @@ A fun HTML5 multiplayer game that lets players battle it out. This utilizes the 
 
 ⦁ Rapidly click 'a' for combos!
 
+⦁ Press 'a' five times + d, to send your opponent flying!
+
+
+
 
 
 
