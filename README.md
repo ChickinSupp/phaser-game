@@ -30,3 +30,31 @@ A fun HTML5 multiplayer game that lets players battle it out. This utilizes the 
 ⦁   Define character stats and implement the API. 
 
 ⦁   Define and test the database to save character information and a leaderboard.
+
+
+**Controls**
+
+⦁   a = 'punch'.
+⦁   s = 'kick'
+⦁   d = 'special'
+⦁   x = 'jump'
+⦁   z = 'dodge'
+
+⦁  z + leftArrow = dodge left
+⦁  z + rightArrow = dodge right
+
+⦁  upArrow + d = air recovery
+
+⦁ Rapidly click 'a' for combos!
+
+
+
+
+
+
+
+
+
+
+
+
