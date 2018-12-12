@@ -175,7 +175,7 @@ CPUgrghostHit = new hitEffectCtrl(false);
 
 
 
-function Ai(name, power, gravity, jumpResistance, isCPU) {
+function Ai(name, power, gravity, jumpResistance) {
     this.name = name;
     this.combo = [];
     this.getHitWith = '';

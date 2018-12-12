@@ -5,6 +5,7 @@ let isScottClicked = false;
 let isGhostClicked = false;
 
 let fighter;
+let glSFX;
 
 function characterMenu() {
     characterMenu = game.add.image(0, 0, 'background');
@@ -71,11 +72,14 @@ demo.state1.prototype = {
         game.load.spritesheet('tester', '../assets/art/scott-final.png', 142, 184, 151);
         game.load.spritesheet('ghosty', '../assets/art/MarshUmbra.png', 160, 160, 190);
         game.load.audio('charMusic', '../assets/music/Ready.ogg');
+        game.load.audio('goodluck', '../assets/sfx/GoodLuck.wav');
     },
     create: function () {
         characterMenu = game.add.image(0, 0, 'background');
         characterMenu.width = 1200;
         characterMenu.height = 1000;
+
+        goodluck = game.add.audio('goodluck');
         selectCharacterText();
         scottPilgrim();
         ghosty();
@@ -100,12 +104,15 @@ function scottClicked () {
 function chooseScott(){
     fighter = 'scott';
     game.sound.stopAll();
+    goodluck.play();
     game.state.start('cpuFight');
 }
 
 function chooseGhost(){
     fighter = 'mghosty';
+    
     game.sound.stopAll();
+    goodluck.play();
     game.state.start('cpuFight');
 }
 
