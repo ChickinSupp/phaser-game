@@ -11,8 +11,6 @@ player = new Character('mghosty', 10, 1000, 1900);
 comp = new Ai('scott', 10, 1300, 1500);
 
 
-/* let comp = new Character('dummy', 10, 120); */
-
 let attempts = 0;
 let hits = 0;
 
@@ -23,7 +21,6 @@ let cpulife;
 let CPUlives;
 
 hitRatio = (hits/attempts) * 100;
-
 
 manager;
 emitter;
@@ -1463,7 +1460,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
         console.log(name);
         switch (name) {
             case 'scott':
-                dummy = game.add.sprite(400, 400, 'tester');
+                dummy = game.add.sprite(700, 400, 'tester');
                 dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
                 dummy.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 14, false);
 
@@ -3729,20 +3726,7 @@ player,
     //checks to see if player is currently touching a platform
     //isGrounded = false,
     dummyGrounded = false;
-//checks to see if player is currenlty jumping
-//meant for hitboxes, position relative to the sprite its a hitbox for
 
-/*  keys = {
-    'up': Phaser.KeyCode.UP,
-    'down': Phaser.KeyCode.DOWN,
-    'left': Phaser.KeyCode.LEFT,
-    'right': Phaser.KeyCode.RIGHT,
-    'a': Phaser.KeyCode.A,
-    's': Phaser.KeyCode.S,
-    'w': Phaser.KeyCode.W,
-    'd': Phaser.KeyCode.D,
-    'x': Phaser.KeyCode.X
-}; */
 
 demo.cpuFight = function () { };
 demo.cpuFight.prototype = {
@@ -3770,20 +3754,12 @@ demo.cpuFight.prototype = {
         game.load.spritesheet('scottStock', '../assets/art/sStock.png', 32, 32);
 
         game.load.spritesheet('shieldHit', '../assets/art/nullHit.png', 45, 45);
-
         game.load.spritesheet('hardHit', '../assets/art/hardHit.png', 57, 57);
-
         game.load.spritesheet('ballHit', '../assets/art/ghost_impact.png', 53, 58);
-
         game.load.spritesheet('hardHit2', '../assets/art/hardHit2.png', 57, 57);
-
-
         game.load.spritesheet('dbox', '../assets/art/2pbox.png', 25, 25);
         game.load.spritesheet('b1', '../assets/art/cpuBlock.png');
         game.load.spritesheet('b2', '../assets/art/cpuBlock2.png');
-
-
-        //soundControl.loadSFX();
 
         game.load.audio('airRecov', '../assets/sfx/airRecov.wav');
         game.load.audio('criticalHit', '../assets/sfx/critical.wav');
@@ -3819,37 +3795,18 @@ demo.cpuFight.prototype = {
         game.load.audio('ghAirNeu', '../assets/sfx/ghAirKick.wav');
 
         game.load.audio('ghWhip', '../assets/sfx/ghWhip.wav');
-
         game.load.audio('ghMeteor', '../assets/sfx/meteorS.wav');
-
-
-
-
         game.load.audio('stKick', '../assets/sfx/stKick.wav');
-
         game.load.audio('stRunAtk', '../assets/sfx/stRunAtk.wav');
-
         game.load.audio('stSlideKick', '../assets/sfx/stSlideKick.wav');
-
         game.load.audio('stSpecKick', '../assets/sfx/stSpecialKick.wav');
-
         game.load.audio('stPunch', '../assets/sfx/stPunch.wav');
-
         game.load.audio('stUpNeu', '../assets/sfx/stUpNeu.wav');
-
         game.load.audio('nullHit', '../assets/sfx/AttackBounce.wav');
-
         game.load.audio('elecHit', '../assets/sfx/Hurt.wav');
-
         game.load.audio('explosion', '../assets/sfx/expl.wav');
         game.load.audio('battle1', '../assets/music/Ambush.mp3');
         game.load.audio('battle2', '../assets/music/Friendly Competition.ogg');
-      
-
-
-
-
-
     },
     create: function () {
         // Starting game physics
@@ -4064,12 +4021,6 @@ demo.cpuFight.prototype = {
         battlefield.enableBody = true;
         battlefield.scale.setTo(2, 2);
         battlefield.body.setSize(321, 126, 0, 25);
-
-        //scott
-        //scott.body.setSize(60, 120, 20, 69);
-        //ghost
-        //scott.body.setSize(60, 120, 20, 47);
-
 
 
         scott.anchor.setTo(0.5, 0.5);
