@@ -1068,13 +1068,13 @@ function Ai(name, power, gravity, jumpResistance) {
     };
     this.airDodged = function (sprite) {
         if (this.isAirDodging && sprite.animations.currentAnim.name !== 'airDodge') {
-            this.toggleSpriteMotion(scott);
+            this.toggleSpriteMotion(sprite);
 
     
             if (this.airDodgeDirect === 'right') {
                 sprite.animations.play('airDodge');
                 game.add.tween(sprite).to({ x: '-80' }, 500, Phaser.Easing.Cubic.Out, true);
-                this.doTimeout(this.toggleSpriteMotion, 500, scott);
+                this.doTimeout(this.toggleSpriteMotion, 500, sprite);
                 //sprite.body.velocity.setTo(-125, 0);
                 //game.add.tween(sprite).onComplete.add(toggleSpriteMotion, this);
                 this.isAirDodging = false;
@@ -1083,7 +1083,7 @@ function Ai(name, power, gravity, jumpResistance) {
             } else if (this.airDodgeDirect === 'left') {
                 sprite.animations.play('airDodge');
                 game.add.tween(sprite).to({ x: '80' }, 500, Phaser.Easing.Cubic.Out, true);
-                this.doTimeout(this.toggleSpriteMotion, 500, scott);
+                this.doTimeout(this.toggleSpriteMotion, 500, sprite);
                 //game.add.tween(sprite).onComplete.add(toggleSpriteMotion, this);
                 //sprite.body.velocity.setTo(125, 0);
                 this.isAirDodging = false;
@@ -4130,12 +4130,13 @@ demo.cpuFight.prototype = {
         comp.moveAttackBox(scndBox, dummy)
         comp.moveRunAttack(dummy, 'runAttack', 10);
         comp.moveRunAttack(dummy, 'slideKick', 12);
+        comp.airDodged(dummy);
    
         
         comp.resetAirDodge(dummy);
         comp.moveDodge(dummy);
         comp.upRecovery(dummy);
-        comp.airDodged(dummy);
+        
 
        
         //updateGrounded(dummy, comp);
