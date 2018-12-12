@@ -34,16 +34,18 @@ A fun HTML5 multiplayer game that lets players battle it out. This utilizes the 
 
 **Controls**
 
-⦁   a = 'punch'
-⦁   s = 'kick'
-⦁   d = 'special'
-⦁   x = 'jump'
-⦁   z = 'dodge'
+⦁   a = punch
+⦁   s = kick
+⦁   d = special
+⦁   x = jump
+⦁   z = dodge
 
 ⦁  z + leftArrow = dodge left
 ⦁  z + rightArrow = dodge right
 
 ⦁  upArrow + d = air recovery
+
+⦁  x + (a or s) = air attacks
 
 ⦁ Rapidly click 'a' for combos!
 
