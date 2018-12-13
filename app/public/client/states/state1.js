@@ -7,6 +7,8 @@ let isGhostClicked = false;
 let fighter;
 let glSFX;
 
+let ghostDemo;
+
 function characterMenu() {
     characterMenu = game.add.image(0, 0, 'background');
     characterMenu.width = 1200;
@@ -16,7 +18,7 @@ function characterMenu() {
 function selectCharacterText() {
     var text = null;
     var textReflect = null;
-    text = game.add.text(500,100, "SELECT CHARACTER");
+    text = game.add.text(500, 100, "SELECT CHARACTER");
     //  Centers the text
     text.anchor.set(0.5);
     text.align = 'center';
@@ -25,7 +27,7 @@ function selectCharacterText() {
     text.fontWeight = 'bold';
     text.fontSize = 80;
     text.fill = '#ffffff';
-    textReflect = game.add.text(500,100 + 100, "SELECT CHARACTER");
+    textReflect = game.add.text(500, 100 + 100, "SELECT CHARACTER");
     //  Centers the text
     textReflect.anchor.set(0.5);
     textReflect.align = 'center';
@@ -44,7 +46,7 @@ function selectCharacterText() {
 
 function scottPilgrim() {
     let scott;
-    scott = game.add.button(400,420, 'tester', null, this, 2, 1, 0);
+    scott = game.add.button(400, 420, 'tester', null, this, 2, 1, 0);
     scott.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
     scott.x = 100;
     scott.animations.play('idle');
@@ -55,17 +57,21 @@ function scottPilgrim() {
 };
 
 function ghosty() {
-    let ghost;
-    ghost = game.add.button(400, 440, 'ghosty');
-    ghost.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8], 12, true);
-    ghost.animations.play('idle');
+    
+    ghostDemo = game.add.button(400, 440, 'ghosty');
+    ghostDemo.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8], 12, false);
+    ghostDemo.animations.add('demo', [0, 1, 2, 3, 4, 5, 6, 7, 14, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+        32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101,
+        102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 164, 165, 166, 167, 168, 169, 170, 171, 39, 38, 37, 36, 35, 34, 33, 32], 18, true);
+        ghostDemo.animations.play('demo');
 
-    ghost.onInputOver.add(over, this);
-    ghost.onInputOut.add(out, this);
-    ghost.onInputUp.add(chooseGhost, this)
+        ghostDemo.onInputOver.add(ghostOver, this);
+        ghostDemo.onInputOut.add(out, this);
+        ghostDemo.onInputUp.add(chooseGhost, this)
 }
 
-demo.state1 = function () {};
+demo.state1 = function () { };
 demo.state1.prototype = {
     preload: function () {
         game.load.image('background', '../assets/art/start-state-background.png');
@@ -89,41 +95,47 @@ demo.state1.prototype = {
     update: function () { }
 }
 
-function up (character, bol) {
+function up(character, bol) {
     console.log('button up', character);
     socket.emit('my-player', { name: character, bol: bol });
 }
 
 //Scott has been selected;
-function scottClicked () {
+function scottClicked() {
     isScottClicked = true;
     console.log("Character is scott");
     up('scott', isScottClicked);
 }
 
-function chooseScott(){
+function chooseScott() {
     fighter = 'scott';
     game.sound.stopAll();
     goodluck.play();
     game.state.start('cpuFight');
 }
 
-function chooseGhost(){
+function chooseGhost() {
     fighter = 'mghosty';
-    
+
     game.sound.stopAll();
     goodluck.play();
     game.state.start('cpuFight');
 }
 
 //Ghost has been selected;
-function ghostClicked () {
+function ghostClicked() {
     isGhostClicked = true;
     console.log("Character is ghost");
-    up('mghosty',isGhostClicked);
+    up('mghosty', isGhostClicked);
 }
 
 function over() {
+
+    console.log('button over');
+}
+
+function ghostOver() {
+    
     console.log('button over');
 }
 
