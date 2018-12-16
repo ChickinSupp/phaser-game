@@ -47,9 +47,22 @@ A fun HTML5 multiplayer game that lets players battle it out. This utilizes the 
 
 ⦁  x + (a or s) = air attacks
 
+⦁  x + (d) = Roundhouse Kick (in air)
+
+⦁  air + downArrow + d = Spike
+
 ⦁ Rapidly click 'a' for combos!
 
-⦁ Press 'a' five times + d, to send your opponent flying!
+⦁ a + a + a + a + a + d = Sword Slash
+
+⦁ a + a + a + d = Rising Spectre (Send your opponent flying!)
+
+
+
+
+
+
+
 
 
 
