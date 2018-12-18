@@ -62,22 +62,12 @@ $(document).ready( function() {
     });
 
     //Ready after two players
-    socket.on('start-game', function (data) {
-        $('#chat').show(1000);
-        if (data === myId) {
-            console.log('Ready to start game from: ', gamer, ' room', data );
-            socket.emit('game-start', myRoom, myId);
-        }
+    socket.on('start-game', function () {
+
     });
 
-    socket.on('success-join', function (playerNum) {
-        if (playerNum === 1) {
-            console.log("dude:", playerNum);
-            gamer = playerNum;
-        } else {
-            console.log("comp:", playerNum);
-            gamer = playerNum;
-        }
+    socket.on('success-join', function () {
+        $('#chat').show(1000);
     });
 });
 
