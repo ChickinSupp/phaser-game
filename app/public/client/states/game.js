@@ -11,8 +11,8 @@ let dude, comp;
 //Get player
 const getPlayer  = (data) => {
     console.log(data);
-    dude = new Character(data.myplayer, 10, 100, 800);
-    comp = new Character(data.opponent, 10, 100, 800);
+    dude = new Character(data.opponent, 10, 100, 800);
+    comp = new Character(data.myplayer, 10, 100, 800);
 };
 
 //comp = new Character('mghosty', 10, 100, 800);
@@ -2751,7 +2751,7 @@ demo.game.prototype = {
         updateGrounded(dummy, comp);
         //dummykeyListener(dummy, comp,true, 'u', 'i', 'o', 'p', 'l');
         //looks for left and right keys pressed
-        comp.runIdleControl(dummy);
+       // comp.runIdleControl(dummy);
            comp.jump(dummy, 15);
            comp.glideDownJump(dummy, 1000, comp.stats.gravity);
            comp.jumpAnimLoop(dummy);
