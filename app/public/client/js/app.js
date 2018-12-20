@@ -3,6 +3,7 @@ $(document).ready( function() {
     let isHidden = true;
     //let socket = io().connect('localhost:5000');
     let myRoom;
+    let myFighter = '';
 
     // Query DOM
     let message = document.getElementById('message'),
@@ -52,17 +53,20 @@ $(document).ready( function() {
         console.log('FAILED TO JOIN ..too many players');
     });
 
-    //Ready after two players
-    socket.on('start-game', function () {
-
-    });
-
     socket.on('success-join', function (room) {
         if (isHidden) {
             isHidden = false;
             $('#chat').show(1000);
         }
         myRoom = room;
+    });
+
+    //Listen for player
+    socket.on('my-player', (data) => {
+        console.log(data);
+        myFighter = data.fighter;
+        socket.emit('samurai', myFighter);
+        socket.broadcast.to(myRoom).emit('opponent-picked', myFighter);
     });
 });
 
