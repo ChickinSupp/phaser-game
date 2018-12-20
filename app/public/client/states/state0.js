@@ -2,6 +2,12 @@
 let demo = window.demo || (window.demo = {});
 //let socket = io();
 
+let mainBGM;
+let enter;
+
+
+
+
 // Creating background image
 function startMenu() {
     startMenu = game.add.image(0, 0, 'menu-background');
@@ -117,7 +123,8 @@ demo.state0.prototype = {
         game.load.image('button1', '../assets/art/startGame.png');
         game.load.image('button2', '../assets/art/online.png');
         game.load.image('button3', '../assets/art/rankings.png');
-        game.load.audio('bgm', '../assets/music/ThemeofPixelSmash(demo).ogg');
+        game.load.audio('bgm', '../assets/music/ThemeOfPixelSmash.ogg');
+        game.load.audio('enter', '../assets/sfx/enter.wav');
     },
 
     create: function () {
@@ -130,6 +137,8 @@ demo.state0.prototype = {
 
         mainBGM = game.add.audio('bgm');
         mainBGM.play();
+
+        enter = game.add.audio('enter');
     },
     update: function () {}
 };
@@ -151,6 +160,8 @@ function out() {
 
 function playGame(){
     game.sound.stopAll();
+    enter.play();
+    game.state.start('state1');
     socket.emit('gaming');
 }
 
