@@ -2,7 +2,7 @@
 demo = window.demo || (window.demo = {});
 //let socket = io();
 let isScottClicked = false;
-let isGhostClicked = false;
+let dumbCounter = 0;
 
 let fighter;
 let glSFX;
@@ -149,3 +149,7 @@ function playMusic() {
     charMusic.play();
     charMusic.loopFull();
 }
+
+socket.on('we-gucci', function () {
+    game.state.start('game');
+});
