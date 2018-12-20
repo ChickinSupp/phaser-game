@@ -1,7 +1,6 @@
 // State 1 character selection
 demo = window.demo || (window.demo = {});
 //let socket = io();
-let isScottClicked = false;
 
 let fighter;
 let glSFX;
@@ -96,18 +95,6 @@ demo.onlineChars.prototype = {
     update: function () { }
 };
 
-/*function up(character, bol) {
-    console.log('button up', character);
-    socket.emit('my-player', { name: character, bol: bol });
-}
-
-//Scott has been selected;
-function scottClicked() {
-    isScottClicked = true;
-    console.log("Character is scott");
-    up('scott', isScottClicked);
-}*/
-
 function chooseScott() {
     fighter = 'scott';
     socket.emit('my-player', { fighter: fighter, playerId: socket.id });
@@ -117,13 +104,6 @@ function chooseGhost() {
     fighter = 'mghosty';
     socket.emit('my-player', { fighter: fighter, playerId: socket.id });
 }
-
-/*Ghost has been selected;
-function ghostClicked() {
-    isGhostClicked = true;
-    console.log("Character is ghost");
-    up('mghosty', isGhostClicked);
-}*/
 
 function over() {
     console.log('button over');
@@ -150,7 +130,6 @@ socket.on('opponent-picked', (fighter) => {
 });
 
 socket.on('start-game', function () {
-
     game.sound.stopAll();
     goodluck.play();
     game.state.start('game');
