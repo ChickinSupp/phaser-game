@@ -2,11 +2,6 @@ demo = window.demo || (window.demo = {});
 //let players = [];
 //let socket = io();
 
-socket.on('local-player', function (data) {
-    console.log(data);
-    getPlayer(data);
-});
-
     /*
     mghosty for ghost
     scott for scott
@@ -16,7 +11,7 @@ let dude, comp;
 //Get player
 const getPlayer  = (data) => {
     console.log(data);
-    dude = new Character(data.myPlayer, 10, 100, 800);
+    dude = new Character(data.myplayer, 10, 100, 800);
     comp = new Character(data.opponent, 10, 100, 800);
 };
 
@@ -2590,13 +2585,6 @@ demo.game.prototype = {
 
 
         //dummy.animations.play('idle');
-
-        //opens up info on current anim
-        console.log(scott.animations.currentAnim);
-        //gets name for current anim
-        console.log(scott.animations.currentAnim.name);
-        //returns if current anim is finished
-        console.log(scott.animations.currentAnim.isFinished);
 
 
         // Creating platform

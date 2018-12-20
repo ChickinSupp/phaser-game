@@ -97,11 +97,13 @@ demo.onlineChars.prototype = {
 
 function chooseScott() {
     fighter = 'scott';
+    console.log(fighter, 'IS A FIGHTER');
     socket.emit('my-player', { fighter: fighter, playerId: socket.id });
 }
 
 function chooseGhost() {
     fighter = 'mghosty';
+    console.log(fighter, 'IS A FIGHTER');
     socket.emit('my-player', { fighter: fighter, playerId: socket.id });
 }
 
@@ -125,13 +127,15 @@ function playMusic() {
 }
 
 socket.on('opponent-picked', (fighter) => {
+    console.log(fighter, "FROM OPPONENT_PICKED EVENT");
     opponent = fighter;
     socket.emit('opponent', opponent);
 });
 
-socket.on('start-game', function () {
+socket.on('start-game', function (data) {
     console.log("START GAME EMIT******");
     game.sound.stopAll();
+    getPlayer(data);
     //goodluck.play();
     game.state.start('game');
 });

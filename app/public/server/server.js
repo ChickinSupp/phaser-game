@@ -101,14 +101,15 @@ io.on('connect', function(socket) {
         }
     });
 
-    // Save my player
-    socket.on('samurai', (samurai) => {
-        console.log(samurai, ' IS SAMURAI AFTER SELECTION');
-        myPlayer = samurai;
+    //Listen for player
+    socket.on('my-player', (data) => {
+        console.log(data, 'LINE 66 app.js');
+        myPlayer = data.fighter;
+        socket.broadcast.to(myRoom).emit('opponent-picked', myPlayer);
         // Ready after two players
         if ((myPlayer !== '') && (myOpponent !== '')) {
-            socket.broadcast.to(myRoom).emit('start-game');
-            getPlayer({ myplayer: myPlayer, opponent: myOpponent });
+            console.log("Opponent is Here line 131");
+            socket.broadcast.to(myRoom).emit('start-game', { myplayer: myPlayer, opponent: myOpponent });
         }
     });
 
@@ -118,11 +119,10 @@ io.on('connect', function(socket) {
         myOpponent = opponent;
         // Ready after two players
         if ((myPlayer !== '') && (myOpponent !== '')) {
-            socket.broadcast.to(myRoom).emit('start-game');
-           getPlayer({ myplayer: myPlayer, opponent: myOpponent });
+            console.log("Opponent is Here line 131");
+            socket.broadcast.to(myRoom).emit('start-game', { myplayer: myPlayer, opponent: myOpponent });
         }
     });
-
 });
 
 //Matchmaking

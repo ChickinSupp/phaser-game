@@ -3,7 +3,6 @@ $(document).ready( function() {
     let isHidden = true;
     //let socket = io().connect('localhost:5000');
     let myRoom;
-    let myFighter = '';
 
     // Query DOM
     let message = document.getElementById('message'),
@@ -59,14 +58,6 @@ $(document).ready( function() {
             $('#chat').show(1000);
         }
         myRoom = room;
-    });
-
-    //Listen for player
-    socket.on('my-player', (data) => {
-        console.log(data);
-        myFighter = data.fighter;
-        socket.emit('samurai', myFighter);
-        socket.broadcast.to(myRoom).emit('opponent-picked', myFighter);
     });
 });
 
