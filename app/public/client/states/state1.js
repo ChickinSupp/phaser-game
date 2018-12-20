@@ -1,12 +1,12 @@
 // State 1 character selection
 demo = window.demo || (window.demo = {});
-//let socket = io();
+//et socket = io();
 let isScottClicked = false;
 
-let fighter;
+/*let fighter;
 let glSFX;
 
-let ghostDemo;
+let ghostDemo;*/
 
 function characterMenu() {
     characterMenu = game.add.image(0, 0, 'background');

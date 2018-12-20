@@ -1,12 +1,8 @@
 // State 0 start menu
 let demo = window.demo || (window.demo = {});
 //let socket = io();
-
 let mainBGM;
 let enter;
-
-
-
 
 // Creating background image
 function startMenu() {
