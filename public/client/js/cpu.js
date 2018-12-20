@@ -1889,7 +1889,7 @@ function resetSense(arr){
 
         setTimeout(function(){
             CPU.actions[senses[i]] = false;
-        }, 300);
+        }, 1000);
 
     }
 }

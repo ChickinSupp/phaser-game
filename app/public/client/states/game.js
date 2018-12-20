@@ -3315,6 +3315,5 @@ function getDistance(x1, y1, x2, y2) {
 
 }
 
-console.log(game.physics.arcade.distanceToXY(scott, dummy.x, dummy.y));
-console.log(getDistance(scott.x, scott.y, dummy.x, dummy.y));
+
 
