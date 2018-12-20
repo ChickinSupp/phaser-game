@@ -2,11 +2,7 @@ $(document).ready( function() {
     $('#chat').hide();
     let isHidden = true;
     //let socket = io().connect('localhost:5000');
-    let tempRoom = Math.floor(Math.random() * 500);
-    let tempViewId = Math.floor((Math.random() * 100) + 100);
-    let myRoom, myId;
-
-    socket.emit('create-room', {gameRoom: tempRoom,  viewId: tempViewId});
+    let myRoom;
 
     // Query DOM
     let message = document.getElementById('message'),
@@ -18,7 +14,8 @@ $(document).ready( function() {
     btn.addEventListener('click', function() {
         socket.emit('chat', {
             message: message.value,
-            handle: handle.value
+            handle: handle.value,
+            room: myRoom
         });
         message.value = "";
     });
@@ -45,14 +42,6 @@ $(document).ready( function() {
         }
     });
 
-    //Successful room creation 1 & 2
-    socket.on('success-create', function (room, id) {
-        console.log('NEW ROOM: ' + room);
-        console.log('NEW ID: ' + id);
-        myRoom = room;
-        myId = id;
-    });
-
     //New player
     socket.on('player-joined', function (data) {
         console.log('Number of players: ' + data);
@@ -68,12 +57,12 @@ $(document).ready( function() {
 
     });
 
-    socket.on('success-join', function () {
+    socket.on('success-join', function (room) {
         if (isHidden) {
             isHidden = false;
             $('#chat').show(1000);
         }
-
+        myRoom = room;
     });
 });
 

@@ -48,7 +48,7 @@ io.on('connect', function(socket) {
         rooms.push(newRoom);
         console.log(rooms);
     } else if (playersOnline === 2 || playersOnline % 2 === 0) {
-        matchMake(playersOnline, socket);
+        matchMake(socket);
     } else {
         waitList.push(socket);
         socket.emit('fail-join');
@@ -59,8 +59,8 @@ io.on('connect', function(socket) {
      */
     // Handle chat event
     socket.on('chat', function(data){
-        console.log(data, rooms[socket.room]);
-        io.sockets.in(rooms[0].roomId).emit('newchat', data);
+        console.log(data, ' msg to ', data.room);
+        io.sockets.in(data.room).emit('newchat', data);
     });
 
     // Handle typing event
@@ -99,7 +99,7 @@ io.on('connect', function(socket) {
 });
 
 //Matchmaking
-const matchMake = (playersOnline, socket) => {
+const matchMake = (socket) => {
     //Loop through the rooms to find an available room to join
     for (let i = 0; i < rooms.length; i++) {
         if (rooms[i].players === 1) {
@@ -107,7 +107,7 @@ const matchMake = (playersOnline, socket) => {
             socket.join(rooms[i].roomId);
             rooms[i].players = 2;
             rooms[i].started = true;
-            io.to(rooms[i].roomId).emit('success-join');
+            io.to(rooms[i].roomId).emit('success-join', rooms[i].roomId);
             console.log('ROOMS: ', rooms);
         }
     }
