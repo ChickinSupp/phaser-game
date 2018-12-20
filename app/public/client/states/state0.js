@@ -166,6 +166,6 @@ function goOnline(){
     game.state.start('onlineChars');
 }
 
-socket.on('clicked-menu', function () {
+/*socket.on('clicked-menu', function () {
     game.state.start('state1');
-});
+});*/
