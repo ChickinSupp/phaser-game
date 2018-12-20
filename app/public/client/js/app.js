@@ -1,6 +1,6 @@
 $(document).ready( function() {
     $('#chat').hide();
-    let gamer = 0;
+    let isHidden = true;
     //let socket = io().connect('localhost:5000');
     let tempRoom = Math.floor(Math.random() * 500);
     let tempViewId = Math.floor((Math.random() * 100) + 100);
@@ -27,7 +27,7 @@ $(document).ready( function() {
         socket.emit('typing', handle.value);
     });
 
-    socket.on('typing', function(data){
+    socket.on('typing', function(data) {
         feedback.innerHTML = '<p><em>' + data + ' is typing a message...</em></p>';
     });
 
@@ -39,8 +39,10 @@ $(document).ready( function() {
 
     //close chat
     socket.on('close-chat', function () {
-        output.innerHTML = '';
-        $('#chat').hide();
+        if (!isHidden) {
+            output.innerHTML = '';
+            $('#chat').hide();
+        }
     });
 
     //Successful room creation 1 & 2
@@ -67,7 +69,11 @@ $(document).ready( function() {
     });
 
     socket.on('success-join', function () {
-        $('#chat').show(1000);
+        if (isHidden) {
+            isHidden = false;
+            $('#chat').show(1000);
+        }
+
     });
 });
 

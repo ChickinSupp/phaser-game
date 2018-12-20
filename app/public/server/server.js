@@ -59,12 +59,12 @@ io.on('connect', function(socket) {
      */
     // Handle chat event
     socket.on('chat', function(data){
-        console.log(data);
-        io.sockets.to(rooms.roomId).emit('newchat', data);
+        console.log(data, rooms[socket.room]);
+        io.sockets.in(rooms[0].roomId).emit('newchat', data);
     });
 
     // Handle typing event
-    socket.on('typing', function(data){
+    socket.on('typing', function(data) {
         socket.broadcast.emit('typing', data);
     });
 
