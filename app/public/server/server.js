@@ -65,7 +65,7 @@ io.on('connect', function(socket) {
 
     // Handle typing event
     socket.on('typing', function(data) {
-        socket.broadcast.emit('typing', data);
+        socket.broadcast.to(data.room).emit('typing', data.handle);
     });
 
     //On disconnect
