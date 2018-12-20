@@ -91,7 +91,7 @@ function multiPlayer() {
     button2.onInputOut.add(out, this);
     button2.onInputUp.add(goOnline, this)
 
-};
+}
 
 function rankings() {
     let rankings = game.add.text(370,620, 'RANKINGS');
@@ -141,7 +141,6 @@ demo.state0.prototype = {
 
 
 function up() {
-    
     console.log('button up', arguments);
     game.sound.stopAll();
 }
@@ -157,11 +156,11 @@ function out() {
 function playGame(){
     game.sound.stopAll();
     enter.play();
-    game.state.start('state1');
-    socket.emit('gaming');
+    //game.state.start('state1');
+    //socket.emit('gaming');
 }
 
-function goOnline(){
+function goOnline() {
     game.sound.stopAll();
     game.state.start('onlineChars');
 }
