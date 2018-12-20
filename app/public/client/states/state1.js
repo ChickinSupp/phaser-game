@@ -115,7 +115,6 @@ function chooseScott() {
 
 function chooseGhost() {
     fighter = 'mghosty';
-
     game.sound.stopAll();
     goodluck.play();
     game.state.start('cpuFight');
