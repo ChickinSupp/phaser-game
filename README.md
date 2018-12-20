@@ -9,10 +9,11 @@ Project Title
 **Project Description**
 
 
-A fun HTML5 multiplayer game that lets players battle it out. This utilizes the following resources:
+A fun, yet competitive HTML5 multiplayer platformer game that lets players battle it out. This utilizes the following resources:
 * Phaser.CE (Game engine)
 * Node.js & Express
 * Sockets.io
+* Gulp
 * MySQL
 
 **Rough Breakdown of Tasks**
