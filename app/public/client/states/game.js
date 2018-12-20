@@ -1,7 +1,6 @@
 demo = window.demo || (window.demo = {});
 //let players = [];
 //let socket = io();
-console.log(game.state.getCurrentState().key);
 
 socket.on('local-player', function (data) {
     console.log(data);
