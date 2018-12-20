@@ -31,11 +31,15 @@ const server = app.listen(app.get('PORT'), () => {
 
 const io = require('socket.io').listen(server);
 let playersOnline = 0;
+let myRoom;
 let rooms = [];
 let waitList = [];
 
+
 //When a player connects
 io.on('connect', function(socket) {
+    let myPlayer = '';
+    let myOpponent = '';
     playersOnline++;
     console.log('A user connected', socket.id, ' at number ', playersOnline );
 
@@ -95,7 +99,28 @@ io.on('connect', function(socket) {
                 console.log(rooms, 'After room became vacant');
             }
         }
-    })
+    });
+
+    // Save my player
+    socket.on('samurai', (samurai) => {
+        myPlayer = samurai;
+        // Ready after two players
+        if ((myPlayer !== '') && (myOpponent !== '')) {
+            socket.broadcast.to(myRoom).emit('start-game');
+            getPlayer({ myplayer: myPlayer, opponent: myOpponent });
+        }
+    });
+
+    // Save opponent
+    socket.on('opponent', (opponent) => {
+        myOpponent = opponent;
+        // Ready after two players
+        if ((myPlayer !== '') && (myOpponent !== '')) {
+            socket.broadcast.to(myRoom).emit('start-game');
+           getPlayer({ myplayer: myPlayer, opponent: myOpponent });
+        }
+    });
+
 });
 
 //Matchmaking
@@ -108,6 +133,7 @@ const matchMake = (socket) => {
             rooms[i].players = 2;
             rooms[i].started = true;
             io.to(rooms[i].roomId).emit('success-join', rooms[i].roomId);
+            myRoom = rooms[i].roomId;
             console.log('ROOMS: ', rooms);
         }
     }

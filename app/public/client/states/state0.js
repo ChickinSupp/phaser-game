@@ -167,7 +167,7 @@ function playGame(){
 
 function goOnline(){
     game.sound.stopAll();
-    game.state.start('online');
+    game.state.start('onlineChars');
 }
 
 socket.on('clicked-menu', function () {
