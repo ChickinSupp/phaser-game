@@ -103,6 +103,7 @@ io.on('connect', function(socket) {
 
     // Save my player
     socket.on('samurai', (samurai) => {
+        console.log(samurai, ' IS SAMURAI AFTER SELECTION');
         myPlayer = samurai;
         // Ready after two players
         if ((myPlayer !== '') && (myOpponent !== '')) {
@@ -113,6 +114,7 @@ io.on('connect', function(socket) {
 
     // Save opponent
     socket.on('opponent', (opponent) => {
+        console.log(opponent, ' IS OPPONENT AFTER SELECTION');
         myOpponent = opponent;
         // Ready after two players
         if ((myPlayer !== '') && (myOpponent !== '')) {

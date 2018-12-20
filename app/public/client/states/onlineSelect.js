@@ -130,6 +130,7 @@ socket.on('opponent-picked', (fighter) => {
 });
 
 socket.on('start-game', function () {
+    console.log("START GAME EMIT******");
     game.sound.stopAll();
     //goodluck.play();
     game.state.start('game');
