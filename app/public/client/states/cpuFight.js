@@ -3843,6 +3843,7 @@ demo.cpuFight.prototype = {
     },
     create: function () {
         // Starting game physics
+    
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -3853,6 +3854,8 @@ demo.cpuFight.prototype = {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
         bfBackground = game.add.sprite(0, 0, 'back');
+        bfBackground.width = 1000;
+        bfBackground.height = 700;
 
 
         //dummy = game.add.sprite(200, 100, 'tester2');
