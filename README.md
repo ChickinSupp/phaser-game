@@ -1,4 +1,3 @@
-# Phaser-game
 Project Title
 **Pixel-Smash**
 
