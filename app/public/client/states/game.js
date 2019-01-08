@@ -1859,6 +1859,7 @@ function Opponent(name, power, gravity, jumpResistance) {
     this.velocityStall = false;
     this.stallChecked = false;
     this.stopMotion = false;
+    
     //pass in the act object sent from the other player
     //this will update the opponents sprite on our screen based
     //on what key they pressed
@@ -4305,6 +4306,7 @@ demo.game.prototype = {
 
         scott.anchor.setTo(0.5, 0.5);
         shield.anchor.setTo(0.5, 0.5);
+        dummy.anchor.setTo(0.5, 0.5);
 
         dummy.body.gravity.y = 2100;
 
