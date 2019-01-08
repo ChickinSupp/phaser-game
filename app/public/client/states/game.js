@@ -1859,7 +1859,7 @@ function Opponent(name, power, gravity, jumpResistance) {
     this.velocityStall = false;
     this.stallChecked = false;
     this.stopMotion = false;
-    
+
     //pass in the act object sent from the other player
     //this will update the opponents sprite on our screen based
     //on what key they pressed
@@ -4372,8 +4372,8 @@ demo.game.prototype = {
 
         //testing for dummy hiting player
         game.physics.arcade.overlap(scott, scndBox, function () {
-            hit(comp, dummy, player, scott);
-            //CPUnormHit.run(normalHit, cpuHit, scndBox, scott, dummy, comp);
+            hit(comp, dummy, dude, scott);
+            CPUnormHit.run(normalHit, cpuHit, scndBox, scott, dummy, comp);
 
         });
 
