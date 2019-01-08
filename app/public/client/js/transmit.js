@@ -1,29 +1,318 @@
-let player;
+
+function COMPListener(sprite, charObj) {
+    //charObj === COMP
+    //Sprite === dummy
+    //this will handle what the oppoent on our end will do
+    //If our oponent does something, it will look for the decision in the COMP obj
+
+    switch (charObj.decision) {
+        //standard kick
+        case 'kick':
+            //if the player is'nt jumping or running
+            //then the player will kick normally
+            if (!charObj.isJumping && sprite.animations.currentAnim.name !== 'run' && charObj.name !== 'mghosty') {
+                if (sprite.animations.currentAnim.name == 'moveDodge' && [114, 115, 116, 117, 118, 119, 120].includes(sprite.animations.currentAnim.currentFrame.index)) {
+                    charObj.timedBonus = true;
+                }
+                sprite.animations.play('neutralKick');
+                charObj.combo[0] = (sprite.animations.currentAnim.name);
+                charObj.keyPressed = 's';
+                //if he is jumping, then will set isPlayerAirAttack to true
+                //charObj will allow downAerial() to run and the initiate the DownAirKick animation
+            } else if (charObj.isJumping) {
+                charObj.isAirAttack = true;
+                //if the player is running either to the left or right side, and if the current animation is not already 'slidekick'
+                //then play the 'slideKick' animation
+                //would not want to play the same animation if its already playing....
+            } else if ((charObj.actions.runRight || charObj.actions.runLeft) && sprite.animations.currentAnim.name != 'slideKick' && sprite.animations.currentAnim.name == 'run' && charObj.name !== 'mghosty') {
+
+                charObj.keyPressed = 's';
+                sprite.animations.play('slideKick');
+                charObj.combo[0] = (sprite.animations.currentAnim.name);
+            }
+            break;
+        // 'd' will be the special button. Hit charObj button attack the right time, and you might unleash a speciall attack or combo
+        case 'special':
+            //will only play if the last attack(animation) was neutralPunch3
+            if (charObj.combo[0] == 'neutralPunch3' && sprite.animations.currentAnim.name != 'idle') {
+                if (sprite.animations.currentAnim.name === 'neutralPunch3' || sprite.animations.currentAnim.isFinished) {
+                    charObj.keyPressed = 'd';
+                    sprite.animations.play('specialKick1');
+                    charObj.combo[0] = (sprite.animations.currentAnim.name);
+                } else {
+                    return;
+                }
+                //forward attack OR attack while running
+            } else if ((charObj.actions.runRight || charObj.actions.runLeft) && sprite.animations.currentAnim.name != 'runAttack' && sprite.animations.currentAnim.name == 'run') {
+                charObj.keyPressed = 'd';
+
+                sprite.animations.play('runAttack');
+                charObj.combo[0] = (sprite.animations.currentAnim.name);
+            } else if ((charObj.actions.holdUp && !flipFlop)) {
+                if (charObj.canAirRecover) {
+                    charObj.isAirRecovering = true;
+                    charObj.canAirRecover = false;
+                    flipFlop = true;
+                } else {
+                    return;
+                }
+            } else if (charObj.combo[0] == 'neutralPunch5' && sprite.animations.currentAnim.name !== 'idle') {
+                charObj.keyPressed = 'd';
+                if (charObj.name == 'mghosty') {
+                    slash.play();
+                } else {
+                    stUpNeu.play();
+                }
+                sprite.animations.play('upNeutral');
+                charObj.combo[0] = (sprite.animations.currentAnim.name);
+                /* charObj.combo[0] = (sprite.animations.currentAnim.name); */
+            } else if (charObj.name == 'mghosty' && charObj.isGrounded) {
+                if (charObj.isLeft) {
+                    charObj.isShotLeft = true;
+                } else {
+                    charObj.isShotLeft = false;
+                }
+                charObj.keyPressed = 'd';
+                charObj.isBulletFired = true;
+
+                sprite.animations.play('haduken');
+                ejectBall.play();
+                charObj.combo[0] = (sprite.animations.currentAnim.name);
+            } else if (charObj.name == 'mghosty' && !charObj.isGrounded && !charObj.actions.holdUp && !charObj.actions.holdDown) {
+                charObj.keyPressed = 'd';
+                sprite.animations.play('foxKick');
+                charObj.combo[0] = (sprite.animations.currentAnim.name);
+            }
 
 
-let dummy = new Ai('mghosty', 10, 800, 800);
+            break;
+
+        //standard attack
+        case 'punch':
+            //charObj.keyPressed = 'a';
+            if (charObj.combo[0] == 'neutralPunch1' && sprite.animations.currentAnim.name != 'idle' && sprite.animations.currentAnim.name != 'jump') {
+                if (sprite.animations.currentAnim.name === 'neutralPunch1' || sprite.animations.currentAnim.isFinished) {
+                    charObj.keyPressed = 'a';
+                    sprite.animations.play('neutralPunch2');
+                    charObj.combo[0] = (sprite.animations.currentAnim.name);
+
+                } else {
+                    return;
+                }
+            } else if (charObj.combo[0] == 'neutralPunch2' && sprite.animations.currentAnim.name != 'idle') {
+                if (sprite.animations.currentAnim.name === 'neutralPunch2' || sprite.animations.currentAnim.isFinished) {
+                    charObj.keyPressed = 'a';
+                    sprite.animations.play('neutralPunch3');
+                    charObj.combo[0] = (sprite.animations.currentAnim.name);
+
+                } else {
+                    return;
+                }
+            } else if (charObj.combo[0] == 'neutralPunch3' && sprite.animations.currentAnim.name != 'idle') {
+                if (sprite.animations.currentAnim.name === 'neutralPunch3' || sprite.animations.currentAnim.isFinished) {
+                    charObj.keyPressed = 'a';
+
+                    sprite.animations.play('neutralPunch4');
+                    charObj.combo[0] = (sprite.animations.currentAnim.name);
+
+                } else {
+                    return;
+                }
+            } else if (charObj.combo[0] == 'neutralPunch4' && sprite.animations.currentAnim.name != 'idle') {
+                if (sprite.animations.currentAnim.name === 'neutralPunch4' || sprite.animations.currentAnim.isFinished) {
+                    sprite.animations.play('neutralPunch5');
+                    charObj.combo[0] = (sprite.animations.currentAnim.name);
+
+                } else {
+                    return;
+                }
+            } else if (sprite.animations.currentAnim.name != 'idle' && !charObj.isGrounded && charObj.actions.holdUp && charObj.name == 'mghosty') {
+
+                sprite.animations.play('upAir');
+                charObj.combo[0] = (sprite.animations.currentAnim.name);
+
+            }
+            else if (charObj.name == 'mghosty' && !charObj.isGrounded && charObj.actions.holdDown) {
+
+                sprite.animations.play('meteorSmash');
+                charObj.combo[0] = (sprite.animations.currentAnim.name);
+            }
 
 
-function Ai(name, power, gravity, jumpResistance, isCPU) {
+            else if (sprite.animations.currentAnim.name != 'idle' && !charObj.isGrounded && !charObj.actions.holdUp) {
+
+                sprite.animations.play('airNeutral');
+                charObj.combo[0] = (sprite.animations.currentAnim.name);
+
+            }
+
+            else {
+                if ((sprite.animations.currentAnim.name === 'idle' || sprite.animations.currentAnim.name === 'run') || sprite.animations.currentAnim.isFinished) {
+                    charObj.keyPressed = 'a';
+                    sprite.animations.play('neutralPunch1');
+                    charObj.combo[0] = (sprite.animations.currentAnim.name);
+
+                } else {
+                    console.log('not ready');
+                }
+            }
+
+            break;
+
+        case 'jump':
+            //initizates the jumping animation by setting charObj.isJumping to true
+            //stoping the 'idle anim if its currently playing
+            //sets charObj.isGrounded to false since the player is not longer on the floor
+
+            if (!charObj.onlyDoOnce && !flipFlop) {
+                charObj.isJumping = true;
+                sprite.animations.stop('idle');
+
+                charObj.isGrounded = false;
+                charObj.combo[0] = 'jump';
+                //charObj.keyPressed = '';
+
+
+                charObj.onlyDoOnce = true;
+
+                flipFlop = true;
+
+                //player.animations.play('jump');
+            } else {
+                return;
+            }
+
+
+
+
+            break;
+        case 'evade':
+            //initiates the 'block' anim
+            //will be used to block attacks
+            //possibly counter them as well, might add another mechanic for that soon
+            charObj.keyPressed = 'z';
+            if (charObj.actions.doSpecial && charObj.name !== 'mghosty') {
+                sprite.animations.stop('idle');
+                sprite.animations.play('dodge');
+
+            } else if (!charObj.isAirDodging && charObj.isGrounded && (charObj.actions.runRight || charObj.actions.runLeft)) {
+                charObj.isDodging = true;
+
+                if (charObj.name == 'mghosty') {
+                    ghostDodge.play();
+                } else {
+                    sdodge.play();
+                }
+
+            } else if (charObj.canAirDodge && !charObj.isGrounded && (charObj.actions.runRight || charObj.actions.runLeft)) {
+
+                if (charObj.actions.runRight) {
+                    charObj.isAirDodging = true;
+                    charObj.airDodgeDirect = 'right';
+                    charObj.canAirDodge = false;
+
+                } else if (charObj.actions.runLeft) {
+                    charObj.isAirDodging = true;
+                    charObj.airDodgeDirect = 'left';
+                    charObj.canAirDodge = false;
+
+                }
+
+
+
+
+            } else if (charObj.isGrounded) {
+
+                //bar.reset().listen(sprite).run(barr);
+                //console.log(bar);
+                charObj.shield.shieldActive = true;
+
+
+
+
+
+
+            }
+
+            break;
+
+        //TESTING ENEMY ATTACKS
+        /*             case 't':
+                        dummyCombo[0] = 'hit';
+                        dummy.animations.play('neutralPunch1');
+                        setTimeout(function () {
+                            dummyCombo = [];
+                        }, 100);
+        
+        
+                        break; */
+        default:
+            break;
+    }
+
+
+
+};
+
+const act = {
+    runRight: false,
+    runLeft: false,
+    holdUp: false,
+    holdDown: false,
+    //can either be 'jump', 'kick', 'punch', 'evade',
+    decision: '',
+}
+
+function updateActs(act){
+    if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
+        act.runRight = true;
+    }else{
+        act.runRight = false;
+    }
+
+    if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
+        act.runLeft = true;
+    }else{
+        act.runLeft = false;
+    }
+
+    if(game.input.keyboard.isDown(Phaser.Keyboard.UP)){
+        act.holdUp = true;
+    }else{
+        act.holdUp = false;
+    }
+
+    if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)){
+        act.holdDown = true;
+    }else{
+        act.holdDown = false;
+    }
+}
+
+function decisionReset(act) {
+    if (!game.input.keyboard.isDown(Phaser.Keyboard.S) || !game.input.keyboard.isDown(Phaser.Keyboard.D)
+        || !game.input.keyboard.isDown(Phaser.Keyboard.A) || !game.input.keyboard.isDown(Phaser.Keyboard.X)
+        || !game.input.keyboard.isDown(Phaser.Keyboard.Z)) {
+            act.decision = '';
+    }
+
+}
+
+function Opponent(name, power, gravity, jumpResistance) {
     this.name = name;
     this.combo = [];
     this.getHitWith = '';
     this.isHurt = false;
     this.actions = {
-        runRight = false,
-        runLeft = false,
-        jump = false,
-        kick = false,
-        punch = false,
-        holdUp = false,
-        evade = false,
-        doSpecial = false,
-
-    },
+        runRight: false,
+        runLeft: false,
+        holdUp: false,
+        holdDown: false,
+    };
     this.decision = '';
     this.lives = {
         left: 3
-    }
+    };
     this.stats = {
         damage: 0,
         lives: 3,
@@ -74,12 +363,20 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
     this.velocityStall = false;
     this.stallChecked = false;
     this.stopMotion = false;
+    //pass in the act object sent from the other player
+    //this will update the opponents sprite on our screen based
+    //on what key they pressed
 
-    this.CPUbrain = function (){
-    
+    //call this property in the update function of the demo.game obj
+    this.updateActions = function (obj) {
+        this.actions.runRight = obj.runRight;
+        this.actions.runLeft = obj.runLeft;
+        this.actions.holdUp = obj.holdUp;
+        this.actions.holdDown = obj.holdDown;
+        this.decision = obj.decision;
 
-    }
-
+        //then send this ob
+    };
     this.setupRelations = function () {
         switch (this.name) {
             case 'ghostStock':
@@ -107,7 +404,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
             if (!this.isAirAttack && !this.isAirDodging && this.canPlayerJump && !(['airDodge', 'airRecovery', 'airNeutral', 'upAir', 'foxKick', 'meteorSmash'].includes(sprite.animations.currentAnim.name))) {
                 if ((this.isGrounded && this.startedJump) || (this.isGrounded && this.startedJump && this.combo[0] == 'jump')) {
-                    console.log('ending jump');
+
                     sprite.animations.play('endJump');
                     this.startedJump = false;
 
@@ -117,7 +414,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
                 }
                 else if (!this.isGrounded && this.startedJump) {
-                    console.log('looping');
+
                     sprite.animations.play('loopJump');
                 } else if (this.combo[0] == 'jump' && !this.isGrounded && !this.startedJump) {
 
@@ -125,7 +422,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                     this.isJumping = true;
                     //sprite.animations.stop('idle');
                     sprite.animations.play('startJump');
-                    console.log('current');
+
 
 
                     //completedJump = false;
@@ -196,7 +493,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                 /* if (player.animations.currentAnim.isFinished) { */
 
                 this.airDownChecks.isDownAirAtk2 = true;
-                console.log('a')
+
 
             } else if (this.airDownChecks.isDownAirAtk2 && !this.isGrounded) {
                 sprite.animations.play('loopDwnKick');
@@ -205,7 +502,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                 this.airDownChecks.isDownAirAtk2 = false;
                 this.airDownChecks.isDownAirAtk3 = true;
 
-                console.log('b')
+
 
             } else if (this.airDownChecks.isDownAirAtk3 && this.isGrounded && this.completedJump) {
                 sprite.animations.play('endDwnKick');
@@ -213,7 +510,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                 this.airDownChecks.isDownAirAtk3 = false;
                 this.airDownChecks.isDownAirAtk1 = false;
                 this.isAirAttack = false;
-                console.log('c')
+
             }
         } else {
             return;
@@ -224,7 +521,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
     this.jump = function (sprite, maxHeight) {
 
 
-        if (!this.isAirDodging && this.actions.jump && this.stats.jumpH < 30) {
+        if (!this.isAirDodging && this.decision == 'jump' && this.stats.jumpH < 30) {
             this.stats.jumpH++;
             sprite.y -= 15;
         } else {
@@ -239,28 +536,28 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                 if (this.isDodging && (['startJump', 'loopJump', 'dodge', 'block', 'moveDodge'].includes(sprite.animations.currentAnim.name))) {
                     sprite.animations.stop('idle');
                     //spriteCombo = [];
-                    console.log('dddaaaaaad');
+
                     this.keyPressed = '';
                 } else if ((!this.isDodging || !this.isAirDodging) && !this.actions.evade && !this.actions.jump && this.completedJump || (!this.actions.runRight && sprite.animations.currentAnim.name == 'run' || !this.actions.runLeft && sprite.animations.currentAnim.name == 'run')) {
                     this.onlyDoOnce = false;
                     this.canPlayerJump = true;
-    
+
                     if (!this.isGrounded && !(['knockback', 'pushback1', 'pushback2', 'pushback3'].includes(sprite.animations.currentAnim.name))) {
                         sprite.animations.play('notloopJump');
                     } else if (this.isGrounded) {
                         //sprite.animations.stop('notloopJump');
                         if (['notloopjump', 'loopJump'].includes(sprite.animations.currentAnim.name)/* && sprite.animations.currentAnim.name == 'notloopjump' */ && sprite.animations.currentAnim.isFinished) {
-    
-    
+
+
                             sprite.animations.play('endJump');
                         }
-    
+
                         sprite.animations.play('idle');
                     }
-    
+
                     this.combo = [];
                     this.canAirRecover = true;
-                    console.log('restared');
+
                     this.keyPressed = '';
                     this.timedBonusAnim = '';
                     this.stallChecked = false;
@@ -270,15 +567,15 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                 if (this.actions.runRight && ((!['s', 'a'].includes(this.keyPressed)) && sprite.animations.currentAnim.name !== 'runAttack' && (!this.isAirDodging && !this.shield.shieldActive))) {
                     if (sprite.animations.currentAnim.name !== 'knockback') {
                         //testing for ghost's foxKick
-    
-    
-    
+
+
+
                         sprite.scale.setTo(1, 1);
                         this.isLeft = false;
-    
-    
-    
-    
+
+
+
+
                         if (sprite.animations.currentAnim.name == 'airNeutral') {
                             sprite.x += 13;
                             //sprite.body.velocity.x = 200;
@@ -286,25 +583,24 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                             sprite.x += 8;
                             //sprite.body.velocity.x = 400;
                         }
-    
-                        //console.log('sssa');
+
                         if ((!['jump', 'startJump', 'loopJump', 'endJump', 'dodge', 'block', 'moveDodge', 'loopDwnKick', 'airDodge'].includes(sprite.animations.currentAnim.name)) && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && this.isGrounded !== false && this.startedJump == false)) {
                             sprite.animations.play('run');
                         }
                     } else {
                         return;
                     }
-    
-    
-    
-    
+
+
+
+
                 } else if (this.actions.runLeft && ((!['s', 'a'].includes(this.keyPressed)) && sprite.animations.currentAnim.name !== 'runAttack' && (!this.isAirDodging && !this.shield.shieldActive))) {
                     if (sprite.animations.currentAnim.name !== 'knockback') {
-    
+
                         sprite.scale.setTo(-1, 1);
                         this.isLeft = true;
-    
-    
+
+
                         if (sprite.animations.currentAnim.name == 'airNeutral') {
                             sprite.x -= 13;
                             //sprite.body.velocity.x = -200;
@@ -312,28 +608,28 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                             sprite.x -= 8;
                             //sprite.body.velocity.x = -400;
                         }
-                        //console.log(' running left');
-    
+
+
                         if ((!['jump', 'startJump', 'loopJump', 'endJump', 'dodge', 'block', 'moveDodge', 'loopDwnKick', 'airDodge'].includes(sprite.animations.currentAnim.name)) && (!game.input.keyboard.isDown(Phaser.Keyboard.X) && this.isGrounded !== false && this.startedJump == false)) {
                             sprite.animations.play('run');
                         }
-    
-    
+
+
                     } else {
                         return;
                     }
-    
-    
-    
+
+
+
                 } else if ((!this.actions.runRight) || (!this.actions.runRight) || this.keyPressed || this.actions.evade || this.actions.punch || this.actions.special || game.input.keyboard.isDown(keys.w) || this.actions.special || this.startedJump) {
                     sprite.animations.stop('run');
-    
-    
+
+
                 }
             }
-    
-    
-    
+
+
+
         } else {
             return;
         }
@@ -898,27 +1194,27 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
     };
     this.airDodged = function (sprite) {
         if (this.isAirDodging && sprite.animations.currentAnim.name !== 'airDodge') {
-            this.toggleSpriteMotion(scott);
+            this.toggleSpriteMotion(sprite);
 
-            console.log('ssss');
+
             if (this.airDodgeDirect === 'right') {
                 sprite.animations.play('airDodge');
                 game.add.tween(sprite).to({ x: '-80' }, 500, Phaser.Easing.Cubic.Out, true);
-                this.doTimeout(this.toggleSpriteMotion, 500, scott);
+                this.doTimeout(this.toggleSpriteMotion, 500, sprite);
                 //sprite.body.velocity.setTo(-125, 0);
                 //game.add.tween(sprite).onComplete.add(toggleSpriteMotion, this);
                 this.isAirDodging = false;
                 this.airDodgeDirect = '';
-                console.log('asasassssss');
+
             } else if (this.airDodgeDirect === 'left') {
                 sprite.animations.play('airDodge');
                 game.add.tween(sprite).to({ x: '80' }, 500, Phaser.Easing.Cubic.Out, true);
-                this.doTimeout(this.toggleSpriteMotion, 500, scott);
+                this.doTimeout(this.toggleSpriteMotion, 500, sprite);
                 //game.add.tween(sprite).onComplete.add(toggleSpriteMotion, this);
                 //sprite.body.velocity.setTo(125, 0);
                 this.isAirDodging = false;
                 this.airDodgeDirect = '';
-                console.log('asdsdsdsaaadffff');
+
             } else {
                 return;
             }
@@ -940,7 +1236,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
                 this.isAirRecovering = false;
 
-                console.log('finished air recover');
+
 
             } else if (this.isLeft) {
                 sprite.animations.play('airRecovery');
@@ -951,7 +1247,6 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
                 this.isAirRecovering = false;
 
-                console.log('finished air recover');
             } else {
                 return;
             }
@@ -976,7 +1271,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
         setTimeout(function () {
             func(param1);
-            console.log('yeeee');
+
         }, time);
 
     };
@@ -1041,7 +1336,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
             if (-1 < sprite.body.speed < 100 && ['airRecovery', 'upNeutral', 'airNeutral'].includes(this.getHitWith) && !this.stallChecked) {
                 this.stopMotion = true;
                 //this.stallChecked = true;
-                console.log('got hit with', this.getHitWith);
+
 
 
 
@@ -1049,53 +1344,52 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                     this.stopMotion = false;
                     this.getHitWith = '';
 
-                    console.log('stop motion?', this.stopMotion);
+
                     this.isHurt = false;
-                    console.log('hurt sprite can now move again');
+
                 }, 1000);
 
 
             } else if (100 < sprite.body.speed < 200 && ['airRecovery', 'upNeutral', 'airNeutral'].includes(this.getHitWith) && !this.stallChecked) {
                 this.stopMotion = true;
-                console.log('got hit with', this.getHitWith);
+
                 this.stallChecked = true;
 
 
                 setTimeout(function () {
                     this.stopMotion = false;
                     this.getHitWith = '';
-                    console.log('stop motion?', this.stopMotion);
+
                     this.isHurt = false;
-                    console.log('hurt sprite can now move again');
+
                 }, 1200);
 
             } else if (200 < sprite.body.speed < 300 && ['airRecovery', 'upNeutral', 'airNeutral'].includes(this.getHitWith) && !this.stallChecked) {
                 this.stopMotion = true;
                 this.stallChecked = true;
-                console.log('got hit with', this.getHitWith);
 
 
                 setTimeout(function () {
                     this.stopMotion = false;
                     this.getHitWith = '';
-                    console.log('stop motion?', this.stopMotion);
+
                     this.isHurt = false;
-                    console.log('hurt sprite can now move again');
+
                 }, 1300);
 
             }
             else if (300 < sprite.body.speed && ['airRecovery', 'upNeutral', 'airNeutral'].includes(this.getHitWith) && !this.stallChecked) {
                 this.stopMotion = true;
-                console.log('got hit with', this.getHitWith);
+
                 this.stallChecked = true;
 
 
                 setTimeout(function () {
                     this.stopMotion = false;
                     this.getHitWith = '';
-                    console.log('stop motion?', this.stopMotion);
+
                     this.isHurt = false;
-                    console.log('hurt sprite can now move again');
+
                 }, 1800);
 
             } else {
@@ -1109,7 +1403,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
     this.resetGetHit = function (charObj) {
         setTimeout(function () {
             charObj.getHitWith = '';
-            console.log('this works');
+
         }, 1000);
     }
     this.pushbackControl = function (sprite) {
@@ -1289,7 +1583,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
         console.log(name);
         switch (name) {
             case 'scott':
-                dummy = game.add.sprite(400, 100, 'tester');
+                dummy = game.add.sprite(700, 400, 'tester');
                 dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
                 dummy.animations.add('run', [8, 9, 10, 11, 12, 13, 14, 15], 14, false);
 
@@ -1312,7 +1606,7 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
                 dummy.animations.add('block', [79, 80, 81, 82, 83, 84, 85], 14, false);
                 dummy.animations.add('lowKick', [86, 87, 88, 89, 90, 91], 14, false);
                 dummy.animations.add('dodge', [92, 93, 94, 95], 14, false);
-                dummy.animations.add('knockback', [96, 97, 98, 99, 100], 14, false);
+                dummy.animations.add('knockback', [96, 97, 98, 99, 100], 10, false);
 
                 dummy.animations.add('startDwnKick', [100, 101, 102], 12, false);
                 dummy.animations.add('loopDwnKick', [103, 104, 105], 12, true);
@@ -1333,9 +1627,9 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
                 dummy.animations.add('airNeutral', [142, 143, 144, 145, 146, 147], 18, false);
 
-                dummy.animations.add('pushback1', [148], 10, false);
-                dummy.animations.add('pushback2', [149], 10, false);
-                dummy.animations.add('pushback3', [150], 10, false);
+                dummy.animations.add('pushback1', [148], 3, false);
+                dummy.animations.add('pushback2', [149], 3, false);
+                dummy.animations.add('pushback3', [150], 3, false);
 
                 dummy.animations.play('idle');
                 break;
@@ -1344,9 +1638,9 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
 
                 break;
             case 'mghosty':
-            dummy = game.add.sprite(400, 100, 'ghosty');
-            dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8], 12, true);
-            dummy.animations.add('run', [9, 10, 11, 12, 13], 14, false);
+                dummy = game.add.sprite(400, 400, 'ghosty');
+                dummy.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8], 12, true);
+                dummy.animations.add('run', [9, 10, 11, 12, 13], 14, false);
                 //player.animations.add('jump', [16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 12, false);
                 dummy.animations.add('startJump', [33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48], 20, false);
                 dummy.animations.add('loopJump', [49, 50, 51, 52, 53, 54], 15, true);
@@ -1470,454 +1764,31 @@ function Ai(name, power, gravity, jumpResistance, isCPU) {
     this.ghostLand = function (sprite) {
         if (this.name == 'mghosty' && this.isGrounded && ['notloopJump'].includes(sprite.animations.currentAnim.name)) {
             sprite.animations.play('endJump');
-        }else{
-            return;
-        }
-    };
-    this.ghSpecialListener = function(sprite, enemy, sound) {
-
-        let done = false;
-        if (this.name == 'mghosty' && sprite.animations.currentFrame.index == 189) {
-    
-            ghostSpecialAtk.x = enemy.x;
-            ghostSpecialAtk.y = sprite.y - 65;
-            ghostSpecialAtk.alpha = 1;
-    
-            ghostSpecialAtk.revive();
-    
-            
-            game.add.tween(ghostSpecialAtk).to({ alpha: 0 }, 800, "Linear", true);
-    
-            ghostSpecialAtk.animations.play('show');
-    
-    
         } else {
             return;
         }
-    
     };
-    
-}
+    this.ghSpecialListener = function (sprite, enemy, sound) {
 
+        let done = false;
+        if (this.name == 'mghosty' && sprite.animations.currentFrame.index == 189) {
 
+            ghostSpecialAtk.x = enemy.x;
+            ghostSpecialAtk.y = sprite.y - 65;
+            ghostSpecialAtk.alpha = 1;
 
+            ghostSpecialAtk.revive();
 
-//key listener that riggers animations and boolean changes
 
-//sprite = name of sprite
-//charObj  =
+            game.add.tween(ghostSpecialAtk).to({ alpha: 0 }, 800, "Linear", true);
 
+            ghostSpecialAtk.animations.play('show');
 
 
-/* this.actions = {
-    runRight = false,
-    runLeft = false,
-    jump = false,
-    kick = false,
-    punch = false,
-    holdUp = false,
-    evade = false,
-    doSpecial = false,
-
-}, */
-
-
-
-function CPUListener(sprite, charObj) {
-
-        //console.log("key pressed", e);
-        switch (charObj.decision) {
-            //standard kick
-            case 'kick':
-                //if the player is'nt jumping or running
-                //then the player will kick normally
-                if (!charObj.isJumping && sprite.animations.currentAnim.name !== 'run' && charObj.name !== 'mghosty') {
-                    if (sprite.animations.currentAnim.name == 'moveDodge' && [114, 115, 116, 117, 118, 119, 120].includes(sprite.animations.currentAnim.currentFrame.index)) {
-                        charObj.timedBonus = true;
-
-                    }
-                    sprite.animations.play('neutralKick');
-                    charObj.combo[0] = (sprite.animations.currentAnim.name);
-                    charObj.keyPressed = 's';
-                    console.log(charObj.combo);
-                    console.log(charObj.keyPressed);
-
-
-                    //if he is jumping, then will set isPlayerAirAttack to true
-                    //charObj will allow downAerial() to run and the initiate the DownAirKick animation
-                } else if (charObj.isJumping) {
-                    charObj.isAirAttack = true;
-                    console.log(charObj.isAirAttack);
-
-
-                    //if the player is running either to the left or right side, and if the current animation is not already 'slidekick'
-                    //then play the 'slideKick' animation
-                    //would not want to play the same animation if its already playing....
-                } else if (( charObj.actions.runRight || charObj.actions.runLeft) && sprite.animations.currentAnim.name != 'slideKick' && sprite.animations.currentAnim.name == 'run' && charObj.name !== 'mghosty') {
-
-                    charObj.keyPressed = 's';
-                    sprite.animations.play('slideKick');
-                    charObj.combo[0] = (sprite.animations.currentAnim.name);
-                }
-
-                break;
-
-            // 'd' will be the special button. Hit charObj button attack the right time, and you might unleash a speciall attack or combo
-            case 'special':
-
-                //will only play if the last attack(animation) was neutralPunch3
-
-                if (charObj.combo[0] == 'neutralPunch3' && sprite.animations.currentAnim.name != 'idle') {
-                    if (sprite.animations.currentAnim.name === 'neutralPunch3' || sprite.animations.currentAnim.isFinished) {
-                        charObj.keyPressed = 'd';
-                        sprite.animations.play('specialKick1');
-                        charObj.combo[0] = (sprite.animations.currentAnim.name);
-
-                        console.log(charObj.combo);
-                    } else {
-                        return;
-                    }
-                    //forward attack OR attack while running
-                } else if ((charObj.actions.runRight|| charObj.actions.runLeft) && sprite.animations.currentAnim.name != 'runAttack' && sprite.animations.currentAnim.name == 'run') {
-                    charObj.keyPressed = 'd';
-
-                    sprite.animations.play('runAttack');
-                    charObj.combo[0] = (sprite.animations.currentAnim.name);
-                } else if ((charObj.actions.holdUp && !flipFlop)) {
-                    if (charObj.canAirRecover) {
-                        charObj.isAirRecovering = true;
-                        charObj.canAirRecover = false;
-                        flipFlop = true;
-
-                    } else {
-                        return;
-                    }
-
-
-                } else if (charObj.combo[0] == 'neutralPunch5' && sprite.animations.currentAnim.name !== 'idle') {
-                    charObj.keyPressed = 'd';
-
-                    if (charObj.name == 'mghosty') {
-                        slash.play();
-                    } else {
-                        stUpNeu.play();
-                    }
-                    sprite.animations.play('upNeutral');
-                    charObj.combo[0] = (sprite.animations.currentAnim.name);
-
-                    /* charObj.combo[0] = (sprite.animations.currentAnim.name); */
-                } else if (charObj.name == 'mghosty' && charObj.isGrounded) {
-                    if (charObj.isLeft) {
-                        charObj.isShotLeft = true;
-                    } else {
-                        charObj.isShotLeft = false;
-                    }
-                    charObj.keyPressed = 'd';
-                    charObj.isBulletFired = true;
-
-                    sprite.animations.play('haduken');
-                    ejectBall.play();
-                    charObj.combo[0] = (sprite.animations.currentAnim.name);
-                } else if (charObj.name == 'mghosty' && !charObj.isGrounded && !charObj.actions.holdUp && !charObj.actions.holdDown ) {
-                    charObj.keyPressed = 'd';
-                    sprite.animations.play('foxKick');
-                    charObj.combo[0] = (sprite.animations.currentAnim.name);
-                }
-
-
-                break;
-
-            //standard attack
-            case 'punch':
-                //charObj.keyPressed = 'a';
-                if (charObj.combo[0] == 'neutralPunch1' && sprite.animations.currentAnim.name != 'idle' && sprite.animations.currentAnim.name != 'jump') {
-                    if (sprite.animations.currentAnim.name === 'neutralPunch1' || sprite.animations.currentAnim.isFinished) {
-                        charObj.keyPressed = 'a';
-                        sprite.animations.play('neutralPunch2');
-                        charObj.combo[0] = (sprite.animations.currentAnim.name);
-                        console.log(charObj.combo);
-                    } else {
-                        return;
-                    }
-                } else if (charObj.combo[0] == 'neutralPunch2' && sprite.animations.currentAnim.name != 'idle') {
-                    if (sprite.animations.currentAnim.name === 'neutralPunch2' || sprite.animations.currentAnim.isFinished) {
-                        charObj.keyPressed = 'a';
-                        sprite.animations.play('neutralPunch3');
-                        charObj.combo[0] = (sprite.animations.currentAnim.name);
-                        console.log(charObj.combo);
-                    } else {
-                        return;
-                    }
-                } else if (charObj.combo[0] == 'neutralPunch3' && sprite.animations.currentAnim.name != 'idle') {
-                    if (sprite.animations.currentAnim.name === 'neutralPunch3' || sprite.animations.currentAnim.isFinished) {
-                        charObj.keyPressed = 'a';
-
-                        sprite.animations.play('neutralPunch4');
-                        charObj.combo[0] = (sprite.animations.currentAnim.name);
-                        console.log(charObj.combo);
-                    } else {
-                        return;
-                    }
-                } else if (charObj.combo[0] == 'neutralPunch4' && sprite.animations.currentAnim.name != 'idle') {
-                    if (sprite.animations.currentAnim.name === 'neutralPunch4' || sprite.animations.currentAnim.isFinished) {
-                        sprite.animations.play('neutralPunch5');
-                        charObj.combo[0] = (sprite.animations.currentAnim.name);
-                        console.log(charObj.combo);
-                    } else {
-                        return;
-                    }
-                } else if (sprite.animations.currentAnim.name != 'idle' && !charObj.isGrounded && charObj.actions.holdUp  && charObj.name == 'mghosty') {
-
-                    sprite.animations.play('upAir');
-                    charObj.combo[0] = (sprite.animations.currentAnim.name);
-                    console.log(charObj.combo);
-                }
-                else if (charObj.name == 'mghosty' && !charObj.isGrounded && charObj.actions.holdDown)  {
-
-                    sprite.animations.play('meteorSmash');
-                    charObj.combo[0] = (sprite.animations.currentAnim.name);
-                }
-
-
-                else if (sprite.animations.currentAnim.name != 'idle' && !charObj.isGrounded && !charObj.actions.holdUp ) {
-
-                    sprite.animations.play('airNeutral');
-                    charObj.combo[0] = (sprite.animations.currentAnim.name);
-                    console.log(charObj.combo);
-                }
-
-                else {
-                    if ((sprite.animations.currentAnim.name === 'idle' || sprite.animations.currentAnim.name === 'run') || sprite.animations.currentAnim.isFinished) {
-                        charObj.keyPressed = 'a';
-                        sprite.animations.play('neutralPunch1');
-                        charObj.combo[0] = (sprite.animations.currentAnim.name);
-                        console.log(charObj.combo);
-                    } else {
-                        console.log('not ready');
-                    }
-                }
-
-                break;
-
-            case 'jump':
-                //initizates the jumping animation by setting charObj.isJumping to true
-                //stoping the 'idle anim if its currently playing
-                //sets charObj.isGrounded to false since the player is not longer on the floor
-
-                if (!charObj.onlyDoOnce && !flipFlop) {
-                    charObj.isJumping = true;
-                    sprite.animations.stop('idle');
-
-                    charObj.isGrounded = false;
-                    charObj.combo[0] = 'jump';
-                    //charObj.keyPressed = '';
-                    console.log("ddddd");
-
-                    charObj.onlyDoOnce = true;
-
-                    flipFlop = true;
-
-                    //player.animations.play('jump');
-                } else {
-                    return;
-                }
-
-
-
-
-                break;
-            case 'evade':
-                //initiates the 'block' anim
-                //will be used to block attacks
-                //possibly counter them as well, might add another mechanic for that soon
-                charObj.keyPressed = 'z';
-                if (charObj.actions.doSpecial && charObj.name !== 'mghosty') {
-                    sprite.animations.stop('idle');
-                    sprite.animations.play('dodge');
-
-                } else if (!charObj.isAirDodging && charObj.isGrounded && (charObj.actions.runRight  || charObj.actions.runLeft )) {
-                    charObj.isDodging = true;
-
-                    if (charObj.name == 'mghosty') {
-                        ghostDodge.play();
-                    } else {
-                        sdodge.play();
-                    }
-
-                } else if (charObj.canAirDodge && !charObj.isGrounded && (charObj.actions.runRight || charObj.actions.runLeft)) {
-
-                    if (charObj.actions.runRight) {
-                        charObj.isAirDodging = true;
-                        charObj.airDodgeDirect = 'right';
-                        charObj.canAirDodge = false;
-
-                    } else if (charObj.actions.runLeft) {
-                        charObj.isAirDodging = true;
-                        charObj.airDodgeDirect = 'left';
-                        charObj.canAirDodge = false;
-
-                    }
-
-
-
-
-                } else if (charObj.isGrounded) {
-
-                    //bar.reset().listen(sprite).run(barr);
-                    //console.log(bar);
-                    charObj.shield.shieldActive = true;
-
-
-
-
-
-
-                }
-
-                break;
-
-            //TESTING ENEMY ATTACKS
-            /*             case 't':
-                            dummyCombo[0] = 'hit';
-                            dummy.animations.play('neutralPunch1');
-                            setTimeout(function () {
-                                dummyCombo = [];
-                            }, 100);
-            
-            
-                            break; */
-            default:
-                break;
+        } else {
+            return;
         }
 
-    
-
-};
-
-//checks distance between CPU and block sprite on the stage that represent pits
-
-// charObj = OBJ of the AI
-//sprite = sprite of CPU
-// blockSprite1 && blockSprite2 = block sprite in stage representing empty space
-function fallingSense(charObj, sprite, blockSprite1, blockSprite2){
-    let distB1 = getDistance(sprite.x, sprite.y, blockSprite1.x, blockSprite1.y );
-    let distB2 = getDistance(sprite.x, sprite.y, blockSprite2.x, blockSprite2.y );
-    if(distB1 < 300){
-        if(charObj.isGrounded){
-            charObj.actions.runRight = true;
-            charObj.actions.evade = true;
-            resetSense([runRight, evade]);
-
-
-            
-        }else{
-            charObj.actions.holdUp = true;
-            charObj.actions.doSpecial = true;
-            charObj.actions.runRight = true;
-
-            resetSense([holdUp, doSpecial, runRight ]);
-
-
-
-            /* setTimeout(function(action){
-                CPU.actions[action] = false;
-            }, 300);
- */
-
-        }
-
-    }else if (distB2 < 300){
-        if(charObj.isGrounded){
-            charObj.actions.runLeft = true;
-            charObj.actions.evade = true;
-
-            resetSense([runLeft,evade]);
-            
-        }else{
-            charObj.actions.holdUp = true;
-            charObj.actions.doSpecial = true;
-            charObj.actions.runLeft = true;
-
-            resetSense([holdUp,doSpecial, runLeft ]);
-
-
-        }
-    
-    }else{
-        return;
-    }
-
+    };
 
 }
-
-
-
-
-
-/* function directionSense(){
-
-}
-
-function attackSense(){
-
-}
-
-
-function evadeSense(){
-
-} */
-
-
-
-// CPU will be the only name of the Ai obj instance
-
-
-function getDistance (x1, y1, x2, y2) {
-
-    var dx = x1 - x2;
-    var dy = y1 - y2;
-
-    return Math.sqrt(dx * dx + dy * dy);
-
-}
-
-
-function resetSense(arr){
-    let senses = arr;
-
-    for(i = 0 ; i < senses.length; i++){
-
-        setTimeout(function(){
-            CPU.actions[senses[i]] = false;
-        }, 1000);
-
-    }
-}
-
-
-
-
-
-
-
-
-updateGrounded(scott, CPU);
-
-CPUListener(sprite, charObj);
-CPU.setupRelations();
-CPU.runIdleControl(scott);
-CPU.jump(scott, 15);
-CPU.glideDownJump(scott);
-CPU.jumpAnimLoop(scott);
-CPU.downAerialMotion(scott, 'ghost');
-CPU.downAerial(scott);
-
-
-CPU.moveAttackBox(atkBox, scott);
-CPU.moveRunAttack(scott, 'runAttack', 10);
-CPU.moveRunAttack(scott, 'slideKick', 12);
-CPU.moveDodge(scott);
-CPU.airDodged(scott);
-CPU.resetAirDodge(scott);
-CPU.showShield(shield, scott);
-CPU.upRecovery(scott);
