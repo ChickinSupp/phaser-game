@@ -38,8 +38,8 @@ let waitList = [];
 
 //When a player connects
 io.on('connect', function(socket) {
-    let myPlayer = '';
-    let myOpponent = '';
+    let player1 = {};
+    let player2 = {};
     playersOnline++;
     console.log('A user connected', socket.id, ' at number ', playersOnline );
 
@@ -101,19 +101,24 @@ io.on('connect', function(socket) {
         }
     });
 
-    //Listen for player
+    /*Listen for player
     socket.on('my-player', (data) => {
         console.log(data, 'LINE 66 app.js');
-        myPlayer = data.fighter;
-        socket.broadcast.to(myRoom).emit('opponent-picked', myPlayer);
+
+        if(myPlayer === ''){
+            myPlayer = data.fighter;
+            myOpponent = data.opponent;
+        }
         // Ready after two players
         if ((myPlayer !== '') && (myOpponent !== '')) {
             console.log("Opponent is Here line 131");
-            socket.broadcast.to(myRoom).emit('start-game', { myplayer: myPlayer, opponent: myOpponent });
+            socket.broadcast.to(myRoom).emit('ready');
+        } else {
+            socket.broadcast.to(myRoom).emit('opponent-picked', { opponent: myPlayer, room: myRoom })
         }
     });
 
-    // Save opponent
+    /* Save opponent
     socket.on('opponent', (opponent) => {
         console.log(opponent, ' IS OPPONENT AFTER SELECTION');
         myOpponent = opponent;
@@ -121,6 +126,26 @@ io.on('connect', function(socket) {
         if ((myPlayer !== '') && (myOpponent !== '')) {
             console.log("Opponent is Here line 131");
             socket.broadcast.to(myRoom).emit('start-game', { myplayer: myPlayer, opponent: myOpponent });
+        }
+    });*/
+
+    //Listen for players
+    socket.on('my-player', (data) => {
+        console.log(data);
+        if(!player1.fighter) {
+            player1.id = data.id;
+            player1.fighter = data.fighter;
+        } else if (!player2.fighter) {
+            player2.id = data.id;
+            player2.fighter = data.fighter;
+        } else {
+            console.log("Quit multi-clicking!!!");
+        }
+
+        //Check to see if both players are ready and greenlight
+        if(player1.fighter && player2.fighter) {
+            console.log("PLAYER 1: ", player1);
+            console.log("PLAYER 2: ", player2);
         }
     });
 
