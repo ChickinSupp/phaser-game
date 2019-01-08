@@ -5155,7 +5155,7 @@ function updateActs(act) {
 
     //****************Socket.emit to update character on the other end**********
     console.log("BEFORE SENDING:", act);
-    socket.emit('updates', act);
+    socket.emit('send-updates', act);
 }
 
 

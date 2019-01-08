@@ -126,7 +126,7 @@ io.on('connect', function(socket) {
 
      // Get opponent data
      socket.on('send-updates', (act) => {
-         console.log("OPPONENT ACT: ",act)
+         console.log("OPPONENT ACT: ", act)
         socket.broadcast.to(myRoom).emit('get-updates', act);
      });
 });
