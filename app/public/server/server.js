@@ -123,6 +123,11 @@ io.on('connect', function(socket) {
             socket.broadcast.to(myRoom).emit('start-game', { myplayer: myPlayer, opponent: myOpponent });
         }
     });
+
+     // Get opponent data
+     socket.on('send-updates', (act) => {
+        socket.broadcast.to(myRoom).emit('get-updates', act);
+     });
 });
 
 //Matchmaking

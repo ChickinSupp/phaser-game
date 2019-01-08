@@ -1,3 +1,5 @@
+import { Socket } from "dgram";
+
 demo = window.demo || (window.demo = {});
 //let players = [];
 //let socket = io();
@@ -15,11 +17,10 @@ const getPlayer = (data) => {
     comp = new Opponent(data.myplayer, 10, 100, 800);
 };
 
-
-//this object will be send to the other player
-//and will update them with the keys that have been pressed
-
-//send this to other player through sockets?
+/* send this to other player through sockets?
+* this object will be send to the other player
+* and will update them with the keys that have been pressed
+*/
 const act = {
     runRight: false,
     runLeft: false,
@@ -28,6 +29,7 @@ const act = {
     //can either be 'jump', 'kick', 'punch', 'evade',
     decision: '',
 }
+
 
 //comp = new Character('mghosty', 10, 100, 800);
 
@@ -4204,6 +4206,7 @@ demo.game.prototype = {
 
     },
     update: function () {
+       
         game.physics.arcade.collide(scott, battlefield, function () {
             dude.resetFilp();
         });
@@ -4256,6 +4259,7 @@ demo.game.prototype = {
         updateGrounded(scott, dude);
 
         keyListener(scott, dude, true, 's', 'd', 'a', 'x', 'z');
+        updateActs(act);
         decisionReset(act);
         dude.setupRelations();
         dude.runIdleControl(scott);
@@ -4275,7 +4279,6 @@ demo.game.prototype = {
         dude.ghostLand(scott);
         dude.ghSpecialListener(scott, dummy);
 
-        updateActs(act);
 
 
 
@@ -4298,13 +4301,15 @@ demo.game.prototype = {
 
         updateGrounded(dummy, comp);
 
+        
+        socket.on('get-updates', (compAct) => {
+            /*set comp = new Opponent before uncommenting the line below */
+            comp.updateActions(compAct);
+        });
 
         /*set comp = new Opponent before uncommenting the line below */
         comp.runIdleControl(dummy);
 
-
-        /*set comp = new Opponent before uncommenting the line below */
-        comp.updateActions(act);
 
 
         //looks into the obj sent through sockets containg the boolenas and strong that
@@ -4992,6 +4997,7 @@ function decisionReset(act) {
     }
 
 }
+
 function updateActs(act) {
     if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
         act.runRight = true;
@@ -5016,6 +5022,9 @@ function updateActs(act) {
     } else {
         act.holdDown = false;
     }
+
+    //****************Socket.emit to update character on the other end**********
+    socket.emit('updates', act);
 }
 
 
