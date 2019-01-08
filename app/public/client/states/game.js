@@ -434,8 +434,7 @@ function Character(name, power, gravity, jumpResistance) {
                 //HANDLES RUN ANIM  isspriteAirDodging
             } else if (((!this.shield.shieldActive || !this.isAirDodging) && sprite.animations.currentAnim.name == 'idle' || sprite.animations.currentAnim.name == 'run' || sprite.animations.currentAnim.name == 'jump' || this.isGrounded) && !['neutralKick', 'neutralPunch1', 'neutralPunch2', 'neutralPunch3', 'neutralPunch4'].includes(sprite.animations.currentAnim.name) || (!sprite.animations.currentAnim.isFinished)) {
                 if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT) && ((!['s', 'a'].includes(this.keyPressed)) && sprite.animations.currentAnim.name !== 'runAttack' && (!this.isAirDodging && !this.shield.shieldActive))) {
-                    act.runLeft = false;
-                    act.runRight = true;
+                
                     if (sprite.animations.currentAnim.name !== 'knockback') {
                         //testing for ghost's foxKick
 
@@ -466,8 +465,7 @@ function Character(name, power, gravity, jumpResistance) {
 
 
                 } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && ((!['s', 'a'].includes(this.keyPressed)) && sprite.animations.currentAnim.name !== 'runAttack' && (!this.isAirDodging && !this.shield.shieldActive))) {
-                    act.runRight = false;
-                    act.runLeft = true;
+             
                     if (sprite.animations.currentAnim.name !== 'knockback') {
 
                         sprite.scale.setTo(-1, 1);
@@ -500,8 +498,7 @@ function Character(name, power, gravity, jumpResistance) {
 
 
                 } else {
-                    act.runLeft = false;
-                    act.runRight = false;
+                 
 
                 }
             }
