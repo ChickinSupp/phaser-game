@@ -120,7 +120,7 @@ io.on('connect', function(socket) {
         } 
     });
 
-    // Save opponent
+    // Send recursive data for greenlight socket event
     socket.on('ready', (data) => {
         console.log(data, ' IS READY DATA');
         // Ready after two players
