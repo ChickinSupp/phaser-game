@@ -4373,7 +4373,7 @@ demo.game.prototype = {
         //testing for dummy hiting player
         game.physics.arcade.overlap(scott, scndBox, function () {
             hit(comp, dummy, dude, scott);
-            CPUnormHit.run(normalHit, cpuHit, scndBox, scott, dummy, comp);
+            //CPUnormHit.run(normalHit, cpuHit, scndBox, scott, dummy, comp);
 
         });
 
