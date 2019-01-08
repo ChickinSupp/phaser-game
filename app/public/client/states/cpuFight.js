@@ -68,7 +68,7 @@ cpuB1;
 cpuB2;
 
 
-let cpuHit;
+cpuHit;
 
 //sound control for playing sounds at the right moments
 bar = new soundCtrl('holdShield');

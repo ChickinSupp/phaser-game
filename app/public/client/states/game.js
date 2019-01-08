@@ -184,7 +184,6 @@ let CPUgrghostHit = new hitEffectCtrl(false);
 
 
 
-console.log(dude);
 
 //contains all our booleans and stats for a character
 function Character(name, power, gravity, jumpResistance) {
@@ -3965,6 +3964,7 @@ let player,
     platform2,
     platform3,
     battlefield,
+    cpuHit,
     //checks to see if player is currently touching a platform
     //isGrounded = false,
     dummyGrounded = false;
@@ -4238,6 +4238,22 @@ demo.game.prototype = {
 
         elec.animations.currentAnim.killOnComplete = true;
 
+        let cpuHitEffect;
+
+        if (comp.name == 'mghosty') {
+            cpuHitEffect = 'hardHit'
+        } else {
+            cpuHitEffect = 'hardHit2'
+        }
+
+
+
+        cpuHit = hitEffects.create(0, 0, cpuHitEffect);
+
+        cpuHit.animations.add('show', [0, 1, 2, 3, 4, 5], 20, false);
+
+        cpuHit.animations.currentAnim.killOnComplete = true;
+
 
 
         shadowHit = hitEffects.create(0, 0, 'ballHit');
@@ -4373,7 +4389,7 @@ demo.game.prototype = {
         //testing for dummy hiting player
         game.physics.arcade.overlap(scott, scndBox, function () {
             hit(comp, dummy, dude, scott);
-            //CPUnormHit.run(normalHit, cpuHit, scndBox, scott, dummy, comp);
+            CPUnormHit.run(normalHit, cpuHit, scndBox, scott, dummy, comp);
 
         });
 
@@ -4457,7 +4473,7 @@ demo.game.prototype = {
         comp.moveDodge(dummy);
         comp.airDodged(dummy);
         comp.resetAirDodge(dummy);
-        //comp.showShield(shield, dummy);
+        comp.showShield(shield, dummy);
         comp.upRecovery(dummy);
 
         //comp.velocityStallControl(dummy); 
@@ -5118,9 +5134,9 @@ function getDistance(x1, y1, x2, y2) {
 
 
 function decisionReset(act) {
-    if (!game.input.keyboard.isDown(Phaser.Keyboard.S) || !game.input.keyboard.isDown(Phaser.Keyboard.D)
-        || !game.input.keyboard.isDown(Phaser.Keyboard.A) || !game.input.keyboard.isDown(Phaser.Keyboard.X)
-        || !game.input.keyboard.isDown(Phaser.Keyboard.Z)) {
+    if (!game.input.keyboard.isDown(Phaser.Keyboard.S) && !game.input.keyboard.isDown(Phaser.Keyboard.D)
+        && !game.input.keyboard.isDown(Phaser.Keyboard.A) && !game.input.keyboard.isDown(Phaser.Keyboard.X)
+        && !game.input.keyboard.isDown(Phaser.Keyboard.Z)) {
             act.decision = '';
     }
 
