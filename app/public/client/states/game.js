@@ -10,10 +10,10 @@ comp for dummy/foreign player
  */
 let dude, comp;
 //Get player
-const getPlayer = (fighter, opponent) => {
+const getPlayer = (data) => {
     console.log(data);
-    dude = new Character(fighter, 10, 100, 800);
-    comp = new Opponent(opponent, 10, 100, 800);
+    dude = new Character(data.dude, 10, 100, 800);
+    comp = new Opponent(data.comp, 10, 100, 800);
 };
 
 /* send this to other player through sockets?

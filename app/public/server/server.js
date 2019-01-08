@@ -38,8 +38,8 @@ let waitList = [];
 
 //When a player connects
 io.on('connect', function(socket) {
-    let player1 = {};
-    let player2 = {};
+    let myPlayer = '';
+    let myOpponent = '';
     playersOnline++;
     console.log('A user connected', socket.id, ' at number ', playersOnline );
 
@@ -101,58 +101,46 @@ io.on('connect', function(socket) {
         }
     });
 
-    /*Listen for player
+    // Send over your player to opponent
     socket.on('my-player', (data) => {
         console.log(data, 'LINE 66 app.js');
-
-        if(myPlayer === ''){
+        if(myPlayer === '' ){
             myPlayer = data.fighter;
-            myOpponent = data.opponent;
-        }
-        // Ready after two players
-        if ((myPlayer !== '') && (myOpponent !== '')) {
-            console.log("Opponent is Here line 131");
-            socket.broadcast.to(myRoom).emit('ready');
-        } else {
-            socket.broadcast.to(myRoom).emit('opponent-picked', { opponent: myPlayer, room: myRoom })
-        }
+            // If we have both players
+            if(data.opponent !== '') {
+                myOpponent = data.opponent;
+                console.log("OPPONENT WAS POPULATED. myOpponent: ", myOpponent, "myPlayer: ", myPlayer);
+                checkArena(myPlayer, myOpponent);
+            }
+            else {
+                socket.broadcast.to(myRoom).emit('opponent-picked', { opponent: myPlayer, id: data.id, room: myRoom } );
+                console.log("OPPONENT WAS NOT POPULATED", myOpponent);
+            }
+        } 
     });
 
-    /* Save opponent
-    socket.on('opponent', (opponent) => {
-        console.log(opponent, ' IS OPPONENT AFTER SELECTION');
-        myOpponent = opponent;
+    // Save opponent
+    socket.on('ready', (data) => {
+        console.log(data, ' IS READY DATA');
         // Ready after two players
-        if ((myPlayer !== '') && (myOpponent !== '')) {
-            console.log("Opponent is Here line 131");
-            socket.broadcast.to(myRoom).emit('start-game', { myplayer: myPlayer, opponent: myOpponent });
-        }
-    });*/
-
-    //Listen for players
-    socket.on('my-player', (data) => {
-        console.log(data);
-        if(!player1.fighter) {
-            player1.id = data.id;
-            player1.fighter = data.fighter;
-        } else if (!player2.fighter) {
-            player2.id = data.id;
-            player2.fighter = data.fighter;
-        } else {
-            console.log("Quit multi-clicking!!!");
-        }
-
-        //Check to see if both players are ready and greenlight
-        if(player1.fighter && player2.fighter) {
-            console.log("PLAYER 1: ", player1);
-            console.log("PLAYER 2: ", player2);
-        }
+        console.log(socket.id, " = SENDER");
+        io.sockets.in(data.room).emit('greenlight', { id: data.id, fighter: data.myplayer, opponent: data.myopponent });
     });
+
 
      // Get opponent data
      socket.on('send-updates', (act) => {
         socket.broadcast.to(myRoom).emit('get-updates', act);
      });
+
+     // Greenlight
+     const checkArena = (player, rival) => {
+        console.log("IM AT ARENA WITH ", player, rival);
+        if ((player !== '') && (rival !== '')) {
+            console.log("CHECKARENA SENDER: ", socket.id);
+            io.sockets.in(myRoom).emit('greenlight', { id: socket.id, fighter: myPlayer, opponent: myOpponent });
+        }
+    }
 });
 
 //Matchmaking

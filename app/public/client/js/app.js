@@ -3,6 +3,8 @@ $(document).ready( function() {
     let isHidden = true;
     //let socket = io().connect('localhost:5000');
     let myRoom;
+    let myPlayer = '';
+    let myOpponent = '';
 
     // Query DOM
     let message = document.getElementById('message'),
