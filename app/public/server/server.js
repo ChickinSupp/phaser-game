@@ -110,7 +110,8 @@ io.on('connect', function(socket) {
             if(data.opponent !== '') {
                 myOpponent = data.opponent;
                 console.log("OPPONENT WAS POPULATED. myOpponent: ", myOpponent, "myPlayer: ", myPlayer);
-                checkArena(myPlayer, myOpponent);
+                let greenlight = checkArena(myPlayer, myOpponent);
+                if (greenlight) io.sockets.in(myRoom).emit('greenlight', { id: socket.id, fighter: myPlayer, opponent: myOpponent });
             }
             else {
                 socket.broadcast.to(myRoom).emit('opponent-picked', { opponent: myPlayer, id: data.id, room: myRoom } );
@@ -138,7 +139,7 @@ io.on('connect', function(socket) {
         console.log("IM AT ARENA WITH ", player, rival);
         if ((player !== '') && (rival !== '')) {
             console.log("CHECKARENA SENDER: ", socket.id);
-            io.sockets.in(myRoom).emit('greenlight', { id: socket.id, fighter: myPlayer, opponent: myOpponent });
+            return true;
         }
     }
 });
