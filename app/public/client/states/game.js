@@ -4432,7 +4432,6 @@ demo.game.prototype = {
 
         
         socket.on('get-updates', (compAct) => {
-            console.log("COMPACT: ", compAct);
             /*set comp = new Opponent before uncommenting the line below */
             comp.updateActions(compAct);
         });
@@ -5154,7 +5153,6 @@ function updateActs(act) {
     }
 
     //****************Socket.emit to update character on the other end**********
-    console.log("BEFORE SENDING:", act);
     socket.emit('send-updates', act);
 }
 
