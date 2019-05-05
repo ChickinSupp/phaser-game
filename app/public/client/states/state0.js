@@ -1,15 +1,15 @@
 // State 0 start menu
 let demo = window.demo || (window.demo = {});
 //let socket = io();
-
 let mainBGM;
+let enter;
 
 // Creating background image
 function startMenu() {
     startMenu = game.add.image(0, 0, 'menu-background');
     startMenu.width = 1000;
     startMenu.height = 700;
-};
+}
 
 // Creating particles for background
 function particleEmitter() {
@@ -91,7 +91,7 @@ function multiPlayer() {
     button2.onInputOut.add(out, this);
     button2.onInputUp.add(goOnline, this)
 
-};
+}
 
 function rankings() {
     let rankings = game.add.text(370,620, 'RANKINGS');
@@ -119,7 +119,8 @@ demo.state0.prototype = {
         game.load.image('button1', '../assets/art/startGame.png');
         game.load.image('button2', '../assets/art/online.png');
         game.load.image('button3', '../assets/art/rankings.png');
-        game.load.audio('bgm', '../assets/music/ThemeofPixelSmash(demo).ogg');
+        game.load.audio('bgm', '../assets/music/ThemeOfPixelSmash.ogg');
+        game.load.audio('enter', '../assets/sfx/enter.wav');
     },
 
     create: function () {
@@ -132,13 +133,14 @@ demo.state0.prototype = {
 
         mainBGM = game.add.audio('bgm');
         mainBGM.play();
+
+        enter = game.add.audio('enter');
     },
     update: function () {}
 };
 
 
 function up() {
-    
     console.log('button up', arguments);
     game.sound.stopAll();
 }
@@ -153,10 +155,16 @@ function out() {
 
 function playGame(){
     game.sound.stopAll();
-    game.state.start('state1');
+    enter.play();
+    //game.state.start('state1');
+    //socket.emit('gaming');
 }
 
-function goOnline(){
+function goOnline() {
     game.sound.stopAll();
-    game.state.start('online');
+    game.state.start('onlineChars');
 }
+
+/*socket.on('clicked-menu', function () {
+    game.state.start('state1');
+});*/

@@ -1,6 +1,5 @@
-# Phaser-game
 Project Title
-**Pixel-Smash**
+# Pixel-Smash
 
 **Team Members**
 
@@ -9,10 +8,11 @@ Project Title
 **Project Description**
 
 
-A fun HTML5 multiplayer game that lets players battle it out. This utilizes the following resources:
+A fun, yet competitive HTML5 multiplayer platformer game that lets players battle it out. This utilizes the following resources:
 * Phaser.CE (Game engine)
 * Node.js & Express
 * Sockets.io
+* Gulp
 * MySQL
 
 **Rough Breakdown of Tasks**
@@ -30,3 +30,50 @@ A fun HTML5 multiplayer game that lets players battle it out. This utilizes the 
 ⦁   Define character stats and implement the API. 
 
 ⦁   Define and test the database to save character information and a leaderboard.
+
+
+**Controls**
+
+⦁   a = punch
+⦁   s = kick
+⦁   d = special
+⦁   x = jump
+⦁   z = dodge
+
+⦁  z + leftArrow = dodge left
+⦁  z + rightArrow = dodge right
+
+⦁  upArrow + d = air recovery
+
+⦁  x + (a or s) = air attacks
+
+⦁  x + (d) = Roundhouse Kick (in air)
+
+⦁  air + downArrow + d = Spike
+
+⦁ Rapidly click 'a' for combos!
+
+⦁ a + a + a + a + a + d = Sword Slash
+
+⦁ a + a + a + d = Rising Spectre (Send your opponent flying!)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
